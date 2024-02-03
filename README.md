@@ -1,5 +1,5 @@
 # Capstone-Project
-Music Application
+SpotiVibe
 
 Serenity testing commit and push from PyCharm. Hello, world.
 
