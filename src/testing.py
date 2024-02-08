@@ -15,8 +15,11 @@ else:
     results = sp.current_user_recently_played(limit=1)
     artist_uri = [(results["items"][0]["track"]["artists"][0]["uri"]).split(":", 3)[2]]
     track_uri = [(results["items"][0]["track"]["uri"]).split(":", 3)[2]]
-    genres = ["progressive bluegrass"]
-    rec = sp.recommendations(seed_artists=artist_uri, seed_tracks=track_uri, seed_genres=genres, limit=1)
+    artistinfo = sp.artist(artist_uri[0])
+    genres = artistinfo["genres"]
+    rec = sp.recommendations(seed_artists=artist_uri, seed_tracks=track_uri, seed_genres=[genres[0]], limit=1)
+    print(rec["tracks"][0]["album"]["images"][0]["url"])
+    print(rec["tracks"][0]["artists"][0]["name"])
     print(rec["tracks"][0]["name"])
 
 
