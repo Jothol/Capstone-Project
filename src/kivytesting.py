@@ -1,4 +1,5 @@
 import kivy
+import os
 kivy.require('2.3.0')
 from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
@@ -24,5 +25,6 @@ class SpotiVibe(App):
         return LoginScreen()
     
 if __name__ == '__main__':
-    Builder.load_file('./src/kv_style/kivytesting.kv')
+    cwd = os.getcwd()
+    Builder.load_file(cwd+'/kv_style/kivytesting.kv')
     SpotiVibe().run()
