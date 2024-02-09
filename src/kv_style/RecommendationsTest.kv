@@ -1,4 +1,13 @@
+#:import utils kivy.utils
 <RecommendationsTest>:
+
+    canvas.before:
+        Color:
+            rgb: utils.get_color_from_hex('#1db954')
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
     BoxLayout:
         orientation: 'vertical'
         padding: 50
@@ -35,3 +44,4 @@
             size: self.texture_size
             pos: self.parent.pos
             on_release: app.rerun_app()
+            background_color: utils.get_color_from_hex('#1ed760')

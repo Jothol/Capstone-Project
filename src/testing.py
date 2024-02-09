@@ -1,16 +1,13 @@
 import os
-
+import kivy
 import spotipy
 from kivy.lang import Builder
 from kivy.properties import StringProperty
-from kivy.uix.image import AsyncImage
 from kivy.uix.widget import Widget
 from spotipy.oauth2 import SpotifyOAuth
-import kivy
-
-kivy.require('2.3.0')  # replace with your current kivy version !
 from kivy.app import App
-from kivy.uix.label import Label
+kivy.require('2.3.0')
+
 
 scope = ("user-read-playback-state user-modify-playback-state user-read-currently-playing streaming "
          "playlist-read-private playlist-read-collaborative playlist-modify-private playlist-modify-public "
