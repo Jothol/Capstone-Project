@@ -1,0 +1,37 @@
+<RecommendationsTest>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 50
+        spacing: 10
+
+        # Image Input
+        AsyncImage:
+            id: image_input
+            source: root.image_source
+            size_hint: None, None
+            size: 300, 300  # Adjust as needed
+            pos: self.parent.pos
+
+        # Labels
+        Label:
+            id: label1
+            text: root.Artist_text
+            size_hint: None, None
+            size: self.texture_size
+            pos: self.parent.pos
+
+        Label:
+            id: label2
+            text: root.Song_text
+            size_hint: None, None
+            size: self.texture_size
+            pos: self.parent.pos
+
+
+        # Rerun Button
+        Button:
+            text: 'Rerun App'
+            size_hint: None, None
+            size: self.texture_size
+            pos: self.parent.pos
+            on_release: app.rerun_app()
