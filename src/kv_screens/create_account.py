@@ -1,4 +1,6 @@
 import kivy
+from kivy.graphics.texture import Texture
+from kivy.graphics import Rectangle, Color
 from kivy.properties import ObjectProperty
 from kivy.uix.screenmanager import Screen
 

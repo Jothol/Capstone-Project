@@ -9,31 +9,27 @@
             orientation: 'vertical'
             spacing: 10
             size_hint: (None, None)
-            size: (250, 110)
+            size: (250, 150)
 
+            Label:
+                text: 'Create a New Account.'
             BoxLayout:
                 orientation: 'horizontal'
                 spacing: 10
-
-                Label:
-                    size_hint_x: 0.3
-                    text: 'Username:'
 
                 TextInput:
                     id: username_input
                     multiline: False
+                    hint_text: 'Username'
 
             BoxLayout:
                 orientation: 'horizontal'
                 spacing: 10
 
-                Label:
-                    size_hint_x: 0.3
-                    text: 'Password:'
-
                 TextInput:
                     id: password_input
                     multiline: False
+                    hint_text: 'Password'
 
             AnchorLayout:
                 anchor_x: 'center'
@@ -41,8 +37,9 @@
 
                 Button:
                     size_hint: (None, None)
-                    size: (100, 30)
-                    text: 'Submit'
+                    size: (130, 30)
+                    text: 'Create Account'
+                    background_color:[0,1,0,1]
                     on_press:
                         root.manager.transition.direction = 'right'
                         root.submit(username_input.text, password_input.text)
@@ -53,6 +50,7 @@
         size: (100, 30)
         text: 'Go Back'
         pos_hint: {'x': 0.01, 'y': 0.01}
+        background_color:[0,1,0,1]
         on_press:
             root.manager.transition.direction = 'right'
             root.manager.current = 'login_page'

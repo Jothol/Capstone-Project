@@ -4,14 +4,13 @@
     username: username
     password: password
 
+    Image:
+        source: '../other/images/temp_logo.png'
+        fit_mode: 'scale-down'
+
     GridLayout:
         cols:1
         size: root.width, root.height
-        canvas.before:
-            Rectangle:
-                pos:self.pos
-                size: self.size
-                source: "../../other/images/temp_logo.png"
         Label:
             font_size: 50
             top: root.top - 50
