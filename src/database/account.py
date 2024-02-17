@@ -76,10 +76,10 @@ class Account:
         self.email = email
 
     def get_first_name(self):
-        return self.first_name
+        return self.account.get().to_dict()['first_name']
 
     def get_last_name(self):
-        return self.last_name
+        return self.account.get().to_dict()['last_name']
 
     def get_email(self):
-        return self.email
+        return self.account.get().to_dict()['email']

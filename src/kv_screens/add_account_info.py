@@ -7,6 +7,8 @@ from src.database import account as acc
 
 kivy.require('2.3.0')
 
+import time
+
 
 class AddAccountInfo(Screen):
     def submit(self, email, first_name, last_name):

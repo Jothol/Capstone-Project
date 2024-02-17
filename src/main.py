@@ -16,6 +16,7 @@ class Spotivibe(App):
     def build(self):
         # Create the screen manager
         sm = ScreenManager()
+        sm.ids.username = ''
         sm.add_widget(LoginScreen(name='login_page'))
         sm.add_widget(CreateAccount(name='create_account_page'))
         sm.add_widget(AddAccountInfo(name='add_account_info_page'))
