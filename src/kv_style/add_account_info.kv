@@ -1,0 +1,74 @@
+# create_account.kv
+
+<AddAccountInfo>:
+    AnchorLayout:
+        anchor_x: 'center'
+        anchor_y: 'center'
+
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint: (None, None)
+            size: (250, 300)
+            canvas.before:
+                Color:
+                    rgba: 1, 1, 1, 1
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [10, 10, 10, 10]
+
+            Label:
+                text: 'Add Account Info'
+                color: [0,0.4,0,1]
+                font_size: 20
+                bold: True
+            BoxLayout:
+                padding: 10
+
+                TextInput:
+                    id: email_input
+                    multiline: False
+                    hint_text: 'Email'
+
+            BoxLayout:
+                padding: 10
+
+                TextInput:
+                    id: first_name_input
+                    multiline: False
+                    hint_text: 'First Name'
+
+            BoxLayout:
+                padding: 10
+
+                TextInput:
+                    id: last_name_input
+                    multiline: False
+                    hint_text: 'Last Name'
+
+            AnchorLayout:
+                anchor_x: 'center'
+                anchor_y: 'center'
+
+                Button:
+                    size_hint: (None, None)
+                    size: (130, 30)
+                    text: 'Update Info'
+                    background_color:[0,1,0,1]
+                    on_press:
+                        root.manager.transition.direction = 'right'
+                        root.submit(email_input.text, first_name_input.text, last_name_input.text)
+            Label:
+                id: error_message
+                text: ''
+                color: [1,0,0,0]
+
+    Button:
+        size_hint: (None, None)
+        size: (100, 30)
+        text: 'Add Later'
+        pos_hint: {'x': 0.01, 'y': 0.01}
+        background_color:[0,1,0,1]
+        on_press:
+            root.manager.transition.direction = 'right'
+            root.manager.current = 'home_page'
