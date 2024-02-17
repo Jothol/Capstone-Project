@@ -1,5 +1,5 @@
 #:import utils kivy.utils
-<RecommendationsTest>:
+<RecommendationScreen>:
 
     canvas.before:
         Color:
@@ -23,14 +23,14 @@
 
         # Labels
         Label:
-            id: label1
+            id: artist_name
             text: root.Artist_text
             size_hint: None, None
             size: self.texture_size
             pos: self.parent.pos
 
         Label:
-            id: label2
+            id: track_name
             text: root.Song_text
             size_hint: None, None
             size: self.texture_size
@@ -43,5 +43,5 @@
             size_hint: None, None
             size: self.texture_size
             pos: self.parent.pos
-            on_release: app.rerun_app()
+            on_release: root.rerun()
             background_color: utils.get_color_from_hex('#1ed760')

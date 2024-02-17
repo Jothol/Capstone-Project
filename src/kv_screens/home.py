@@ -14,3 +14,4 @@ class HomeScreen(Screen):
         HomeScreen.username = self.parent.ids.username
         first_name = account.get_account(HomeScreen.username).get_first_name()
         self.ids.welcome_label.text = 'Welcome, {}!'.format(first_name)
+
