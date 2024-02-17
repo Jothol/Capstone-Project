@@ -13,4 +13,5 @@ class HomeScreen(Screen):
     def on_enter(self):
         HomeScreen.username = self.parent.ids.username
         first_name = account.get_account(HomeScreen.username).get_first_name()
-        self.ids.welcome_label.text = 'Welcome, {}!'.format(first_name)
+        if first_name != '':
+            self.ids.welcome_label.text = 'Welcome, {}!'.format(first_name)
