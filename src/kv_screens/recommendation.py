@@ -1,13 +1,10 @@
-import os
-import kivy
 import spotipy
-from kivy.lang import Builder
-from kivy.properties import StringProperty, ObjectProperty
+from kivy.properties import StringProperty
+from kivy.uix.screenmanager import Screen
 from kivy.uix.widget import Widget
-from spotipy.oauth2 import SpotifyOAuth, SpotifyPKCE
-from kivy.app import App
+from spotipy import SpotifyPKCE
 
-kivy.require('2.3.0')
+from src.database import account
 
 scope = ("user-read-playback-state user-modify-playback-state user-read-currently-playing streaming "
          "playlist-read-private playlist-read-collaborative playlist-modify-private playlist-modify-public "
@@ -24,8 +21,7 @@ def spotify_rec(track):
     if membership != "premium":
         print("You are not authorized to access this")
     else:
-        results = sp.search(q="track:"+track, type="track")
-
+        results = sp.search(q="track:" + track, type="track")
         artist_uri = [(results["tracks"]["items"][0]["artists"][0]["uri"]).split(":", 3)[2]]
         track_uri = [(results["tracks"]["items"][0]["uri"]).split(":", 3)[2]]
         artistinfo = sp.artist(artist_uri[0])
@@ -37,29 +33,16 @@ def spotify_rec(track):
         return image, artist_name, track_name
 
 
-class RecommendationsTest(Widget):
+class RecommendationScreen(Screen):
     image_source = StringProperty()
     Artist_text = StringProperty("Artist Name")
     Song_text = StringProperty("Song Title")
 
+    def on_enter(self):
+        image_link, artist_name, track_name = spotify_rec(self.parent.ids.recInput)
+        self.image_source = image_link
+        self.Artist_text = artist_name
+        self.Song_text = track_name
 
-class RecommendationApp(App):
-
-    def build(self):
-        cwd = os.getcwd()
-        self.root = Builder.load_file(cwd + '/kv_style/RecommendationsTest.kv')
-        track = input("Enter a Song Name")
-        image, artist_name, track_name = spotify_rec(track)
-        app = RecommendationsTest()
-        app.image_source = image
-        app.Artist_text = artist_name
-        app.Song_text = track_name
-        return app
-
-    def rerun_app(self):
-        self.stop()  # Stop the current app instance
-        RecommendationApp().run()
-
-
-if __name__ == "__main__":
-    spotify_rec("Let It Be")
+    def rerun(self):
+        self.parent.current = "recommendation_input_page"
