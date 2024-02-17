@@ -1,0 +1,71 @@
+#:kivy 2.3.0
+# create_account.kv
+
+<LoginScreen>:
+    Image:
+        source: '../other/images/temp_logo.png'
+        fit_mode: 'scale-down'
+
+    AnchorLayout:
+        anchor_x: 'center'
+        anchor_y: 'center'
+
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint: (None, None)
+            size: (250, 250)
+            canvas.before:
+                Color:
+                    rgba: 1, 1, 1, 1
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [10, 10, 10, 10]
+
+            Label:
+                text: 'SpotiVibe Log-In.'
+                color: [0,0.4,0,1]
+                font_size: 20
+                bold: True
+            BoxLayout:
+                padding: 10
+
+                TextInput:
+                    id: username_input
+                    multiline: False
+                    hint_text: 'Username'
+
+            BoxLayout:
+                padding: 10
+
+                TextInput:
+                    id: password_input
+                    multiline: False
+                    hint_text: 'Password'
+
+            AnchorLayout:
+                anchor_x: 'center'
+                anchor_y: 'center'
+
+                Button:
+                    size_hint: (None, None)
+                    size: (130, 30)
+                    text: 'Enter'
+                    background_color:[0,1,0,1]
+                    on_press:
+                        root.manager.transition.direction = 'down'
+                        root.submit(username_input.text, password_input.text)
+            Label:
+                id: error_message
+                text: ''
+                color: [1,0,0,0]
+
+    Button:
+        size_hint: (None, None)
+        size: (130, 30)
+        text: 'Create Account'
+        pos_hint: {'x': 0.01, 'y': 0.01}
+        background_color:[0,1,0,1]
+        on_press:
+            root.manager.transition.direction = 'left'
+            root.manager.current = 'create_account_page'
