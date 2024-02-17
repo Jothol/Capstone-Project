@@ -1,6 +1,6 @@
 # create_account.kv
 
-<CreateAccount>:
+<AddAccountInfo>:
     AnchorLayout:
         anchor_x: 'center'
         anchor_y: 'center'
@@ -18,7 +18,7 @@
                     radius: [10, 10, 10, 10]
 
             Label:
-                text: 'Welcome to SpotiVibe!'
+                text: 'Add Account Info'
                 color: [0,0.4,0,1]
                 font_size: 20
                 bold: True
@@ -26,25 +26,25 @@
                 padding: 10
 
                 TextInput:
-                    id: username_input
+                    id: email_input
                     multiline: False
-                    hint_text: 'Username'
+                    hint_text: 'Email'
 
             BoxLayout:
                 padding: 10
 
                 TextInput:
-                    id: password_input
+                    id: first_name_input
                     multiline: False
-                    hint_text: 'Password'
+                    hint_text: 'First Name'
 
             BoxLayout:
                 padding: 10
 
                 TextInput:
-                    id: re_password_input
+                    id: last_name_input
                     multiline: False
-                    hint_text: 'Re-enter Password'
+                    hint_text: 'Last Name'
 
             AnchorLayout:
                 anchor_x: 'center'
@@ -53,11 +53,11 @@
                 Button:
                     size_hint: (None, None)
                     size: (130, 30)
-                    text: 'Create Account'
+                    text: 'Update Info'
                     background_color:[0,1,0,1]
                     on_press:
-                        root.manager.transition.direction = 'left'
-                        root.submit(username_input.text, password_input.text, re_password_input.text)
+                        root.manager.transition.direction = 'right'
+                        root.submit(email_input.text, first_name_input.text, last_name_input.text)
             Label:
                 id: error_message
                 text: ''
@@ -66,9 +66,9 @@
     Button:
         size_hint: (None, None)
         size: (100, 30)
-        text: 'Go Back'
+        text: 'Add Later'
         pos_hint: {'x': 0.01, 'y': 0.01}
         background_color:[0,1,0,1]
         on_press:
             root.manager.transition.direction = 'right'
-            root.manager.current = 'login_page'
+            root.manager.current = 'home_page'
