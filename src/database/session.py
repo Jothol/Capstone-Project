@@ -1,5 +1,5 @@
 from firebase_admin import firestore
-from database import account
+from src.database import account
 
 
 def create_session(session_name, host_name):
@@ -13,8 +13,8 @@ def create_session(session_name, host_name):
         print('create_session error: user not found.')
         return None
     else:
-        session.set({'Session Name': session_name})
-        session.set({'host': host_name})
+
+        session.set({host_name: 'host'})
         return Session(session_name)
 
 
@@ -48,20 +48,22 @@ def get_host(session_name):
         return session.name.collection('host')
 
 
-# def add_user(user_name):
-#     if get_session() = None
-
-
 class Session:
     def __init__(self, session_name):
         self.db = firestore.client()
         self.name = self.db.collection('sessions').document(session_name)
-        #self.host = self.name.collection('host').document(host_name)
+        self.host = self.name.get().to_dict().get('bob')
+        self.db.collection('users').document('bob').update({'in_session': True})
 
 
     def get_name(self):
-        return self.name
+        return self.name.id
 
-    # Get the host name retrieval working
     def get_host(self):
         return self.host
+
+    def add_user(self, user_name):
+        db = firestore.client()
+        user = account.get_account(user_name)
+        self.name.update({user_name: 'user'})
+        db.collection('users').document(user_name).update({'in_session': True})
