@@ -2,7 +2,7 @@ import firebase_admin
 from firebase_admin import credentials
 from src.database import account
 
-cred = credentials.Certificate(r"database-access-key.json")
+cred = credentials.Certificate(r"..\other\database-access-key.json")
 firebase_admin.initialize_app(cred)
 
 account.get_account("test")

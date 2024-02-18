@@ -8,7 +8,7 @@ def create_account(username, password):
         print('create_account error: user already exists.')
         return None
     else:
-        account.set({'password': password, 'first_name': '', 'last_name': '', 'email': '', 'in_session': False})
+        account.set({'password': password})
         return Account(username)
 
 
@@ -49,7 +49,6 @@ class Account:
         self.account = self.db.collection('users').document(username)
         self.username = username
         self.password = self.account.get().to_dict().get('password')
-        self.in_session = False
 
     def get_username(self):
         return self.username

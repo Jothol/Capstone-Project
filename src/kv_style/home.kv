@@ -1,0 +1,24 @@
+#:kivy 2.3.0
+# recommendation_input.kv
+
+<HomeScreen>:
+    Image:
+        source: '../other/images/temp_logo.png'
+        fit_mode: 'scale-down'
+
+    Label:
+        id: welcome_label
+        font_size: 30
+        bold: True
+        text: 'Welcome!'
+        color: [1, 1, 1, 1]
+
+    Button:
+        size_hint: (None, None)
+        size: (130, 30)
+        text: 'Recommend A Song'
+        pos_hint: {'x': 0.01, 'y': 0.01}
+        background_color:[0,1,0,1]
+        on_press:
+            root.manager.transition.direction = 'left'
+            root.manager.current = 'recommendation_input_page'
