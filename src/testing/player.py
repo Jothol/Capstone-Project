@@ -34,8 +34,17 @@ def volume_functionality(sp, volume):
     except ValueError:
         print("Value is not a number.")
 
+
 def next_song(sp):
     print("next song has been pressed")
+    # use spotify_rec to generate a recommendation, currently based on what song is playing for the user
+    currently_playing = sp.currently_playing()
+    recommendation = spotify_rec(sp, currently_playing["item"]["name"])
+    uri = recommendation["tracks"][0]["uri"]
+    # add the generated recommendation to the queue
+    sp.add_to_queue(uri)
+    # go to the next song in queue
+    sp.next_track()
     # need to go to next track in queue & use the recommendation algorithm
     # the problem may be that getting a recommendation is slower than pressing skip
     # for now the idea is to make pressing the button something that runs a recommendation call,
@@ -43,7 +52,7 @@ def next_song(sp):
     # then goes to the next song in queue
 
 
-# modified version of Kevin's method
+# modified version of Kevin's method, returns info
 def spotify_rec(sp, track):
     # auth = SpotifyPKCE(client_id=SPOTIPY_CLIENT_ID, redirect_uri=SPOTIPY_REDIRECT_URI, scope=scope)
     # sp = spotipy.Spotify(auth_manager=auth)
@@ -57,10 +66,11 @@ def spotify_rec(sp, track):
     artistinfo = sp.artist(artist_uri[0])
     genres = artistinfo["genres"]
     rec = sp.recommendations(seed_artists=artist_uri, seed_tracks=track_uri, seed_genres=[genres[0]], limit=1)
-    image = rec["tracks"][0]["album"]["images"][0]["url"]
-    artist_name = (rec["tracks"][0]["artists"][0]["name"])
-    track_name = (rec["tracks"][0]["name"])
-    return image, artist_name, track_name
+    return rec
+    # image = rec["tracks"][0]["album"]["images"][0]["url"]
+    # artist_name = (rec["tracks"][0]["artists"][0]["name"])
+    # track_name = (rec["tracks"][0]["name"])
+    # return image, artist_name, track_name
 
 
 # note: redirect URI needs to have a port and be http, not https
@@ -75,11 +85,16 @@ if membership != "premium":
     print("You are not authorized to access this")
 else:
     while keepLooping == 1:
-        choice = int(input('Options! Press 1 to use the play/pause button, press 2 to enter a volume percentage, press any other key to exit.'))
+        print("Options! Press 1 to use the play/pause button")
+        print("Press 2 to enter a volume percentage")
+        print("Press 3 to skip current song to a new recommendation.")
+        choice = int(input('Press any other key to exit.'))
         if choice == 1:
             play_button_functionality(sp)
         elif choice == 2:
             vol = input('Enter a number between 0 and 100 to set the player volume.')
             volume_functionality(sp, vol)
+        elif choice == 3:
+            next_song(sp)
         else:
             exit(0)
