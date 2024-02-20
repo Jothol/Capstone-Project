@@ -17,6 +17,8 @@ from kivy.clock import Clock
 
 kivy.require("2.3.0")
 
+
+
 class ScrollableLabel(ScrollView):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -34,7 +36,7 @@ class ScrollableLabel(ScrollView):
 
         self.layout.height = self.chat_history.texture_size[1] + 15
         self.chat_history.height = self.chat_history.texture_size[1]
-        self.chat_history.text_size = (self.chat_history.width*0.98, None)
+        self.chat_history.text_size = (self.chat_history.width * 0.98, None)
 
         self.scroll_to(self.scroll_to_point)
 
@@ -108,10 +110,10 @@ class ChatPage(GridLayout):
         self.cols = 1
         self.rows = 2
 
-        self.history = ScrollableLabel(height=Window.size[1]*0.9, size_hint_y=None)
+        self.history = ScrollableLabel(height=Window.size[1] * 0.9, size_hint_y=None)
         self.add_widget(self.history)
 
-        self.new_message = TextInput(width=Window.size[0]*0.8, size_hint_x=None, multiline=False)
+        self.new_message = TextInput(width=Window.size[0] * 0.8, size_hint_x=None, multiline=False)
         self.send = Button(text="Send")
         self.send.bind(on_press=self.send_message)
 
@@ -146,17 +148,16 @@ class ChatPage(GridLayout):
         # self.history.update_chat_history_layout()
         Clock.schedule_once(self.history.update_chat_history_layout, 0.01)
 
-
     def on_key_down(self, instance, keyboard, keycode, text, modifiers):
         if keycode == 40:
             self.send_message(None)
-
 
     def send_message(self, _):
         message = self.new_message.text
         self.new_message.text = ""
         if message:
-            self.history.update_chat_history(f"[color=dd2020]{chat_app.connect_page.username.text}[/color] >  {message}")
+            self.history.update_chat_history(
+                f"[color=dd2020]{chat_app.connect_page.username.text}[/color] >  {message}")
             socket_client.send(message)
 
         Clock.schedule_once(self.focus_text_input, 0.1)
@@ -166,6 +167,7 @@ class ChatPage(GridLayout):
 
     def incoming_message(self, username, message):
         self.history.update_chat_history(f"[color=20dd20]{username}[/color] >  {message}")
+
 
 class InfoPage(GridLayout):
     def __init__(self, **kwargs):
