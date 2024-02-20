@@ -104,4 +104,7 @@ class ChatScreen(GridLayout):
         self.new_message.focus = True
 
     def incoming_message(self, username, message):
-        self.history.update_chat_history(f"[color=20dd20]{username}[/color] >  {message}")
+        if username == self.parent.parent.ids.username:
+            self.history.update_chat_history(f"[color=dd2020]{username}[/color] >  {message}")
+        else:
+            self.history.update_chat_history(f"[color=20dd20]{username}[/color] >  {message}")
