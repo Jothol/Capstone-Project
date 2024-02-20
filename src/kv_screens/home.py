@@ -26,7 +26,7 @@ class HomeScreen(Screen):
             self.ids.welcome_label.text = 'Welcome, {}!'.format(first_name)
 
     def connect(self):
-        ip = "127.0.0.1"
+        ip = "spotivibe.net"
         port = 5000
         if not socket_client.connect(ip, port, self.parent.ids.username, show_error):
             return
