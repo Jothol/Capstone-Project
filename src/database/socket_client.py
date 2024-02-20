@@ -1,5 +1,5 @@
 import socket
-import errno
+import sys
 from threading import Thread
 
 HEADER_LENGTH = 10
@@ -7,7 +7,6 @@ client_socket = None
 
 # Connects to the server
 def connect(ip, port, my_username, error_callback):
-
     global client_socket
 
     # Create a socket
@@ -31,6 +30,7 @@ def connect(ip, port, my_username, error_callback):
 
     return True
 
+
 # Sends a message to the server
 def send(message):
     # Encode message to bytes, prepare header and convert to bytes, like for username above, then send
@@ -38,11 +38,13 @@ def send(message):
     message_header = f"{len(message):<{HEADER_LENGTH}}".encode('utf-8')
     client_socket.send(message_header + message)
 
+
 # Starts listening function in a thread
 # incoming_message_callback - callback to be called when new message arrives
 # error_callback - callback to be called on error
 def start_listening(incoming_message_callback, error_callback):
     Thread(target=listen, args=(incoming_message_callback, error_callback), daemon=True).start()
+
 
 # Listens for incomming messages
 def listen(incoming_message_callback, error_callback):
@@ -51,7 +53,6 @@ def listen(incoming_message_callback, error_callback):
         try:
             # Now we want to loop over received messages (there might be more than one) and print them
             while True:
-
                 # Receive our "header" containing username length, it's size is defined and constant
                 username_header = client_socket.recv(HEADER_LENGTH)
 
@@ -76,3 +77,4 @@ def listen(incoming_message_callback, error_callback):
         except Exception as e:
             # Any other exception - something happened, exit
             error_callback('Reading error: {}'.format(str(e)))
+    sys.exit()

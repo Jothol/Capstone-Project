@@ -1,7 +1,8 @@
 import sys
+import threading
 
 from kivy.clock import Clock
-from kivy.core.window import Window
+from kivy.core.window import Window, Keyboard
 from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
@@ -43,6 +44,7 @@ class ScrollableLabel(ScrollView):
 
 
 class ChatScreen(GridLayout):
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.cols = 1
@@ -87,8 +89,11 @@ class ChatScreen(GridLayout):
         Clock.schedule_once(self.history.update_chat_history_layout, 0.01)
 
     def on_key_down(self, instance, keyboard, keycode, text, modifiers):
-        if keycode == 40:
+        if keycode == 40:  # Enter key
             self.send_message(None)
+        if keycode == 43:  # Escape key
+            self.parent.parent.current = 'home_page'
+
 
     def send_message(self, _):
         message = self.new_message.text

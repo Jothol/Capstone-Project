@@ -18,6 +18,7 @@ def show_error(message):
 
 class HomeScreen(Screen):
     username = ''
+    chat_screen_exists = False
 
     def on_enter(self):
         HomeScreen.username = self.parent.ids.username
@@ -28,10 +29,12 @@ class HomeScreen(Screen):
     def connect(self):
         ip = "spotivibe.net"
         port = 5000
-        if not socket_client.connect(ip, port, self.parent.ids.username, show_error):
-            return
-        self.chat_page = ChatScreen()
-        screen = Screen(name="chat_page")
-        screen.add_widget(self.chat_page)
-        self.parent.add_widget(screen)
+        if not self.chat_screen_exists:
+            if not socket_client.connect(ip, port, self.parent.ids.username, show_error):
+                return
+            self.chat_page = ChatScreen()
+            screen = Screen(name="chat_page")
+            screen.add_widget(self.chat_page)
+            self.parent.add_widget(screen)
+            self.chat_screen_exists = True
         self.parent.current = 'chat_page'
