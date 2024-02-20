@@ -5,7 +5,6 @@ from kivy.core.window import Window
 from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
-from kivy.uix.screenmanager import Screen
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.textinput import TextInput
 
@@ -36,7 +35,6 @@ class ScrollableLabel(ScrollView):
         self.chat_history.height = self.chat_history.texture_size[1]
         self.chat_history.text_size = (self.chat_history.width * 0.98, None)
 
-        self.scroll_to(self.scroll_to_point)
 
     def update_chat_history_layout(self, _=None):
         self.layout.height = self.chat_history.texture_size[1] + 15
