@@ -52,6 +52,7 @@ class Account:
         self.first_name = ''
         self.last_name = ''
         self.email = ''
+        self.in_session = False
 
     def get_username(self):
         return self.username
@@ -83,3 +84,13 @@ class Account:
 
     def get_email(self):
         return self.account.get().to_dict()['email']
+
+    def get_in_session(self):
+        return self.in_session
+
+    def leave_session(self):
+        if not self.in_session:
+            print("leave_session error: user is not in a session")
+            return
+
+        self.in_session = False

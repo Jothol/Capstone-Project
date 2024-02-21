@@ -2,34 +2,37 @@ from firebase_admin import firestore
 from src.database import account
 
 
+# Session gets added into the Google Firebase 'sessions' collection
+# session_name: title of session (String type)
+# host_name: the user that is hosting the session (String type)
 def create_session(session_name, host_name):
     db = firestore.client()
     session = db.collection('sessions').document(session_name)
     host = db.collection('users').document(host_name)
     if session.get().exists:
         print('create_session error: session already exists.')
-        return None
-    elif not host.get().exists:
+        raise Exception
+    if not host.get().exists:
         print('create_session error: user not found.')
-        return None
-    else:
+        raise Exception
 
-        session.set({host_name: 'host'})
-        return Session(session_name)
+    session.set({host_name: 'host'})
+    return Session(session_name)
 
 
-def delete_session(session_name, host_name):
+def delete_session(session_name):
     db = firestore.client()
     session = db.collection('sessions').document(session_name)
-    # host = db.collection('users').document(host_name)
-    if session.get().exists:
+    if not session.get().exists:
         session.delete()
         return True
     else:
-        print('delete_session error: session does not exist.')
+        print('delete_session error: session not found.')
         return False
 
 
+# Returns the Session searched by session_name
+# ! ! session_name must be a String type ! !
 def get_session(session_name):
     db = firestore.client()
     session = db.collection('sessions').document(session_name)
@@ -40,13 +43,18 @@ def get_session(session_name):
         return None
 
 
+# Returns the 'Account' host from the session_name
+# ! ! session_name must be a String object ! !
 def get_host(session_name):
-    # if get_session(session_name) is None:
-    #     print('get_host error: session does not exist')
-    #     raise Exception
+    db = firestore.client()
+    name = db.collection('sessions').document(session_name)
+    if not name.get().exists:
+        print('get_host error: session does not exist')
+        return
 
-    while session_name.__len__() > 0:
-        temp = session_name.popitem()
+    sess = name.get().to_dict()
+    while sess.__len__() > 0:
+        temp = sess.popitem()
         if temp[1] == "host":
             return account.Account(temp[0])
 
@@ -57,10 +65,9 @@ class Session:
     def __init__(self, session_name):
         self.db = firestore.client()
         self.name = self.db.collection('sessions').document(session_name)
-        self.host = get_host(self.name.get().to_dict())
-        # self.host = self.name.get().to_dict().get('bob')
-        self.db.collection('users').document('bob').update({'in_session': True})
-
+        self.host = get_host(self.name.id)
+        # self.host = get_host(self.name.get().to_dict())
+        self.db.collection('users').document(self.host.username).update({'in_session': True})
 
     def get_name(self):
         return self.name.id
@@ -68,8 +75,30 @@ class Session:
     def get_host(self):
         return self.host
 
-    def add_user(self, user_name):
+    # Adds new user to the session
+    # ! ! user must be an Account type ! !
+    def add_user(self, acc):
         db = firestore.client()
-        user = account.get_account(user_name)
-        self.name.update({user_name: 'user'})
-        db.collection('users').document(user_name).update({'in_session': True})
+        user = db.collection('users').document(acc.username)
+        if not user.get().exists:
+            print('add_user error: user not found')
+            return
+        self.name.update({user.id: 'user'})
+        db.collection('users').document(user.id).update({'in_session': True})
+
+    def find_new_host(self):
+        if self.host is not None:
+            print("find_new_host error: host still exists in"+self.name.id)
+            return
+
+        temp = self.db.collection('sessions').document(self.name.id).get().to_dict()
+        new_host = temp.popitem()
+        while new_host[1] is None:
+            new_host = temp.popitem()
+
+        self.host = account.Account(new_host[0])
+        self.db.collection('sessions').document(self.name.id).update({self.host.username: 'host'})
+
+
+
+
