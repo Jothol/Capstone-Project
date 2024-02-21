@@ -8,7 +8,7 @@ def create_account(username, password):
         print('create_account error: user already exists.')
         return None
     else:
-        account.set({'password': password, 'first_name': '', 'last_name': '', 'email': ''})
+        account.set({'password': password, 'first_name': '', 'last_name': '', 'email': '', 'in_session': False})
         return Account(username)
 
 

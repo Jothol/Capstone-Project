@@ -22,11 +22,7 @@ def test_03():
     group = session.create_session("test_03", "bob")  # fix host_name issue
 
     print("Session created: " + group.get_name())
-    print("Hosted by: " + group.get_host())
-
-    # Session name is returned & Retrieve the name of the host
-    session.get_session("test_03")
-    host = session.get_host("test_03")
+    print("Hosted by: " + group.host.username)
 
     account.create_account("U1_test03", "b")
     account.create_account("U2_test03", "m")
@@ -54,4 +50,4 @@ if __name__ == "__main__":
     cred = credentials.Certificate(r"database-access-key.json")
     firebase_admin.initialize_app(cred)
 
-    test_03()
+    test_04()

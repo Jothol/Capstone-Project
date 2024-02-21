@@ -41,18 +41,24 @@ def get_session(session_name):
 
 
 def get_host(session_name):
-    if get_session(session_name) is None:
-        print('get_host error: session does not exist')
-    else:
-        session = get_session(session_name)
-        return session.name.collection('host')
+    # if get_session(session_name) is None:
+    #     print('get_host error: session does not exist')
+    #     raise Exception
+
+    while session_name.__len__() > 0:
+        temp = session_name.popitem()
+        if temp[1] == "host":
+            return account.Account(temp[0])
+
+    return None
 
 
 class Session:
     def __init__(self, session_name):
         self.db = firestore.client()
         self.name = self.db.collection('sessions').document(session_name)
-        self.host = self.name.get().to_dict().get('bob')
+        self.host = get_host(self.name.get().to_dict())
+        # self.host = self.name.get().to_dict().get('bob')
         self.db.collection('users').document('bob').update({'in_session': True})
 
 
