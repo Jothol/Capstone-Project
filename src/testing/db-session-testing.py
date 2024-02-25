@@ -41,12 +41,10 @@ def test_04():
     acc = account.get_account("bob")
     if acc.username == "":
         print("username is not found")
-        raise Exception
+        return
     if acc.in_session is True:
         print("user is already in session")
-        raise Exception
-
-    user = account.get_account("bob")
+        return
 
 
 # Session not found for get_host()
@@ -69,12 +67,14 @@ def test_06():
     host.leave_session()
     db.collection('users').document(host.username).update({'in_session': False})
 
-    # ! ! Currently trying to get the field deleted in firebase ! !
-    # ! ! Just setting it to None for now ! !
-    db.collection('sessions').document(group.name.id).update({host.username: None})
-
-    group.host = None
+    group.remove_host()
     group.find_new_host()
+
+
+# Session gets deleted
+# ! ! Run test_06 before running this test ! !
+def test_07():
+    session.delete_session("test_06")
 
 
 if __name__ == "__main__":
