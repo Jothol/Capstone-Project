@@ -91,7 +91,7 @@ class ChatScreen(GridLayout):
     def on_key_down(self, instance, keyboard, keycode, text, modifiers):
         if keycode == 40:  # Enter key
             self.send_message(None)
-        if keycode == 43:  # Escape key
+        if keycode == 43:  # Tab key
             self.parent.parent.current = 'home_page'
 
 
