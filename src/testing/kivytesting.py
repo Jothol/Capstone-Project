@@ -1,5 +1,6 @@
 import kivy
 import os
+
 kivy.require('2.3.0')
 from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
@@ -16,15 +17,19 @@ class LoginScreen(Widget):
     password = ObjectProperty(None)
 
     def check_status(self):
-        #print('button state is: {state}'.format(state=btn.state))
+        # print('button state is: {state}'.format(state=btn.state))
         print('username input text is: {txt}'.format(txt=self.username.text))
         print('password input text is: {txt}'.format(txt=self.password.text))
+
 
 class SpotiVibe(App):
     def build(self):
         return LoginScreen()
-    
+
+
 if __name__ == '__main__':
+    # os.chrdir changes directory
+    os.chdir(r"C:\Users\32rew\\PycharmProjects\\Capstone-Project\\src")
     cwd = os.getcwd()
-    Builder.load_file(cwd+'/kv_style/kivytesting.kv')
+    Builder.load_file(cwd + '/kv_style/kivytesting.kv')
     SpotiVibe().run()

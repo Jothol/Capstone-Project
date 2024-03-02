@@ -1,5 +1,6 @@
 #:kivy 2.3.0
 # recommendation_input.kv
+# listening_session.kv
 
 <HomeScreen>:
     Image:
@@ -22,3 +23,13 @@
         on_press:
             root.manager.transition.direction = 'left'
             root.manager.current = 'recommendation_input_page'
+
+    Button:
+        size_hint: (None, None)
+        size: (130, 30)
+        text: 'Create Session'
+        pos_hint: {'x': 0.59, 'y': 0.01}
+        background_color:[0,1,0,1]
+        on_press:
+            root.manager.transition.direction = 'left'
+            root.manager.current = 'session_home_page'
