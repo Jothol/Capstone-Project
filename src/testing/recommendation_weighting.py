@@ -8,6 +8,7 @@ scope = ("user-read-playback-state user-modify-playback-state user-read-currentl
 SPOTIPY_CLIENT_ID = '66880bb5822a48459696468e620a10d6'
 SPOTIPY_REDIRECT_URI = 'http://127.0.0.1:8080'
 
+
 def spotify_rec_with_keys(track, features):
     auth = SpotifyPKCE(client_id=SPOTIPY_CLIENT_ID, redirect_uri=SPOTIPY_REDIRECT_URI, scope=scope)
     sp = spotipy.Spotify(auth_manager=auth)
@@ -41,13 +42,14 @@ def get_features(track):
 
 
 def balanceValues(features, likes, dislikes):
-    new_features = {"danceability": features["danceability"], "energy": features["energy"], "valence": features["valence"]}
+    new_features = {"danceability": features["danceability"], "energy": features["energy"],
+                    "valence": features["valence"]}
     total = likes + dislikes
     like_per = 100 * likes / total
     dislike_per = 100 * dislikes / total
     difference = like_per - dislike_per
     if difference >= 50:
-        new_features["danceability"] = min(1, features["danceability"] + like_per*0.006)
+        new_features["danceability"] = min(1, features["danceability"] + like_per * 0.006)
         new_features["energy"] = min(1, features["energy"] + like_per * 0.006)
         new_features["valence"] = min(1, features["valence"] + like_per * 0.006)
     elif 50 > difference >= 40:
@@ -103,14 +105,18 @@ def balanceValues(features, likes, dislikes):
     new_features["valence"] = round(new_features["valence"], 3)
     return new_features
 
-#print(get_features("Little Lion Man"))
-features = {"danceability": 0.9, "energy": 0.5, "valence": 0.4}
-next_song = (spotify_rec_with_keys("Little Lion Man", features))
+
+song_name = "Little Lion Man"
+
+input = get_features(song_name)[0]
+print(input)
+features = {"danceability": input["danceability"], "energy": input["energy"], "valence": input["energy"]}
+next_song = (spotify_rec_with_keys(song_name, features))
 
 likes = 7
 dislikes = 4
-
-next = spotify_rec_with_keys(next_song, balanceValues(features, likes, dislikes))
+features = balanceValues(features, likes, dislikes)
+next = spotify_rec_with_keys(next_song, features)
 
 """Want to focus on 
     danceability 0(least danceable) - 1(most danceable)
