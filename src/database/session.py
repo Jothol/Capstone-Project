@@ -69,6 +69,22 @@ def get_host(session_name):
     return None
 
 
+def get_user(session_name, user_name):
+    db = firestore.client()
+    name = db.collection('sessions').document(session_name)
+    if not name.get().exists:
+        print('get_host error: session does not exist')
+        return None
+
+    sess = name.get().to_dict()
+    while sess.__len__() > 0:
+        temp = sess.popitem()
+        if temp[0] == user_name:
+            return account.Account(user_name)
+
+    return None
+
+
 class Session:
     def __init__(self, session_name):
         self.db = firestore.client()
@@ -90,11 +106,24 @@ class Session:
         if not user.get().exists:
             print('add_user error: user not found')
             return
+        if acc.in_session is True:
+            print('add_user error: user is already in a session')
+            return
         self.name.update({user.id: 'user'})
         db.collection('users').document(user.id).update({'in_session': True})
 
+    def remove_user(self, user):
+        if get_user(self.name.id, user.username) is None:
+            print("user not found in session")
+            return
+
+        self.db.collection('sessions').document(self.name.id).update({user.username: None})
+        self.db.collection('users').document(user.username).update({'in_session': False})
+        user.in_session = False
+
     def remove_host(self):
         self.db.collection('sessions').document(self.name.id).update({self.host.username: None})
+        self.host.in_session = False
         self.host = None
 
         return

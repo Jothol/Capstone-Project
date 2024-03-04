@@ -14,4 +14,7 @@ class SessionHomeScreen(Screen):
             self.ids.error_message.color = [1, 0, 0, 1]
         else:
             self.parent.ids.session_name = session_name
+            sess = session.get_session(session_name)
+            user = account.get_account('abc123')
+            sess.add_user(user)
             self.parent.current = "listening_session_page"
