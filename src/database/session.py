@@ -68,6 +68,23 @@ def get_host(session_name):
 
     return None
 
+# Collection updates to get rid of the user that left the session
+def update_collection_from_remove(session_name, removed_user_name):
+    db = firestore.client()
+    name = db.collection('sessions').document(session_name)
+    if not name.get().exists:
+        print('get_host error: session does not exist')
+        return
+
+    sess = name.get().to_dict()
+    db.collection('sessions').document(session_name).set({})
+    while sess.__len__() > 0:
+        temp = sess.popitem()
+        if temp[0] != removed_user_name:
+            db.collection('sessions').document(session_name).update({temp[0]: temp[1]})
+
+    return None
+
 
 def get_user(session_name, user_name):
     db = firestore.client()
@@ -120,6 +137,7 @@ class Session:
         self.db.collection('sessions').document(self.name.id).update({user.username: None})
         self.db.collection('users').document(user.username).update({'in_session': False})
         user.in_session = False
+        update_collection_from_remove(self.name.id, user.username)
 
     def remove_host(self):
         self.db.collection('sessions').document(self.name.id).update({self.host.username: None})
