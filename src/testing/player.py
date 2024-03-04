@@ -2,9 +2,9 @@ import spotipy
 from spotipy.oauth2 import SpotifyPKCE
 
 scope = (
-    "user-read-currently-playing " 
-    "user-read-recently-played " 
-    "user-library-read " 
+    "user-read-currently-playing "
+    "user-read-recently-played "
+    "user-library-read "
     "streaming "
     "user-read-playback-state "
     "user-modify-playback-state "
@@ -12,6 +12,25 @@ scope = (
 
 SPOTIPY_CLIENT_ID = '66880bb5822a48459696468e620a10d6'
 SPOTIPY_REDIRECT_URI = 'http://127.0.0.1:8080'
+
+
+# @author Serenity
+# use this function to get information out of a track uri - least headaches this way
+def get_data_from_track_uri(uri):
+    track = sp.track(uri)
+    image = track["album"]["images"][0]["url"]
+    artist_name = track["artists"][0]["name"]
+    track_name = track["name"]
+    return {"image": image, "artist_name": artist_name, "track_name": track_name}
+
+
+def queue_song(sp, uri):
+    print("what is getting added to session history")
+    print(uri)
+    sp.add_to_queue(uri)
+    # this is going to be interesting - the session history is shared across users, sp is local to each user.
+    # maybe solution should be to give this a list of each user's sp's to add to each queue individually?
+    session_history.append(uri)
 
 
 def play_button_functionality(sp, di):
@@ -46,7 +65,7 @@ def next_song(sp):
         recommendation = spotify_rec(sp, "Red Rock Riviera")
     uri = recommendation["tracks"][0]["uri"]
     # add the generated recommendation to the queue
-    sp.add_to_queue(uri)
+    queue_song(sp, uri)
     # go to the next song in queue
     sp.next_track()
     # need to go to next track in queue & use the recommendation algorithm
@@ -101,6 +120,8 @@ def choose_device(sp):
 # note: redirect URI needs to have a port and be http, not https
 auth = SpotifyPKCE(client_id=SPOTIPY_CLIENT_ID, redirect_uri=SPOTIPY_REDIRECT_URI, scope=scope)
 sp = spotipy.Spotify(auth_manager=auth)
+# plan to initialize a session history when a new listening session is created
+session_history = list()
 
 membership = sp.current_user()["product"]
 keepLooping = 1
@@ -110,11 +131,16 @@ if membership != "premium":
     print("You are not authorized to access this")
 else:
     di = choose_device(sp)
+    current = sp.currently_playing()
+    print(current)
+    current_uri = current["item"]["uri"]
+    session_history.append(current_uri)
     while keepLooping:
         print("Options! Press 1 to use the play/pause button")
         print("Press 2 to enter a volume percentage")
         print("Press 3 to skip current song to a new recommendation.")
         print("Press 4 to change playback device.")
+        print("Press 5 to show the session history.")
         choice = input('Press any other key to exit.')
         if choice == "1":
             play_button_functionality(sp, di)
@@ -125,5 +151,10 @@ else:
             next_song(sp)
         elif choice == "4":
             di = choose_device(sp)
+        elif choice == "5":
+            print("Showing session history (list of URIs)...")
+            print(session_history)
+            for e in session_history:
+                print(get_data_from_track_uri(e))
         else:
             exit(0)
