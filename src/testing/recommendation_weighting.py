@@ -1,3 +1,5 @@
+from random import random
+
 import spotipy
 from spotipy import SpotifyPKCE
 
@@ -44,77 +46,30 @@ def get_features(track):
 def balanceValues(features, likes, dislikes):
     new_features = {"danceability": features["danceability"], "energy": features["energy"],
                     "valence": features["valence"]}
-    total = likes + dislikes
-    like_per = 100 * likes / total
-    dislike_per = 100 * dislikes / total
-    difference = like_per - dislike_per
-    if difference >= 50:
-        new_features["danceability"] = min(1, features["danceability"] + like_per * 0.006)
-        new_features["energy"] = min(1, features["energy"] + like_per * 0.006)
-        new_features["valence"] = min(1, features["valence"] + like_per * 0.006)
-    elif 50 > difference >= 40:
-        new_features["danceability"] = min(1, features["danceability"] + like_per * 0.005)
-        new_features["energy"] = min(1, features["energy"] + like_per * 0.005)
-        new_features["valence"] = min(1, features["valence"] + like_per * 0.005)
-    elif 40 > difference >= 30:
-        new_features["danceability"] = min(1, features["danceability"] + like_per * 0.004)
-        new_features["energy"] = min(1, features["energy"] + like_per * 0.004)
-        new_features["valence"] = min(1, features["valence"] + like_per * 0.004)
-    elif 30 > difference >= 20:
-        new_features["danceability"] = min(1, features["danceability"] + like_per * 0.003)
-        new_features["energy"] = min(1, features["energy"] + like_per * 0.003)
-        new_features["valence"] = min(1, features["valence"] + like_per * 0.003)
-    elif 20 > difference >= 10:
-        new_features["danceability"] = min(1, features["danceability"] + like_per * 0.002)
-        new_features["energy"] = min(1, features["energy"] + like_per * 0.002)
-        new_features["valence"] = min(1, features["valence"] + like_per * 0.002)
-    elif 10 > difference > 0:
-        new_features["danceability"] = min(1, features["danceability"] + like_per * 0.001)
-        new_features["energy"] = min(1, features["energy"] + like_per * 0.001)
-        new_features["valence"] = min(1, features["valence"] + like_per * 0.001)
-    elif difference == 0:
-        new_features["danceability"] = features["danceability"]
-        new_features["energy"] = features["energy"]
-        new_features["valence"] = features["valence"]
-    elif 0 > difference >= -10:
-        new_features["danceability"] = max(0, features["danceability"] - dislike_per * 0.001)
-        new_features["energy"] = max(0, features["energy"] - dislike_per * 0.001)
-        new_features["valence"] = max(0, features["valence"] - dislike_per * 0.001)
-    elif -10 > difference >= -20:
-        new_features["danceability"] = max(0, features["danceability"] - dislike_per * 0.002)
-        new_features["energy"] = max(0, features["energy"] - dislike_per * 0.002)
-        new_features["valence"] = max(0, features["valence"] - dislike_per * 0.002)
-    elif -20 > difference >= -30:
-        new_features["danceability"] = max(0, features["danceability"] - dislike_per * 0.003)
-        new_features["energy"] = max(0, features["energy"] - dislike_per * 0.003)
-        new_features["valence"] = max(0, features["valence"] - dislike_per * 0.003)
-    elif -30 > difference >= -40:
-        new_features["danceability"] = max(0, features["danceability"] - dislike_per * 0.004)
-        new_features["energy"] = max(0, features["energy"] - dislike_per * 0.004)
-        new_features["valence"] = max(0, features["valence"] - dislike_per * 0.004)
-    elif -40 > difference >= -50:
-        new_features["danceability"] = max(0, features["danceability"] - dislike_per * 0.005)
-        new_features["energy"] = max(0, features["energy"] - dislike_per * 0.005)
-        new_features["valence"] = max(0, features["valence"] - dislike_per * 0.005)
-    elif difference < -50:
-        new_features["danceability"] = max(0, features["danceability"] - dislike_per * 0.006)
-        new_features["energy"] = max(0, features["energy"] - dislike_per * 0.006)
-        new_features["valence"] = max(0, features["valence"] - dislike_per * 0.006)
-    new_features["danceability"] = round(new_features["danceability"], 3)
-    new_features["energy"] = round(new_features["energy"], 3)
-    new_features["valence"] = round(new_features["valence"], 3)
+    difference = ((dislikes - likes)/(likes + dislikes))/10
+    if difference == 0:
+        if random() > 0.5:
+            difference = 0.5
+        else:
+            difference = -0.5
+    new_features["danceability"] = round(features["danceability"]+difference, 3)
+    new_features["energy"] = round(features["energy"]+difference, 3)
+    new_features["valence"] = round(features["valence"]+difference, 3)
     return new_features
 
 
-song_name = "Little Lion Man"
+song_name = "Let It Be"
 
 input = get_features(song_name)[0]
-print(input)
-features = {"danceability": input["danceability"], "energy": input["energy"], "valence": input["energy"]}
-next_song = (spotify_rec_with_keys(song_name, features))
-
+features = {"danceability": input["danceability"], "energy": input["energy"], "valence": input["valence"]}
 likes = 7
 dislikes = 4
+features = balanceValues(features, likes, dislikes)
+next_song = (spotify_rec_with_keys(song_name, features))
+input = get_features(next_song)[0]
+features = {"danceability": input["danceability"], "energy": input["energy"], "valence": input["valence"]}
+likes = 8
+dislikes = 60
 features = balanceValues(features, likes, dislikes)
 next = spotify_rec_with_keys(next_song, features)
 
