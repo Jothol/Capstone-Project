@@ -9,4 +9,10 @@ class Tab1(Screen):
     index = 1
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.add_widget(Label(text="Tab 1!"))
+
+    def open_dropdown(self, instance):
+        dropdown = self.ids.dropdown
+        dropdown.open(instance)
+
+    def select_option(self, option):
+        print(f'Selected option: {option}')
