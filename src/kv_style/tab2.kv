@@ -5,6 +5,7 @@
             size_hint: None, None
             size: self.minimum_size
             padding: 10
+            spacing: 10
 
             pos_hint: {'center_x': 0.5, 'center_y': 0.5}
 
@@ -17,36 +18,75 @@
                     radius: [10, 10, 10, 10]
 
             Button:
-                size_hint: (None, None)
-                size: (100, 30)
-                text: 'Rewind'
-                background_color: [0, 1, 0, 1]
-                on_press: root.rewind()
+                size_hint: None, None
+                size: dp(30), dp(30)
+                background_color: 0, 0, 0, 0
 
+                on_press: root.dislike()
+
+                Image:
+                    id: dislike_icon
+                    source: '../other/images/dislike_icon.png'
+                    center_x: self.parent.center_x
+                    center_y: self.parent.center_y - self.parent.height / 10
+                    size: self.parent.height, self.parent.height
             Button:
-                size_hint: (None, None)
-                size: (100, 30)
-                text: 'Play'
-                background_color: [0, 1, 0, 1]
+                size_hint: None, None
+                size: dp(30), dp(30)
+                background_color: 0, 0, 0, 0
+
+                on_press: root.restart()
+
+                Image:
+                    id: restart_icon
+                    source: '../other/images/restart_icon.png'
+                    center_x: self.parent.center_x
+                    center_y: self.parent.center_y
+                    size: self.parent.height, self.parent.height
+            Button:
+                size_hint: None, None
+                size: dp(30), dp(30)
+                background_color: 0, 0, 0, 0
+
                 on_press: root.play()
 
+                Image:
+                    id: play_icon
+                    source: '../other/images/play_icon.png'
+                    center_x: self.parent.center_x
+                    center_y: self.parent.center_y
+                    size: self.parent.height, self.parent.height
             Button:
-                size_hint: (None, None)
-                size: (100, 30)
-                text: 'Skip'
-                background_color: [0, 1, 0, 1]
+                size_hint: None, None
+                size: dp(30), dp(30)
+                background_color: 0, 0, 0, 0
+
                 on_press: root.skip()
 
+                Image:
+                    id: skip_icon
+                    source: '../other/images/skip_icon.png'
+                    center_x: self.parent.center_x
+                    center_y: self.parent.center_y
+                    size: self.parent.height, self.parent.height
             Button:
-                size_hint: (None, None)
-                size: (100, 30)
-                text: 'Shuffle'
-                background_color: [0, 1, 0, 1]
-                on_press: root.shuffle()
+                size_hint: None, None
+                size: dp(30), dp(30)
+                background_color: 0, 0, 0, 0
+
+                on_press: root.like()
+
+                Image:
+                    id: like_icon
+                    source: '../other/images/like_icon.png'
+                    center_x: self.parent.center_x
+                    center_y: self.parent.center_y + self.parent.height / 10
+                    size: self.parent.height, self.parent.height
+
         BoxLayout:
             size_hint: (None, None)
             size: (dp(100), dp(80))
-            pos_hint: {'center_x': 0.5, 'center_y': 0.6}
+            pos_hint: {'center_x': 0.5, 'center_y': 0.7}
 
             orientation: 'vertical'
             canvas.before:
