@@ -1,4 +1,6 @@
 import kivy
+from kivy.animation import Animation
+from kivy.metrics import dp
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen
 
@@ -31,3 +33,11 @@ class Tab2(Screen):
 
     def dislike(self):
         pass
+
+    def animate_player(self):
+        player_window = self.ids.player_window
+        if player_window.y < -250:
+            animation = Animation(pos=(player_window.x, player_window.y + dp(400)), duration=0.2)
+        else:
+            animation = Animation(pos=(player_window.x, player_window.y - dp(400)), duration=0.2)
+        animation.start(player_window)
