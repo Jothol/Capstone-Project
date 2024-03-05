@@ -141,6 +141,7 @@ class Session:
 
     def remove_host(self):
         self.db.collection('sessions').document(self.name.id).update({self.host.username: None})
+        update_collection_from_remove(self.name.id, self.host.username)
         self.host.in_session = False
         self.host = None
 
