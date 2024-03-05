@@ -6,23 +6,31 @@
         source: '../other/images/temp_logo.png'
         fit_mode: 'scale-down'
 
+    Label:
+        id: welcome_label
+        font_size: 30
+        bold: True
+        text: 'WELCOME TO !'
+        color: [1, 1, 1, 1]
+
     BoxLayout:
         orientation: 'vertical'
 
         Label:
-            text: 'Welcome.'
+            text: 'Hosted by: .'
             size_hint: (None, None)
             size: (600, 40)
             font_size: 20
-            pos_hint: {'center_y': 0.5}
+            pos_hint: {'x': 0.05, 'center_y': 0.5}
             bold: True
 
     Button:
         size_hint: (None, None)
         size: (130, 30)
-        text: 'Leave Session'
+        text: 'Leave'
         pos_hint: {'x': 0.01, 'y': 0.01}
         background_color:[0,1,0,1]
         on_press:
             root.manager.transition.direction = 'left'
             root.manager.current = 'home_page'
+            root.submit()

@@ -45,7 +45,6 @@ def get_session(session_name):
     db = firestore.client()
     session = db.collection('sessions').document(session_name)
     if not session.get().exists:
-        print('get_session error: session does not exist.')
         return None
 
     return Session(session_name)
@@ -63,10 +62,12 @@ def get_host(session_name):
     sess = name.get().to_dict()
     while sess.__len__() > 0:
         temp = sess.popitem()
+        print(temp)
         if temp[1] == "host":
             return account.Account(temp[0])
 
     return None
+
 
 # Collection updates to get rid of the user that left the session
 def update_collection_from_remove(session_name, removed_user_name):
@@ -107,6 +108,7 @@ class Session:
         self.db = firestore.client()
         self.name = self.db.collection('sessions').document(session_name)
         self.host = get_host(self.name.id)
+        print(self.host)
         self.db.collection('users').document(self.host.username).update({'in_session': True})
 
     def get_name(self):
@@ -134,16 +136,20 @@ class Session:
             print("user not found in session")
             return
 
-        self.db.collection('sessions').document(self.name.id).update({user.username: None})
         self.db.collection('users').document(user.username).update({'in_session': False})
         user.in_session = False
         update_collection_from_remove(self.name.id, user.username)
 
     def remove_host(self):
-        self.db.collection('sessions').document(self.name.id).update({self.host.username: None})
         update_collection_from_remove(self.name.id, self.host.username)
+        self.db.collection('users').document(self.host.username).update({'in_session': False})
         self.host.in_session = False
         self.host = None
+
+        if self.name.get().to_dict().__len__() == 0:
+            self.name.delete()
+        else:
+            self.find_new_host()
 
         return
 
@@ -154,8 +160,6 @@ class Session:
 
         temp = self.db.collection('sessions').document(self.name.id).get().to_dict()
         new_host = temp.popitem()
-        while new_host[1] is None:
-            new_host = temp.popitem()
 
         self.host = account.Account(new_host[0])
         self.db.collection('sessions').document(self.name.id).update({self.host.username: 'host'})

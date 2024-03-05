@@ -8,14 +8,6 @@
     BoxLayout:
         orientation: 'vertical'
 
-        Label:
-            text: 'Listen together with SpotiVibe.'
-            size_hint: (None, None)
-            size: (600, 40)
-            font_size: 20
-            pos_hint: {'center_y': 0.5}
-            bold: True
-
         AnchorLayout:
             anchor_x: 'center'
             anchor_y: 'center'
@@ -45,18 +37,26 @@
                         multiline: False
                         hint_text: '(Session)'
 
-                AnchorLayout:
-                    anchor_x: 'center'
-                    anchor_y: 'center'
+                Button:
+                    size_hint: (None, None)
+                    size: (130, 30)
+                    text: 'Join'
+                    background_color:[0,1,0,1]
+                    pos_hint: {'x': 0.25, 'y': 20.01}
+                    on_press:
+                        root.manager.transition.direction = 'down'
+                        root.submit(session_input.text, 'Join')
 
-                    Button:
-                        size_hint: (None, None)
-                        size: (130, 30)
-                        text: 'Enter'
-                        background_color:[0,1,0,1]
-                        on_press:
-                            root.manager.transition.direction = 'down'
-                            root.submit(session_input.text)
+                Button:
+                    size_hint: (None, None)
+                    size: (130, 30)
+                    text: 'Create'
+                    background_color:[0,1,0,1]
+                    pos_hint: {'x': 0.25, 'y': 2.91}
+                    on_press:
+                        root.manager.transition.direction = 'down'
+                        root.submit(session_input.text, 'Create')
+
                 Label:
                     id: error_message
                     text: ''

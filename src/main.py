@@ -25,6 +25,7 @@ class Spotivibe(App):
         sm = ScreenManager()
         sm.ids.username = ''
         sm.ids.recInput = ''
+        sm.ids.session_name = ''
         sm.add_widget(LoginScreen(name='login_page'))
         sm.add_widget(CreateAccount(name='create_account_page'))
         sm.add_widget(AddAccountInfo(name='add_account_info_page'))
