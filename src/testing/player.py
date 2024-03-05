@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import spotipy
 from spotipy.oauth2 import SpotifyPKCE
 
@@ -8,7 +10,10 @@ scope = (
     "streaming "
     "user-read-playback-state "
     "user-modify-playback-state "
-    "user-read-private ")
+    "user-read-private "
+    "playlist-modify-public "
+    "playlist-modify-private "
+    )
 
 SPOTIPY_CLIENT_ID = '66880bb5822a48459696468e620a10d6'
 SPOTIPY_REDIRECT_URI = 'http://127.0.0.1:8080'
@@ -31,6 +36,13 @@ def queue_song(sp, uri):
     # this is going to be interesting - the session history is shared across users, sp is local to each user.
     # maybe solution should be to give this a list of each user's sp's to add to each queue individually?
     session_history.append(uri)
+
+
+def make_playlist_from_history(sp):
+    user_id = sp.current_user()["id"]
+    dtstring = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    playlist = sp.user_playlist_create(user=user_id, name=dtstring, description="Created by Spotivibe.")["id"]
+    sp.user_playlist_add_tracks(user=user_id, playlist_id=playlist, tracks=session_history)
 
 
 def play_button_functionality(sp, di):
@@ -127,6 +139,7 @@ membership = sp.current_user()["product"]
 keepLooping = 1
 choice = 0
 
+# code will be going into tab2.ky or py?
 if membership != "premium":
     print("You are not authorized to access this")
 else:
@@ -141,6 +154,7 @@ else:
         print("Press 3 to skip current song to a new recommendation.")
         print("Press 4 to change playback device.")
         print("Press 5 to show the session history.")
+        print("Press 6 to create a playlist from session history.")
         choice = input('Press any other key to exit.')
         if choice == "1":
             play_button_functionality(sp, di)
@@ -156,5 +170,9 @@ else:
             print(session_history)
             for e in session_history:
                 print(get_data_from_track_uri(e))
+        elif choice == "6":
+            print("Making playlist...")
+            make_playlist_from_history(sp)
+            print("Done! Check your Spotify.")
         else:
             exit(0)
