@@ -4,7 +4,12 @@ from kivy.metrics import dp
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen
 
+from src.kv_screens import player
+
 kivy.require('2.3.0')
+
+sp = player.sp
+di = "unselected"
 
 
 class Tab2(Screen):
@@ -17,13 +22,27 @@ class Tab2(Screen):
         pass
 
     def play(self):
-        if self.ids.play_icon.source == '../other/images/play_icon.png':
+        global di
+        currently_playing = sp.currently_playing()
+        if di != "unselected":
+            player.play_button_functionality(sp=sp, di=di)
+        else:
+            if currently_playing is not None:
+                self.ids.play_icon.source = '../other/images/pause_icon.png'
+                di = sp.devices()['devices'][0]['id']
+                player.play_button_functionality(sp, di)
+        if currently_playing["is_playing"] is False:
             self.ids.play_icon.source = '../other/images/pause_icon.png'
         else:
             self.ids.play_icon.source = '../other/images/play_icon.png'
 
     def skip(self):
-        pass
+        player.next_song(sp)
+
+    def volume(self, value):
+        print(value)
+        player.volume_functionality(sp, value)
+
 
     def shuffle(self):
         pass

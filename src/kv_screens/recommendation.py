@@ -5,7 +5,7 @@ from kivy.uix.widget import Widget
 from spotipy import SpotifyPKCE
 
 from src.database import account
-
+'''
 scope = ("user-read-playback-state user-modify-playback-state user-read-currently-playing streaming "
          "playlist-read-private playlist-read-collaborative playlist-modify-private playlist-modify-public "
          "user-follow-modify user-follow-read user-read-playback-position user-top-read user-read-recently-played "
@@ -31,6 +31,7 @@ def spotify_rec(track):
         artist_name = (rec["tracks"][0]["artists"][0]["name"])
         track_name = (rec["tracks"][0]["name"])
         return image, artist_name, track_name
+'''
 
 
 class RecommendationScreen(Screen):
@@ -39,10 +40,14 @@ class RecommendationScreen(Screen):
     Song_text = StringProperty("Song Title")
 
     def on_enter(self):
+        """
         image_link, artist_name, track_name = spotify_rec(self.parent.ids.recInput)
         self.image_source = image_link
         self.Artist_text = artist_name
         self.Song_text = track_name
+        """
+        pass
 
     def rerun(self):
         self.parent.current = "recommendation_input_page"
+

@@ -1,17 +1,46 @@
+from datetime import datetime
+
 import spotipy
 from spotipy.oauth2 import SpotifyPKCE
 
 scope = (
-    "user-read-currently-playing " 
-    "user-read-recently-played " 
-    "user-library-read " 
+    "user-read-currently-playing "
+    "user-read-recently-played "
+    "user-library-read "
     "streaming "
     "user-read-playback-state "
     "user-modify-playback-state "
-    "user-read-private ")
+    "user-read-private "
+    "playlist-modify-public "
+    "playlist-modify-private "
+    )
 
 SPOTIPY_CLIENT_ID = '66880bb5822a48459696468e620a10d6'
 SPOTIPY_REDIRECT_URI = 'http://127.0.0.1:8080'
+
+
+# @author Serenity
+# use this function to get information out of a track uri - least headaches this way
+def get_data_from_track_uri(uri):
+    track = sp.track(uri)
+    image = track["album"]["images"][0]["url"]
+    artist_name = track["artists"][0]["name"]
+    track_name = track["name"]
+    return {"image": image, "artist_name": artist_name, "track_name": track_name}
+
+
+def queue_song(sp, uri):
+    sp.add_to_queue(uri)
+    # this is going to be interesting - the session history is shared across users, sp is local to each user.
+    # maybe solution should be to give this a list of each user's sp's to add to each queue individually?
+    session_history.append(uri)
+
+
+def make_playlist_from_history(sp):
+    user_id = sp.current_user()["id"]
+    dtstring = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    playlist = sp.user_playlist_create(user=user_id, name=dtstring, description="Created by Spotivibe.")["id"]
+    sp.user_playlist_add_tracks(user=user_id, playlist_id=playlist, tracks=session_history)
 
 
 def play_button_functionality(sp, di):
@@ -41,12 +70,12 @@ def next_song(sp):
     # use spotify_rec to generate a recommendation, currently based on what song is playing for the user
     currently_playing = sp.currently_playing()
     if currently_playing is not None:
-        recommendation = spotify_rec(sp, currently_playing["item"]["name"])
+        recommendation = serenity_spotify_rec(sp, currently_playing["item"]["name"])
     else:
-        recommendation = spotify_rec(sp, "Red Rock Riviera")
+        recommendation = serenity_spotify_rec(sp, "Red Rock Riviera")
     uri = recommendation["tracks"][0]["uri"]
     # add the generated recommendation to the queue
-    sp.add_to_queue(uri)
+    queue_song(sp, uri)
     # go to the next song in queue
     sp.next_track()
     # need to go to next track in queue & use the recommendation algorithm
@@ -57,7 +86,7 @@ def next_song(sp):
 
 
 # modified version of Kevin's method, returns info
-def spotify_rec(sp, track):
+def serenity_spotify_rec(sp, track):
     # auth = SpotifyPKCE(client_id=SPOTIPY_CLIENT_ID, redirect_uri=SPOTIPY_REDIRECT_URI, scope=scope)
     # sp = spotipy.Spotify(auth_manager=auth)
     # membership = sp.current_user()["product"]
@@ -101,20 +130,30 @@ def choose_device(sp):
 # note: redirect URI needs to have a port and be http, not https
 auth = SpotifyPKCE(client_id=SPOTIPY_CLIENT_ID, redirect_uri=SPOTIPY_REDIRECT_URI, scope=scope)
 sp = spotipy.Spotify(auth_manager=auth)
+# plan to initialize a session history when a new listening session is created
+session_history = list()
 
 membership = sp.current_user()["product"]
-keepLooping = 1
-choice = 0
+# keepLooping = 1
+# choice = 0
 
+'''
+# code will be going into tab2.ky or py?
 if membership != "premium":
     print("You are not authorized to access this")
 else:
     di = choose_device(sp)
+    current = sp.currently_playing()
+    print(current)
+    current_uri = current["item"]["uri"]
+    session_history.append(current_uri)
     while keepLooping:
         print("Options! Press 1 to use the play/pause button")
         print("Press 2 to enter a volume percentage")
         print("Press 3 to skip current song to a new recommendation.")
         print("Press 4 to change playback device.")
+        print("Press 5 to show the session history.")
+        print("Press 6 to create a playlist from session history.")
         choice = input('Press any other key to exit.')
         if choice == "1":
             play_button_functionality(sp, di)
@@ -125,5 +164,15 @@ else:
             next_song(sp)
         elif choice == "4":
             di = choose_device(sp)
+        elif choice == "5":
+            print("Showing session history (list of URIs)...")
+            print(session_history)
+            for e in session_history:
+                print(get_data_from_track_uri(e))
+        elif choice == "6":
+            print("Making playlist...")
+            make_playlist_from_history(sp)
+            print("Done! Check your Spotify.")
         else:
             exit(0)
+'''
