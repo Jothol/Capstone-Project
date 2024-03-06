@@ -7,22 +7,19 @@
         fit_mode: 'scale-down'
 
     Label:
-        id: welcome_label
+        id: session_label
         font_size: 30
         bold: True
-        text: 'WELCOME TO !'
+        pos_hint: {'center_y': 0.95}
         color: [1, 1, 1, 1]
 
-    BoxLayout:
-        orientation: 'vertical'
-
-        Label:
-            text: 'Hosted by: .'
-            size_hint: (None, None)
-            size: (600, 40)
-            font_size: 20
-            pos_hint: {'x': 0.05, 'center_y': 0.5}
-            bold: True
+    Label:
+        id: user_label
+        size_hint: (None, None)
+        size: (600, 40)
+        font_size: 20
+        pos_hint: {'right': 0.5, 'center_y': 0.95}
+        bold: True
 
     Button:
         size_hint: (None, None)

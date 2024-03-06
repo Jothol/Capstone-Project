@@ -18,3 +18,8 @@ class ListeningSessionScreen(Screen):
             sess.remove_user(user)
 
         self.parent.ids.session_name = ''
+
+    def on_enter(self, *args):
+        sess = session.get_session(self.parent.ids.session_name)
+        self.ids.session_label.text = 'Welcome to {}!'.format(sess.name.id)
+        self.ids.user_label.text = 'Hosted by: {}.'.format(sess.host.username)

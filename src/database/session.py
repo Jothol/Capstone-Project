@@ -130,6 +130,7 @@ class Session:
             return
         self.name.update({user.id: 'user'})
         db.collection('users').document(user.id).update({'in_session': True})
+        acc.in_session = True
 
     def remove_user(self, user):
         if get_user(self.name.id, user.username) is None:

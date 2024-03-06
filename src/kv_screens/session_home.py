@@ -11,7 +11,13 @@ class SessionHomeScreen(Screen):
     user = ''
 
     def submit(self, session_name, button_input):
-        if session_name is None:
+        SessionHomeScreen.user = self.parent.ids.username
+        acc = account.get_account(SessionHomeScreen.user)
+        if acc.in_session is True:
+            self.ids.error_message.text = "Already in a session"
+            self.ids.error_message.color = [1, 0, 0, 1]
+            return
+        elif session_name is '':
             self.ids.error_message.text = "Cannot enter empty name"
             self.ids.error_message.color = [1, 0, 0, 1]
             return
@@ -21,7 +27,6 @@ class SessionHomeScreen(Screen):
                 self.ids.error_message.color = [1, 0, 0, 1]
             else:
                 self.parent.ids.session_name = session_name
-                SessionHomeScreen.user = self.parent.ids.username
                 session.create_session(session_name, SessionHomeScreen.user)
                 self.parent.current = "listening_session_page"
         else:
@@ -31,6 +36,5 @@ class SessionHomeScreen(Screen):
             else:
                 self.parent.ids.session_name = session_name
                 sess = session.get_session(session_name)
-                SessionHomeScreen.user = self.parent.ids.username
                 sess.add_user(account.get_account(SessionHomeScreen.user))
                 self.parent.current = "listening_session_page"

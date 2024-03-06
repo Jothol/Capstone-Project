@@ -49,10 +49,10 @@ class Account:
         self.account = self.db.collection('users').document(username)
         self.username = username
         self.password = self.account.get().to_dict().get('password')
-        self.first_name = ''
-        self.last_name = ''
-        self.email = ''
-        self.in_session = False
+        self.first_name = self.account.get().to_dict().get('first_name')
+        self.last_name = self.account.get().to_dict().get('last_name')
+        self.email = self.account.get().to_dict().get('email')
+        self.in_session = self.account.get().to_dict().get('in_session')
 
     def get_username(self):
         return self.username
