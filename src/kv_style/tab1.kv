@@ -1,3 +1,5 @@
+# session_home.kv
+
 <Tab1>
     RelativeLayout:
         BoxLayout:
@@ -15,6 +17,17 @@
                     pos: self.pos
                     size: self.size
                     radius: [10, 10, 10, 10]
+
+            Button:
+                id: sess
+                size_hint: (None, None)
+                size: (130, 30)
+                text: 'Session'
+                pos_hint: {'x': 0.59, 'y': 0.51}
+                background_color:[0,1,0,1]
+                on_press:
+                    root.manager.transition.direction = 'left'
+                    root.manager.current = 'session_home_page'
 
             Button:
                 text: 'Devices'

@@ -14,6 +14,7 @@ kivy.require('2.3.0')
 
 class HomeScreen(Screen):
     username = ''
+    session_name = ''
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

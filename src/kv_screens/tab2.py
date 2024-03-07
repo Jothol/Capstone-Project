@@ -13,6 +13,7 @@ class Tab2(Screen):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.add_widget(Label(text="Tab 2!"))
 
     def restart(self):
         pass

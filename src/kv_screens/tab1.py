@@ -1,6 +1,9 @@
 import kivy
 from kivy.uix.label import Label
+from kivy.uix.button import Button
 from kivy.uix.screenmanager import Screen
+
+from src.kv_screens.session_home import SessionHomeScreen
 
 kivy.require('2.3.0')
 
@@ -10,6 +13,8 @@ class Tab1(Screen):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.add_widget(Label(text="Tab 1!"))
+        self.add_widget(SessionHomeScreen(name='session_home_page'))
 
     def open_dropdown(self, instance):
         dropdown = self.ids.dropdown

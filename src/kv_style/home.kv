@@ -12,27 +12,8 @@
         font_size: 30
         bold: True
         text: 'Welcome!'
+        pos_hint: {'center_y': 0.90}
         color: [1, 1, 1, 1]
-
-    Button:
-        size_hint: (None, None)
-        size: (130, 30)
-        text: 'Recommend A Song'
-        pos_hint: {'x': 0.01, 'y': 0.51}
-        background_color:[0,1,0,1]
-        on_press:
-            root.manager.transition.direction = 'left'
-            root.manager.current = 'recommendation_input_page'
-
-    Button:
-        size_hint: (None, None)
-        size: (130, 30)
-        text: 'Session'
-        pos_hint: {'x': 0.59, 'y': 0.51}
-        background_color:[0,1,0,1]
-        on_press:
-            root.manager.transition.direction = 'left'
-            root.manager.current = 'session_home_page'
 
 <TabBar>:
     size_hint_y: None
