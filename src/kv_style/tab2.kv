@@ -1,0 +1,148 @@
+<Tab2>:
+    FloatLayout:
+        BoxLayout:
+            size_hint: (None, None)
+            size: (dp(100), dp(80))
+            pos_hint: {'center_x': 0.5, 'center_y': 0.7}
+
+            orientation: 'vertical'
+            canvas.before:
+                Color:
+                    rgba: 1, 1, 1, 1
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [10, 10, 10, 10]
+
+            Label:
+                text: 'Volume'
+                color: [0,0,0,1]
+
+            Slider:
+                id: volume_slider
+                min: 0
+                max: 100
+                step: 1
+                value: 50
+
+            Label:
+                text: f'Volume: {int(volume_slider.value)}%'
+                color: [0,0,0,1]
+        FloatLayout:
+            id: player_window
+            size_hint: None, None
+            size: dp(500), dp(500)
+            pos: (root.width - self.width) / 2, dp(-435)
+
+            canvas.before:
+                Color:
+                    rgba: 1, 1, 1, 1
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [10, 10, 10, 10]
+            Image:
+                id: play_icon
+                source: '../other/images/play_icon.png'
+                size_hint: None, None
+                size: dp(200), dp(200)
+                pos: (root.width - self.width) / 2, self.parent.pos[1] + dp(200)
+                canvas.before:
+                    Color:
+                        rgba: 0.8, 0.8, 0.8, 1
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+
+            Button:
+                size_hint: None, None
+                minimum_height: dp(10)
+                size: dp(30), dp(10)
+                pos: (root.width - self.width) / 2, self.parent.pos[1] + dp(485)
+                background_color: 0, 0, 0, 0
+
+                on_press: root.animate_player()
+                canvas.before:
+                    Color:
+                        rgba: 0.3, 0.3, 0.3, 1
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [3, 3, 3, 3]
+            BoxLayout:
+                id: control_buttons
+                orientation: 'horizontal'
+                size_hint: None, None
+                size: self.minimum_size
+                padding: 10
+                spacing: 15
+
+                pos: (root.width - self.width) / 2, self.parent.pos[1] + dp(435)
+
+                Button:
+                    size_hint: None, None
+                    size: dp(20), dp(20)
+                    pos_hint: {'center_y': 0.5}
+                    background_color: 0, 0, 0, 0
+
+                    on_press: root.dislike()
+
+                    Image:
+                        id: dislike_icon
+                        source: '../other/images/dislike_icon.png'
+                        center_x: self.parent.center_x
+                        center_y: self.parent.center_y - self.parent.height / 10
+                        size: self.parent.height, self.parent.height
+                Button:
+                    size_hint: None, None
+                    size: dp(30), dp(30)
+                    background_color: 0, 0, 0, 0
+
+                    on_press: root.restart()
+
+                    Image:
+                        id: restart_icon
+                        source: '../other/images/restart_icon.png'
+                        center_x: self.parent.center_x
+                        center_y: self.parent.center_y
+                        size: self.parent.height, self.parent.height
+                Button:
+                    size_hint: None, None
+                    size: dp(30), dp(30)
+                    background_color: 0, 0, 0, 0
+
+                    on_press: root.play()
+
+                    Image:
+                        id: play_icon
+                        source: '../other/images/play_icon.png'
+                        center_x: self.parent.center_x
+                        center_y: self.parent.center_y
+                        size: self.parent.height, self.parent.height
+                Button:
+                    size_hint: None, None
+                    size: dp(30), dp(30)
+                    background_color: 0, 0, 0, 0
+
+                    on_press: root.skip()
+
+                    Image:
+                        id: skip_icon
+                        source: '../other/images/skip_icon.png'
+                        center_x: self.parent.center_x
+                        center_y: self.parent.center_y
+                        size: self.parent.height, self.parent.height
+                Button:
+                    size_hint: None, None
+                    size: dp(20), dp(20)
+                    pos_hint: {'center_y': 0.5}
+                    background_color: 0, 0, 0, 0
+
+                    on_press: root.like()
+
+                    Image:
+                        id: like_icon
+                        source: '../other/images/like_icon.png'
+                        center_x: self.parent.center_x
+                        center_y: self.parent.center_y + self.parent.height / 10
+                        size: self.parent.height, self.parent.height
