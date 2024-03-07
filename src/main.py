@@ -50,5 +50,8 @@ if __name__ == '__main__':
     Builder.load_file("kv_style/recommendation_input.kv")
     Builder.load_file("kv_style/session_home.kv")
     Builder.load_file("kv_style/listening_session.kv")
+    Builder.load_file("kv_style/tab1.kv")
+    Builder.load_file("kv_style/tab2.kv")
+    Builder.load_file("kv_style/tab3.kv")
 
     Spotivibe().run()

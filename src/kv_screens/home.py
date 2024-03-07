@@ -18,6 +18,7 @@ class HomeScreen(Screen):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        print(self.parent)
         bl = BoxLayout(orientation='vertical')
         sm = ScreenManager()
         sm.add_widget(Tab1(name='tab1'))
