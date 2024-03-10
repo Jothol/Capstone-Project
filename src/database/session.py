@@ -62,7 +62,6 @@ def get_host(session_name):
     sess = name.get().to_dict()
     while sess.__len__() > 0:
         temp = sess.popitem()
-        print(temp)
         if temp[1] == "host":
             return account.Account(temp[0])
 
@@ -108,7 +107,6 @@ class Session:
         self.db = firestore.client()
         self.name = self.db.collection('sessions').document(session_name)
         self.host = get_host(self.name.id)
-        print(self.host)
         self.db.collection('users').document(self.host.username).update({'in_session': True})
 
     def get_name(self):

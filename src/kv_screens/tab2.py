@@ -15,6 +15,11 @@ class Tab2(Screen):
         super().__init__(**kwargs)
         self.add_widget(Label(text="Tab 2!"))
 
+    def on_enter(self, *args):
+        print(self)
+        self.children[0].ids = self.manager.ids  # self.children[0] must be ScreenManager
+        print(self.manager.ids)
+
     def restart(self):
         pass
 

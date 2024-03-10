@@ -1,11 +1,6 @@
 #:kivy 2.3.0
-# home.kv
 
 <ListeningSessionScreen>:
-    Image:
-        source: '../other/images/temp_logo.png'
-        fit_mode: 'scale-down'
-
     Label:
         id: session_label
         font_size: 30
@@ -18,7 +13,7 @@
         size_hint: (None, None)
         size: (600, 40)
         font_size: 20
-        pos_hint: {'right': 0.5, 'center_y': 0.95}
+        pos_hint: {'x': 0.10, 'y': 0.05}
         bold: True
 
     Button:
@@ -29,5 +24,4 @@
         background_color:[0,1,0,1]
         on_press:
             root.manager.transition.direction = 'left'
-            root.manager.current = 'home_page'
             root.submit()

@@ -77,9 +77,15 @@ def test_07():
     session.delete_session("test_06")
 
 
+def test_08():
+    db = firestore.client()
+    print(db.collection('sessions').document('test_03'))
+    print(db.collection('sessions').document('test_03').collection('songs').to_dict())
+
+
 if __name__ == "__main__":
     cred = credentials.Certificate(r"database-access-key.json")
     firebase_admin.initialize_app(cred)
 
     account.create_account("riley", "pancakes")
-    test_06()
+    test_08()
