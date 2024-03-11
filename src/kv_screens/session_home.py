@@ -13,6 +13,7 @@ class SessionHomeScreen(Screen):
     session_name = ''
 
     def submit(self, session_name, button_input):
+        print(self.manager.ids)
         SessionHomeScreen.user = self.manager.ids.username
         acc = account.get_account(SessionHomeScreen.user)
         if acc.in_session is True:
@@ -31,6 +32,7 @@ class SessionHomeScreen(Screen):
                 SessionHomeScreen.session_name = session_name
                 session.create_session(session_name, SessionHomeScreen.user)
                 self.manager.ids.session_name = session_name
+                self.ids.error_message.text = ''
                 self.manager.current = "listening_session_page"
         else:
             if button_input == "Create":
@@ -41,4 +43,5 @@ class SessionHomeScreen(Screen):
                 sess = session.get_session(session_name)
                 sess.add_user(account.get_account(SessionHomeScreen.user))
                 self.manager.ids.session_name = session_name
+                self.ids.error_message.text = ''
                 self.manager.current = "listening_session_page"

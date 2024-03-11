@@ -77,15 +77,30 @@ def test_07():
     session.delete_session("test_06")
 
 
+# test_08 is how to add fields for a document in a collection thats in a document in a collection
+# for example: 'success' document is in 'songs' collection, 'songs' document is in 'test_03' document.
+# And 'test_03' is in 'sessions' collections
 def test_08():
     db = firestore.client()
-    print(db.collection('sessions').document('test_03'))
-    print(db.collection('sessions').document('test_03').collection('songs').to_dict())
+    test3_ref = db.collection('sessions').document('test_03')
+    print(test3_ref.get().exists)  # this needs to be True to do the rest
+
+    message_ref = test3_ref.collection('songs').document('success')  # make sure 'songs' exist
+    print(message_ref.get().exists)  # False or True won't matter, it will still add the fields
+    message_ref.set({'money': 'mr_krabs'})
+
+    # for new collections like 'songs' add them in google firebase rather than implement them here
+
+def test_09():
+    db = firestore.client()
+
+    session.create_session("test_09", "abc123")
+
 
 
 if __name__ == "__main__":
     cred = credentials.Certificate(r"database-access-key.json")
     firebase_admin.initialize_app(cred)
 
-    account.create_account("riley", "pancakes")
-    test_08()
+    # account.create_account("riley", "pancakes")
+    #test_08()

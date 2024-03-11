@@ -13,7 +13,7 @@
         size_hint: (None, None)
         size: (600, 40)
         font_size: 20
-        pos_hint: {'x': 0.10, 'y': 0.05}
+        pos_hint: {'x': -0.06, 'y': 0.005}
         bold: True
 
     Button:
@@ -23,5 +23,5 @@
         pos_hint: {'x': 0.01, 'y': 0.01}
         background_color:[0,1,0,1]
         on_press:
-            root.manager.transition.direction = 'left'
+            root.manager.transition.direction = 'up'
             root.submit()

@@ -25,9 +25,12 @@ class Tab1(Screen):
         self.add_widget(sm)
 
     def on_enter(self, *args):
-        print(self)
-        self.children[0].ids = self.manager.ids  # self.children[0] must be ScreenManager
-        print(self.manager.ids)
+        # self has multiple files gathered in arrays, so get only one child
+        # make sure you are getting the ScreenManager for session_home and listening_session
+        # self.children[0] is currently the ScreenManager for them
+        self.children[0].ids.username = self.manager.ids.username
+        self.manager.ids.session_name = self.children[0].ids.session_name
+
         pass
 
     def open_dropdown(self, instance):

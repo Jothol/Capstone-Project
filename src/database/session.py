@@ -7,6 +7,7 @@ from src.database import account
 # host_name: the user that is hosting the session (String type)
 def create_session(session_name, host_name):
     db = firestore.client()
+    # print(db.collection('sessions').get()[0].id)
     session = db.collection('sessions').document(session_name)
     host = db.collection('users').document(host_name)
     if session.get().exists:
