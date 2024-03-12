@@ -1,10 +1,15 @@
+import sys
+
 import kivy
+from kivy.clock import Clock
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.screenmanager import Screen, ScreenManager, SlideTransition
 
-from src.database import account
+
+from src.database import account, socket_client
 from src.database.account import Account
+from src.kv_screens.chat import ChatScreen
 from src.kv_screens.tab1 import Tab1
 from src.kv_screens.tab2 import Tab2
 from src.kv_screens.tab3 import Tab3
@@ -12,7 +17,28 @@ from src.kv_screens.tab3 import Tab3
 kivy.require('2.3.0')
 
 
+def show_error(message):
+    print(message)
+    Clock.schedule_once(sys.exit, 10)
+
+
 class HomeScreen(Screen):
+
+    username = ''
+    chat_screen_exists = False
+
+    def connect(self):
+        ip = "spotivibe.net"
+        port = 5000
+        if not self.chat_screen_exists:
+            if not socket_client.connect(ip, port, self.parent.ids.username, show_error):
+                return
+            self.chat_page = ChatScreen()
+            screen = Screen(name="chat_page")
+            screen.add_widget(self.chat_page)
+            self.parent.add_widget(screen)
+            self.chat_screen_exists = True
+        self.parent.current = 'chat_page'
 
     # self is home screen
     # self.parent is main.py
@@ -27,7 +53,10 @@ class HomeScreen(Screen):
         bl.add_widget(sm)
         bl.add_widget(TabBar(sm))
         self.add_widget(bl)
-
+        HomeScreen.username = self.parent.ids.username
+        first_name = account.get_account(HomeScreen.username).get_first_name()
+        if first_name != '':
+            self.ids.welcome_label.text = 'Welcome, {}!'.format(first_name)
 
 class TabBar(FloatLayout):
 
