@@ -96,6 +96,14 @@ def test_09():
 
     session.create_session("test_09", "abc123")
 
+def test_10():
+    db = firestore.client()
+    test6_ref = db.collection('sessions').document('test_06')
+    message_ref = message_ref = test6_ref.collection('songs').document('success')
+    message_ref.set({})
+    print(message_ref.get().exists)
+
+
 
 
 if __name__ == "__main__":
@@ -103,4 +111,4 @@ if __name__ == "__main__":
     firebase_admin.initialize_app(cred)
 
     # account.create_account("riley", "pancakes")
-    #test_08()
+    test_10()
