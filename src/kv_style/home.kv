@@ -32,7 +32,8 @@
         pos: root.width / 6 - self.width / 2, (root.height - self.height) / 2
         background_color: 0, 0, 0, 0
 
-        on_press: root.switch_screen('tab1')
+        on_press:
+            root.switch_screen('tab1')
 
         Image:
             id: my_image
@@ -65,7 +66,8 @@
         pos: (root.width - self.width) / 2, (root.height - self.height) / 2
         background_color: 0, 0, 0, 0
 
-        on_press: root.switch_screen('tab2')
+        on_press:
+            root.switch_screen('tab2')
 
         Image:
             id: my_image
@@ -80,7 +82,8 @@
         pos: 5 * root.width / 6 - self.width / 2, (root.height - self.height) / 2
         background_color: 0, 0, 0, 0
 
-        on_press: root.switch_screen('tab3')
+        on_press:
+            root.switch_screen('tab3')
 
         Image:
             id: my_image
