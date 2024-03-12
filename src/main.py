@@ -1,6 +1,7 @@
 from kivy.app import App
 from kivy.lang import Builder
-from kivy.uix.screenmanager import ScreenManager
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.screenmanager import ScreenManager, Screen
 
 from src.kv_screens.add_account_info import AddAccountInfo
 from src.kv_screens.create_account import CreateAccount
@@ -41,5 +42,8 @@ if __name__ == '__main__':
     Builder.load_file("kv_style/home.kv")
     Builder.load_file("kv_style/recommendation.kv")
     Builder.load_file("kv_style/recommendation_input.kv")
+    Builder.load_file("kv_style/tab1.kv")
+    Builder.load_file("kv_style/tab2.kv")
+    Builder.load_file("kv_style/tab3.kv")
 
     Spotivibe().run()
