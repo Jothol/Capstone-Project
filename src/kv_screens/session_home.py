@@ -9,13 +9,13 @@ kivy.require('2.3.0')
 
 
 class SessionHomeScreen(Screen):
-    user = ''
-    session_name = ''
+    user = None
+    session_name = None
 
     def submit(self, session_name, button_input):
         SessionHomeScreen.user = self.manager.ids.username
-        acc = account.get_account(SessionHomeScreen.user)
-        if acc.in_session is True:
+        # acc = account.get_account(SessionHomeScreen.user)
+        if SessionHomeScreen.user.in_session is True:
             self.ids.error_message.text = "Already in a session"
             self.ids.error_message.color = [1, 0, 0, 1]
             return
@@ -23,14 +23,15 @@ class SessionHomeScreen(Screen):
             self.ids.error_message.text = "Cannot enter empty name"
             self.ids.error_message.color = [1, 0, 0, 1]
             return
-        elif session.get_session(session_name) is None:
+
+        SessionHomeScreen.session_name = session.get_session(session_name)
+        if SessionHomeScreen.session_name is None:
             if button_input == "Join":
                 self.ids.error_message.text = "Session not found."
                 self.ids.error_message.color = [1, 0, 0, 1]
             else:
-                SessionHomeScreen.session_name = session_name
-                session.create_session(session_name, SessionHomeScreen.user)
-                self.manager.ids.session_name = session_name
+                session.create_session(session_name, SessionHomeScreen.user.username)
+                self.manager.ids.session_name = SessionHomeScreen.session_name
                 self.ids.error_message.text = ''
                 self.manager.current = "listening_session_page"
         else:
@@ -38,9 +39,9 @@ class SessionHomeScreen(Screen):
                 self.ids.error_message.text = "Session already created"
                 self.ids.error_message.color = [1, 0, 0, 1]
             else:
-                SessionHomeScreen.session_name = session_name
-                sess = session.get_session(session_name)
-                sess.add_user(account.get_account(SessionHomeScreen.user))
-                self.manager.ids.session_name = session_name
+                # SessionHomeScreen.session_name = session_name
+                # sess = session.get_session(session_name)
+                SessionHomeScreen.session_name.add_user(SessionHomeScreen.user)
+                self.manager.ids.session_name = SessionHomeScreen.session_name
                 self.ids.error_message.text = ''
                 self.manager.current = "listening_session_page"

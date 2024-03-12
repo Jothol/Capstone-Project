@@ -62,15 +62,14 @@ class TabBar(FloatLayout):
     def __init__(self, screen_manager: ScreenManager):
         super().__init__()
         self.screen_manager = screen_manager
-        self.screen_manager.ids.username = ''
-        self.screen_manager.ids.session_name = ''
+        self.screen_manager.ids.username = None
+        self.screen_manager.ids.session_name = None
         # self.screen_manager.home = home
 
     def switch_screen(self, screen_name):
         # Access the ScreenManager and switch to the desired screen
         screen_to_switch = self.screen_manager.get_screen(screen_name)
         self.screen_manager.ids = self.screen_manager.parent.ids
-        print(self.screen_manager.ids)
 
         # Determine the direction of the transition
         if screen_to_switch.index > self.screen_manager.current_screen.index:

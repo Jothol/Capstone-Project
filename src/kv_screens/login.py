@@ -13,7 +13,8 @@ class LoginScreen(Screen):
             self.ids.error_message.text = "Username or password incorrect."
             self.ids.error_message.color = [1, 0, 0, 1]
         else:
-            self.parent.ids.username = username
+            acc = account.get_account(username)
+            self.parent.ids.username = acc
             self.parent.current = "home_page"
 
     def on_key_down(self, instance, keyboard, keycode, text, modifiers):
