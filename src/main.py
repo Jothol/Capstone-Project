@@ -1,4 +1,7 @@
+import sys
+
 from kivy.app import App
+from kivy.clock import Clock
 from kivy.lang import Builder
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import ScreenManager, Screen
@@ -28,7 +31,6 @@ class Spotivibe(App):
         sm.add_widget(HomeScreen(name='home_page'))
         sm.add_widget(RecommendationScreen(name='recommendation_page'))
         sm.add_widget(RecommendationInputScreen(name='recommendation_input_page'))
-
         return sm
 
 
