@@ -28,8 +28,6 @@ class SpotiVibe(App):
 
 
 if __name__ == '__main__':
-    # os.chrdir changes directory
-    os.chdir(r"C:\Users\32rew\\PycharmProjects\\Capstone-Project\\src")
     cwd = os.getcwd()
     Builder.load_file(cwd + '/kv_style/kivytesting.kv')
     SpotiVibe().run()
