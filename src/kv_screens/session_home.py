@@ -30,7 +30,7 @@ class SessionHomeScreen(Screen):
                 self.ids.error_message.text = "Session not found."
                 self.ids.error_message.color = [1, 0, 0, 1]
             else:
-                session.create_session(session_name, SessionHomeScreen.user.username)
+                SessionHomeScreen.session_name = session.create_session(session_name, SessionHomeScreen.user)
                 self.manager.ids.session_name = SessionHomeScreen.session_name
                 self.ids.error_message.text = ''
                 self.manager.current = "listening_session_page"

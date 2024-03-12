@@ -6,7 +6,7 @@ from src.database import session, account
 # Both methods fail since "test" hasn't been created
 def test_01():
     session.get_session("test")
-    session.delete_session("test")
+    session.delete_session()
 
 
 # Cannot create session since account "peter" is not created
@@ -17,10 +17,11 @@ def test_02():
 # Makes a session
 def test_03():
     # Get an account name to become the host of the session
-    account.create_account("bob", "bob_backwards")
+    # account.create_account("bob", "bob_backwards")
+    acc = account.get_account('bob')
 
     # Creates the session
-    group = session.create_session("test_03", "bob")  # fix host_name issue
+    group = session.create_session("test_03", acc)  # fix host_name issue
 
     print("Session created: " + group.get_name())
     print("Hosted by: " + group.host.username)
@@ -49,7 +50,9 @@ def test_04():
 
 # Session not found for get_host()
 def test_05():
-    session.get_host("session_name_entry")
+    sess = session.get_session("session_name_entry")
+    print(sess)
+    session.get_host(sess)
 
 
 # Host gets replaced in session once they leave
@@ -57,7 +60,7 @@ def test_06():
     db = firestore.client()
 
     host = account.create_account("U1_test06", "bird")
-    group = session.create_session("test_06", host.username)
+    group = session.create_session("test_06", host)
     guest1 = account.create_account("U2_test06", "pig")
     guest2 = account.create_account("U3_test06", "skunk")
     group.add_user(guest1)
@@ -74,7 +77,7 @@ def test_06():
 # Session gets deleted
 # ! ! Run test_06 before running this test ! !
 def test_07():
-    session.delete_session("test_06")
+    session.delete_session()
 
 
 # test_08 is how to add fields for a document in a collection thats in a document in a collection
@@ -94,8 +97,9 @@ def test_08():
 
 def test_09():
     db = firestore.client()
+    acc = account.get_account('abc123')
 
-    session.create_session("test_09", "abc123")
+    session.create_session("test_09", acc)
 
 
 def test_10():
@@ -170,9 +174,10 @@ def test_14():
 
 def test_15():
     # acc = account.create_account('test_15', 'test')
-    # sess = session.create_session('test_15', 'test_15')
-
+    acc = account.get_account('test_15')
+    sess = session.create_session('test_15', acc)
     sess = session.get_session('test_15')
+
     sess.add_song('Smoke and Mirrors', 'Imagine Dragons')
     sess.add_song('The Scientist', 'Coldplay')
     sess.add_song('Thriller', 'Michael Jackson')
@@ -184,4 +189,4 @@ if __name__ == "__main__":
 
     # account.create_account("riley", "pancakes")
     # account.create_account("db_test", "d")
-    test_15()
+    test_05()
