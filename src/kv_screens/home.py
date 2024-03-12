@@ -28,14 +28,6 @@ class HomeScreen(Screen):
         bl.add_widget(TabBar(sm))
         self.add_widget(bl)
 
-    # def on_enter(self):
-    #     print(self.parent.ids)
-    #     self.children[0].ids = self.parent.ids
-    #     HomeScreen.username = self.parent.ids.username
-    #     first_name = account.get_account(self.parent.ids.username).get_first_name()
-    #     if first_name != '':
-    #         self.ids.welcome_label.text = 'Welcome, {}!'.format(first_name)
-
 
 class TabBar(FloatLayout):
 

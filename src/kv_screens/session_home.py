@@ -13,7 +13,6 @@ class SessionHomeScreen(Screen):
     session_name = ''
 
     def submit(self, session_name, button_input):
-        print(self.manager.ids)
         SessionHomeScreen.user = self.manager.ids.username
         acc = account.get_account(SessionHomeScreen.user)
         if acc.in_session is True:

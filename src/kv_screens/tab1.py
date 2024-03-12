@@ -13,7 +13,7 @@ class Tab1(Screen):
     index = 1
 
     # self is tab1 screen
-    # self.manager is screenmanager for tab1 screen
+    # self.manager is ScreenManager for tab1 screen
     # self.manager.parent is boxlayout child from home
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

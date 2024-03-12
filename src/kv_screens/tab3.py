@@ -10,11 +10,7 @@ class Tab3(Screen):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        # sm = ScreenManager()
-        # sm.ids.username = ''
-        # sm.ids.session_name = ''
         self.add_widget(Label(text="Tab 3!"))
-        # self.add_widget(sm)
 
     def on_enter(self, *args):
         pass
