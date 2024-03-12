@@ -26,15 +26,15 @@ class Tab2(Screen):
         currently_playing = sp.currently_playing()
         if di != "unselected":
             player.play_button_functionality(sp=sp, di=di)
+            if currently_playing["is_playing"] is False:
+                self.ids.play_icon.source = '../other/images/pause_icon.png'
+            else:
+                self.ids.play_icon.source = '../other/images/play_icon.png'
         else:
             if currently_playing is not None:
                 self.ids.play_icon.source = '../other/images/pause_icon.png'
                 di = sp.devices()['devices'][0]['id']
                 player.play_button_functionality(sp, di)
-        if currently_playing["is_playing"] is False:
-            self.ids.play_icon.source = '../other/images/pause_icon.png'
-        else:
-            self.ids.play_icon.source = '../other/images/play_icon.png'
 
     def skip(self):
         player.next_song(sp)
@@ -42,7 +42,6 @@ class Tab2(Screen):
     def volume(self, value):
         print(value)
         player.volume_functionality(sp, value)
-
 
     def shuffle(self):
         pass
