@@ -6,22 +6,50 @@
         source: '../other/images/temp_logo.png'
         fit_mode: 'scale-down'
 
-    Label:
-        id: welcome_label
-        font_size: 30
-        bold: True
-        text: 'Welcome!'
-        color: [1, 1, 1, 1]
+<TabBar>:
+    size_hint_y: None
+    height: dp(50)  # Set the height in dp (adjust as needed)
+
+    canvas.before:
+        Color:
+            rgba: 0.1, 0.1, 0.1, 1  # Dark grey color
+        Rectangle:
+            pos: self.pos
+            size: self.size
+        Color:
+            rgba: 0, 0, 0, 1  # Dark grey color
+        Line:
+            width: 1
+            points: [self.width / 3, 0, self.width / 3, self.height]
+        Line:
+            width: 1
+            points: [2 * self.width / 3, 0, 2 * self.width / 3, self.height]
+
 
     Button:
-        size_hint: (None, None)
-        size: (130, 30)
-        text: 'Recommend A Song'
-        pos_hint: {'x': 0.01, 'y': 0.01}
-        background_color:[0,1,0,1]
-        on_press:
-            root.manager.transition.direction = 'left'
-            root.manager.current = 'recommendation_input_page'
+        size_hint_x: None  # Disable the x-size hint
+        width: dp(50)  # Set the width in dp (adjust as needed)
+        pos: root.width / 6 - self.width / 2, (root.height - self.height) / 2
+        background_color: 0, 0, 0, 0
+
+        on_press: root.switch_screen('tab1')
+
+        Image:
+            id: my_image
+            source: '../other/images/home_icon.png'
+            center_x: self.parent.center_x
+            center_y: 1.6 * self.parent.center_y
+            size: self.parent.height * 0.6, self.parent.height * 0.6
+
+    # Button:
+        # size_hint: (None, None)
+        # size: (130, 30)
+        # text: 'Recommend A Song'
+        # pos_hint: {'x': 0.01, 'y': 0.01}
+        # background_color:[0,1,0,1]
+        # on_press:
+            # root.manager.transition.direction = 'left'
+            # root.manager.current = 'recommendation_input_page'
 
     Button:
         size_hint: (None, None)
@@ -30,3 +58,33 @@
         background_color:[0,1,0,1]
         on_press:
             root.connect()
+
+    Button:
+        size_hint_x: None  # Disable the x-size hint
+        width: dp(50)  # Set the width in dp (adjust as needed)
+        pos: (root.width - self.width) / 2, (root.height - self.height) / 2
+        background_color: 0, 0, 0, 0
+
+        on_press: root.switch_screen('tab2')
+
+        Image:
+            id: my_image
+            source: '../other/images/search_icon.png'
+            center_x: self.parent.center_x
+            center_y: 1.6 * self.parent.center_y
+            size: self.parent.height * 0.5, self.parent.height * 0.5
+
+    Button:
+        size_hint_x: None  # Disable the x-size hint
+        width: dp(50)  # Set the width in dp (adjust as needed)
+        pos: 5 * root.width / 6 - self.width / 2, (root.height - self.height) / 2
+        background_color: 0, 0, 0, 0
+
+        on_press: root.switch_screen('tab3')
+
+        Image:
+            id: my_image
+            source: '../other/images/settings_icon.png'
+            size: self.parent.height * 0.5, self.parent.height * 0.5
+            center_x: self.parent.center_x
+            center_y: 1.6 * self.parent.center_y
