@@ -108,6 +108,7 @@ class Session:
         self.name = self.db.collection('sessions').document(session_name)
         self.host = get_host(self.name.id)
         self.db.collection('users').document(self.host.username).update({'in_session': True})
+        self.songs_played = 0
 
     def get_name(self):
         return self.name.id
@@ -162,3 +163,10 @@ class Session:
 
         self.host = account.Account(new_host[0])
         self.db.collection('sessions').document(self.name.id).update({self.host.username: 'host'})
+
+    def add_song(self, song_name, artist):
+        song = str(self.songs_played + 1) + '. ' + song_name
+
+        self.name.collection('saved_songs').document(song)
+        self.name.collection('saved_songs').document(song).set({'song': song_name, 'artist': artist})
+        self.songs_played += 1

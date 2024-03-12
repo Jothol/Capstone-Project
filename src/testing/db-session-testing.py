@@ -91,10 +91,12 @@ def test_08():
 
     # for new collections like 'songs' add them in google firebase rather than implement them here
 
+
 def test_09():
     db = firestore.client()
 
     session.create_session("test_09", "abc123")
+
 
 def test_10():
     db = firestore.client()
@@ -104,6 +106,76 @@ def test_10():
     print(message_ref.get().exists)
 
 
+def test_11():
+    sess = session.get_session('test_03')
+    count = '1.'
+    song_name = 'Smoke and Mirrors'
+    sess.add_song(count + ' ' + song_name, 'Imagine Dragons')
+    # sess.name.
+
+
+def test_12():
+    # acc = account.create_account('test_12', 'test')
+    # sess = session.create_session('test_12', 'test_12')
+
+    sess = session.get_session('test_12')
+
+    message_ref = sess.name.collection('artists').document('Imagine Dragons')
+    message_ref.set({'Smoke and Mirrors': 'song'})
+
+    message_ref = sess.name.collection('artists').document('Coldplay')
+    message_ref.set({'The Scientist': 'A Rush of Blood to the Head'})
+
+    message_ref = sess.name.collection('artists').document('Michael Jackson')
+    message_ref.set({'Thriller': '1982'})
+
+    pass
+
+
+def test_13():
+    # acc = account.create_account('test_13', 'test')
+    # sess = session.create_session('test_13', 'test_13')
+
+    sess = session.get_session('test_13')
+
+    message_ref = sess.name.collection('songs').document('Smoke of Mirrors')
+    message_ref.set({'Imagine Dragons': 'artist', 'Smoke + Mirrors (Deluxe)': 'album'})
+
+    message_ref = sess.name.collection('songs').document('The Scientist')
+    message_ref.set({'Coldplay': 'artist', 'A Rush of Blood to the Head': 'album'})
+
+    message_ref = sess.name.collection('songs').document('Thriller')
+    message_ref.set({'Michael Jackson': 'artist', 'Thriller': 'album'})
+
+    pass
+
+
+def test_14():
+    # acc = account.create_account('test_14', 'test')
+    # sess = session.create_session('test_14', 'test_14')
+
+    sess = session.get_session('test_14')
+
+    message_ref = sess.name.collection('albums').document('Smoke + Mirrors (Deluxe')
+    message_ref.set({'Smoke and Mirrors': 'song', 'Imagine Dragons': 'artist'})
+
+    message_ref = sess.name.collection('albums').document('A Rush of Blood to the Head')
+    message_ref.set({'The Scientist': 'song', 'Coldplay': 'artist'})
+
+    message_ref = sess.name.collection('albums').document('Thriller')
+    message_ref.set({'Thriller': 'song', 'Michael Jackson': 'artist'})
+
+    pass
+
+
+def test_15():
+    # acc = account.create_account('test_15', 'test')
+    # sess = session.create_session('test_15', 'test_15')
+
+    sess = session.get_session('test_15')
+    sess.add_song('Smoke and Mirrors', 'Imagine Dragons')
+    sess.add_song('The Scientist', 'Coldplay')
+    sess.add_song('Thriller', 'Michael Jackson')
 
 
 if __name__ == "__main__":
@@ -111,4 +183,5 @@ if __name__ == "__main__":
     firebase_admin.initialize_app(cred)
 
     # account.create_account("riley", "pancakes")
-    test_10()
+    # account.create_account("db_test", "d")
+    test_15()
