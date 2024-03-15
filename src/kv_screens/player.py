@@ -89,6 +89,7 @@ def next_song(sp):
             features = get_features(sp, "Red Rock Riviera")
             recommendation = spotify_rec_features(sp, "Red Rock Riviera", features)
         uri = recommendation["tracks"][0]["uri"]
+        print(recommendation["tracks"][0]["name"])
         # add the generated recommendation to the queue
         queue_song(sp, uri)
         # go to the next song in queue
