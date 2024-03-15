@@ -1,14 +1,37 @@
 import kivy
 from kivy.uix.label import Label
-from kivy.uix.screenmanager import Screen
+from kivy.uix.screenmanager import Screen, ScreenManager
+
+from src.kv_screens.session_home import SessionHomeScreen
+
+from src.kv_screens.listening_session import ListeningSessionScreen
 
 kivy.require('2.3.0')
 
 
 class Tab1(Screen):
     index = 1
+
+    # self is tab1 screen
+    # self.manager is ScreenManager for tab1 screen
+    # self.manager.parent is boxlayout child from home
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        sm = ScreenManager()
+        sm.ids.username = ''
+        sm.ids.session_name = ''
+        sm.add_widget(SessionHomeScreen(name='session_home_page'))
+        sm.add_widget(ListeningSessionScreen(name='listening_session_page'))
+        self.add_widget(sm)
+
+    def on_enter(self, *args):
+        # self has multiple files gathered in arrays, so get only one child
+        # make sure you are getting the ScreenManager for session_home and listening_session
+        # self.children[0] is currently the ScreenManager for them
+        self.children[0].ids.username = self.manager.ids.username
+        self.manager.ids.session_name = self.children[0].ids.session_name
+
+        pass
 
     def open_dropdown(self, instance):
         dropdown = self.ids.dropdown

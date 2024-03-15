@@ -1,12 +1,23 @@
+# session_home.kv
+# listening_session.kv
+
 <Tab1>
     RelativeLayout:
+        Label:
+            id: welcome_label
+            font_size: 30
+            bold: True
+            text: 'Welcome!'
+            pos_hint: {'center_y': 0.90}
+            color: [1, 1, 1, 1]
+
         BoxLayout:
             orientation: 'vertical'
             size_hint: None, None
             size: self.minimum_size
             padding: 10
 
-            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+            pos_hint: {'center_x': 0.25, 'center_y': 0.5}
 
             canvas.before:
                 Color:
