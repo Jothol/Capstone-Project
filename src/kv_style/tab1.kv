@@ -27,31 +27,31 @@
                     size: self.size
                     radius: [10, 10, 10, 10]
 
-            Button:
-                text: 'Devices'
-                size_hint: None, None
-                on_release: root.open_dropdown(self)
-                size_hint: (None, None)
-                size: (dp(110), dp(50))
+            # Button:
+            #     text: 'Devices'
+            #     size_hint: None, None
+            #     on_release: root.open_dropdown(self)
+            #     size_hint: (None, None)
+            #     size: (dp(110), dp(50))
 
-            DropDown:
-                id: dropdown
-                on_select: root.select_option(args[1])
+            # DropDown:
+            #     id: dropdown
+            #     on_select: root.select_option(args[1])
 
-                Button:
-                    text: 'Device 1'
-                    size_hint_y: None
-                    height: 44
-                    on_release: dropdown.select(self.text)
+            #     Button:
+            #         text: 'Device 1'
+            #         size_hint_y: None
+            #         height: 44
+            #         on_release: dropdown.select(self.text)
 
-                Button:
-                    text: 'Device 2'
-                    size_hint_y: None
-                    height: 44
-                    on_release: dropdown.select(self.text)
+            #     Button:
+            #         text: 'Device 2'
+            #         size_hint_y: None
+            #         height: 44
+            #         on_release: dropdown.select(self.text)
 
-                Button:
-                    text: 'Device 3'
-                    size_hint_y: None
-                    height: 44
-                    on_release: dropdown.select(self.text)
+            #     Button:
+            #         text: 'Device 3'
+            #         size_hint_y: None
+            #         height: 44
+            #         on_release: dropdown.select(self.text)

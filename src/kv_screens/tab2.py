@@ -10,7 +10,6 @@ from src.kv_screens import player
 kivy.require('2.3.0')
 
 sp = player.sp
-di = "unselected"
 
 
 class Tab2(Screen):
@@ -27,11 +26,13 @@ class Tab2(Screen):
         pass
 
     def play(self):
-        global di
+        di = player.get_device_id()
         currently_playing = sp.currently_playing()
         if di != "unselected":
             player.play_button_functionality(sp=sp, di=di)
-            if currently_playing["is_playing"] is False:
+            if currently_playing is None:
+                print("Nothing is playing or queued to play. Do nothing for play button.")
+            elif currently_playing["is_playing"] is False:
                 self.ids.play_icon.source = '../other/images/pause_icon.png'
             else:
                 self.ids.play_icon.source = '../other/images/play_icon.png'
