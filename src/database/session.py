@@ -138,7 +138,7 @@ class Session:
         update_collection_from_remove(self.name, user)
 
     def remove_host(self):
-        update_collection_from_remove(self.name, self.host.username)
+        update_collection_from_remove(self.name, self.host)
         # self.db.collection('users').document(self.host.username).update({'in_session': False})
         self.host.account.update({'in_session': False})
         self.host.in_session = False

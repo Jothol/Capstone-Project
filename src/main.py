@@ -17,7 +17,6 @@ from firebase_admin import credentials
 from src.kv_screens.recommendation import RecommendationScreen
 from src.kv_screens.recommendation_input import RecommendationInputScreen
 
-from src.kv_screens.session_home import SessionHomeScreen
 from src.kv_screens.listening_session import ListeningSessionScreen
 
 
@@ -35,7 +34,6 @@ class Spotivibe(App):
         sm.add_widget(HomeScreen(name='home_page'))
         sm.add_widget(RecommendationScreen(name='recommendation_page'))
         sm.add_widget(RecommendationInputScreen(name='recommendation_input_page'))
-        sm.add_widget(SessionHomeScreen(name='session_home_page'))
         sm.add_widget(ListeningSessionScreen(name='listening_session_page'))
 
         return sm
@@ -51,10 +49,12 @@ if __name__ == '__main__':
     Builder.load_file("kv_style/home.kv")
     Builder.load_file("kv_style/recommendation.kv")
     Builder.load_file("kv_style/recommendation_input.kv")
-    Builder.load_file("kv_style/session_home.kv")
     Builder.load_file("kv_style/listening_session.kv")
     Builder.load_file("kv_style/tab1.kv")
     Builder.load_file("kv_style/tab2.kv")
     Builder.load_file("kv_style/tab3.kv")
+    Builder.load_file("kv_style/ls_tab1.kv")
+    Builder.load_file("kv_style/ls_tab2.kv")
+    Builder.load_file("kv_style/ls_tab3.kv")
 
     Spotivibe().run()

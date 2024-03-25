@@ -183,10 +183,58 @@ def test_15():
     sess.add_song('Thriller', 'Michael Jackson')
 
 
+def test_16():
+    # acc1 = account.create_account('t16_1', 'one')
+    # acc2 = account.create_account('t16_2', 'two')
+    # acc3 = account.create_account('t16_3', 'three')
+    # acc4 = account.create_account('t16_4', 'four')
+    # acc5 = account.create_account('t16_5', 'five')
+    # acc6 = account.create_account('t16_6', 'six')
+    # acc7 = account.create_account('t16_7', 'seven')
+    # acc8 = account.create_account('t16_8', 'eight')
+    # acc9 = account.create_account('t16_9', 'nine')
+    # acc10 = account.create_account('t16_10', 'ten')
+
+    acc1 = account.get_account('t16_1')
+    acc2 = account.get_account('t16_2')
+    acc3 = account.get_account('t16_3')
+    acc4 = account.get_account('t16_4')
+    acc5 = account.get_account('t16_5')
+    acc6 = account.get_account('t16_6')
+    acc7 = account.get_account('t16_7')
+    acc8 = account.get_account('t16_8')
+    acc9 = account.get_account('t16_9')
+    acc10 = account.get_account('t16_10')
+
+    user = account.get_account('riley')
+
+    sess = session.create_session('test_16', acc1)
+    # sess = session.get_session('test_16')
+
+    sess.add_user(acc2)
+    sess.add_user(acc3)
+    sess.add_user(acc4)
+    sess.add_user(acc5)
+    sess.add_user(acc6)
+    sess.add_user(acc7)
+    sess.add_user(acc8)
+    sess.add_user(acc9)
+    sess.add_user(acc10)
+
+    sess.add_user(user)
+    sess.remove_user(user)
+
+
 if __name__ == "__main__":
     cred = credentials.Certificate(r"database-access-key.json")
     firebase_admin.initialize_app(cred)
 
     # account.create_account("riley", "pancakes")
     # account.create_account("db_test", "d")
-    test_05()
+
+    # Just for test_16
+    sess = session.get_session('test_16')
+    session.delete_session(sess.name)
+    # Just for test_16
+
+    test_16()
