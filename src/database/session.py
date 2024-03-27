@@ -4,11 +4,15 @@ from src.database import account
 
 # Session gets added into the Google Firebase 'sessions' collection
 # session_name: title of session (String type)
-# host_name: the user that is hosting the session (String type)
-def create_session(session_name, host_name):
+# host_name: the user that is hosting the session (Account type)
+def create_session(session_name, user_host):
+    if not isinstance(user_host, account.Account):
+        print("host must be an Account object")
+        return
+
     db = firestore.client()
     session = db.collection('sessions').document(session_name)
-    host = db.collection('users').document(host_name)
+    host = db.collection('users').document(user_host.username)
     if session.get().exists:
         print('create_session error: session already exists.')
         return
@@ -16,26 +20,25 @@ def create_session(session_name, host_name):
         print('create_session error: user not found.')
         return
 
-    session.set({host_name: 'host'})
+    session.set({host.id: 'host'})
     return Session(session_name)
 
 
-def delete_session(session_name):
+def delete_session(sess):
     db = firestore.client()
-    session = db.collection('sessions').document(session_name)
-    if not session.get().exists:
-        print('delete_session error: session not found.')
-        return False
+
+    if sess is None:
+        print("delete_session error: session does not exist")
 
     # key-value format to retrieve names of users and what role they are in the session
-    sess = session.get().to_dict()
-    while sess.__len__() > 0:
-        temp = sess.popitem()
+    user_list = sess.get().to_dict()
+    while user_list.__len__() > 0:
+        temp = user_list.popitem()
         db.collection('users').document(temp[0]).update({'in_session': False})
         acc = account.Account(temp[0])
         acc.in_session = False
 
-    session.delete()
+    sess.delete()
     return True
 
 
@@ -52,52 +55,48 @@ def get_session(session_name):
 
 # Returns the 'Account' host from the session_name
 # ! ! session_name must be a String object ! !
-def get_host(session_name):
-    db = firestore.client()
-    name = db.collection('sessions').document(session_name)
-    if not name.get().exists:
-        print('get_host error: session does not exist')
+def get_host(sess):
+    if sess is None:
+        print("get_host error: session does not exist")
         return
 
-    sess = name.get().to_dict()
-    while sess.__len__() > 0:
-        temp = sess.popitem()
+    user_list = sess.get().to_dict()
+    while user_list.__len__() > 0:
+        temp = user_list.popitem()
         if temp[1] == "host":
             return account.Account(temp[0])
 
     return None
 
 
-# Collection updates to get rid of the user that left the session
-def update_collection_from_remove(session_name, removed_user_name):
-    db = firestore.client()
-    name = db.collection('sessions').document(session_name)
-    if not name.get().exists:
-        print('get_host error: session does not exist')
+def get_user(sess, user_name):
+    if sess is None:
+        print("get_user error: session does not exist")
         return
 
-    sess = name.get().to_dict()
-    db.collection('sessions').document(session_name).set({})
-    while sess.__len__() > 0:
-        temp = sess.popitem()
-        if temp[0] != removed_user_name:
-            db.collection('sessions').document(session_name).update({temp[0]: temp[1]})
+    user_list = sess.get().to_dict()
+    while user_list.__len__() > 0:
+        temp = user_list.popitem()
+        if temp[0] == user_name:
+            return account.Account(user_name)
 
     return None
 
 
-def get_user(session_name, user_name):
-    db = firestore.client()
-    name = db.collection('sessions').document(session_name)
-    if not name.get().exists:
+# Collection updates to get rid of the user that left the session
+def update_collection_from_remove(sess, removed_user):
+    # db = firestore.client()
+    # name = db.collection('sessions').document(session_name)
+    if sess is None:
         print('get_host error: session does not exist')
-        return None
+        return
 
-    sess = name.get().to_dict()
-    while sess.__len__() > 0:
-        temp = sess.popitem()
-        if temp[0] == user_name:
-            return account.Account(user_name)
+    user_list = sess.get().to_dict()
+    sess.set({})
+    while user_list.__len__() > 0:
+        temp = user_list.popitem()
+        if temp[0] != removed_user.username:
+            sess.update({temp[0]: temp[1]})
 
     return None
 
@@ -106,8 +105,9 @@ class Session:
     def __init__(self, session_name):
         self.db = firestore.client()
         self.name = self.db.collection('sessions').document(session_name)
-        self.host = get_host(self.name.id)
-        self.db.collection('users').document(self.host.username).update({'in_session': True})
+        self.host = get_host(self.name)
+        self.host.account.update({'in_session': True})
+        self.songs_played = 0
 
     def get_name(self):
         return self.name.id
@@ -118,30 +118,29 @@ class Session:
     # Adds new user to the session
     # ! ! user must be an Account type ! !
     def add_user(self, acc):
-        db = firestore.client()
-        user = db.collection('users').document(acc.username)
-        if not user.get().exists:
-            print('add_user error: user not found')
+        if acc is None:
+            print('add_user error: user does not exist')
             return
         if acc.in_session is True:
             print('add_user error: user is already in a session')
             return
-        self.name.update({user.id: 'user'})
-        db.collection('users').document(user.id).update({'in_session': True})
+        self.name.update({acc.username: 'user'})
+        acc.account.update({'in_session': True})
         acc.in_session = True
 
     def remove_user(self, user):
-        if get_user(self.name.id, user.username) is None:
+        if user is None:
             print("user not found in session")
             return
 
-        self.db.collection('users').document(user.username).update({'in_session': False})
+        user.account.update({'in_session': False})
         user.in_session = False
-        update_collection_from_remove(self.name.id, user.username)
+        update_collection_from_remove(self.name, user)
 
     def remove_host(self):
-        update_collection_from_remove(self.name.id, self.host.username)
-        self.db.collection('users').document(self.host.username).update({'in_session': False})
+        update_collection_from_remove(self.name, self.host)
+        # self.db.collection('users').document(self.host.username).update({'in_session': False})
+        self.host.account.update({'in_session': False})
         self.host.in_session = False
         self.host = None
 
@@ -152,13 +151,21 @@ class Session:
 
         return
 
+    # Get someone to test this method out
     def find_new_host(self):
         if self.host is not None:
             print("find_new_host error: host still exists in" + self.name.id)
             return
 
-        temp = self.db.collection('sessions').document(self.name.id).get().to_dict()
+        temp = self.name.get().to_dict()
         new_host = temp.popitem()
 
         self.host = account.Account(new_host[0])
-        self.db.collection('sessions').document(self.name.id).update({self.host.username: 'host'})
+        self.name.update({self.host.username: 'host'})
+
+    def add_song(self, song_name, artist):
+        song = str(self.songs_played + 1) + '. ' + song_name
+
+        self.name.collection('saved_songs').document(song)
+        self.name.collection('saved_songs').document(song).set({'song': song_name, 'artist': artist})
+        self.songs_played += 1
