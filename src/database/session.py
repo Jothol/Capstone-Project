@@ -108,12 +108,26 @@ class Session:
         self.host = get_host(self.name)
         self.host.account.update({'in_session': True})
         self.songs_played = 0
+        self.saved_song = self.name.collection('saved songs').document(' ')
+        self.saved_song.set({'URI': '', 'song_name': '', 'album': ''})
+        self.current_song = self.name.collection('session info').document('current song')
+        if self.current_song.get().to_dict() is None:
+            self.current_song.set({'URI': '', 'song_name': '', 'album': ''})
+
 
     def get_name(self):
         return self.name.id
 
     def get_host(self):
         return self.host
+
+    def get_uri(self):
+        return self.current_song.get().to_dict().get('URI')
+
+        pass
+
+    def set_uri(self, new_uri):
+        self.current_song.update({'URI': new_uri})
 
     # Adds new user to the session
     # ! ! user must be an Account type ! !
@@ -143,9 +157,12 @@ class Session:
         self.host.account.update({'in_session': False})
         self.host.in_session = False
         self.host = None
-
         if self.name.get().to_dict().__len__() == 0:
-            self.name.delete()
+            # extra loops for deleting subcollections for sesion in firebase
+            for col in self.name.collections():
+                for doc in col.list_documents():
+                    doc.delete()
+            self.name.delete() # actual deletion of session name in firebase
         else:
             self.find_new_host()
 

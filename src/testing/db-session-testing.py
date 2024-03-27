@@ -94,14 +94,14 @@ def test_08():
 
     # for new collections like 'songs' add them in google firebase rather than implement them here
 
-
+# basic creation of session
 def test_09():
     db = firestore.client()
     acc = account.get_account('abc123')
 
     session.create_session("test_09", acc)
 
-
+# first testing of subcollections in a session
 def test_10():
     db = firestore.client()
     test6_ref = db.collection('sessions').document('test_06')
@@ -109,13 +109,12 @@ def test_10():
     message_ref.set({})
     print(message_ref.get().exists)
 
-
+# add song test and # of songs saved/played
 def test_11():
     sess = session.get_session('test_03')
     count = '1.'
     song_name = 'Smoke and Mirrors'
     sess.add_song(count + ' ' + song_name, 'Imagine Dragons')
-    # sess.name.
 
 
 def test_12():
@@ -133,9 +132,7 @@ def test_12():
     message_ref = sess.name.collection('artists').document('Michael Jackson')
     message_ref.set({'Thriller': '1982'})
 
-    pass
-
-
+# song storage idea #1
 def test_13():
     # acc = account.create_account('test_13', 'test')
     # sess = session.create_session('test_13', 'test_13')
@@ -151,14 +148,14 @@ def test_13():
     message_ref = sess.name.collection('songs').document('Thriller')
     message_ref.set({'Michael Jackson': 'artist', 'Thriller': 'album'})
 
-    pass
 
-
+# song storage idea #2
 def test_14():
-    # acc = account.create_account('test_14', 'test')
-    # sess = session.create_session('test_14', 'test_14')
+    acc = account.create_account('test_14', 'test')
+    sess = session.create_session('test_14', acc)
 
     sess = session.get_session('test_14')
+    print(sess)
 
     message_ref = sess.name.collection('albums').document('Smoke + Mirrors (Deluxe')
     message_ref.set({'Smoke and Mirrors': 'song', 'Imagine Dragons': 'artist'})
@@ -169,9 +166,7 @@ def test_14():
     message_ref = sess.name.collection('albums').document('Thriller')
     message_ref.set({'Thriller': 'song', 'Michael Jackson': 'artist'})
 
-    pass
-
-
+# song storage idea #3
 def test_15():
     # acc = account.create_account('test_15', 'test')
     acc = account.get_account('test_15')
@@ -182,7 +177,7 @@ def test_15():
     sess.add_song('The Scientist', 'Coldplay')
     sess.add_song('Thriller', 'Michael Jackson')
 
-
+# testing session with size of 10 users
 def test_16():
     # acc1 = account.create_account('t16_1', 'one')
     # acc2 = account.create_account('t16_2', 'two')
@@ -224,6 +219,28 @@ def test_16():
     sess.add_user(user)
     sess.remove_user(user)
 
+# testing of retrieving uri and changing uri of current song
+def test_17():
+    acc = account.get_account('riley')
+    # sess = session.create_session('temp', acc)
+    sess = session.get_session("temp")
+    print(sess)
+    print(sess.get_uri())
+    sess.set_uri('bingbong')
+    print(sess.get_uri())
+
+# subcollection deleting test
+def test_18():
+    acc = account.get_account("bob")
+    # sess = session.create_session('test_18', acc)
+    sess = session.get_session("test_18")
+    temp = sess.db.collection('sessions').document('test_18').collections()
+    for col in sess.name.collections():
+        for doc in col.list_documents():
+            doc.delete()
+    sess.name.delete()
+
+
 
 if __name__ == "__main__":
     cred = credentials.Certificate(r"database-access-key.json")
@@ -233,8 +250,8 @@ if __name__ == "__main__":
     # account.create_account("db_test", "d")
 
     # Just for test_16
-    sess = session.get_session('test_16')
-    session.delete_session(sess.name)
+    # sess = session.get_session('test_16')
+    # session.delete_session(sess.name)
     # Just for test_16
 
-    test_16()
+    test_18()
