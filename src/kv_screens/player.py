@@ -19,6 +19,8 @@ scope = (
 SPOTIPY_CLIENT_ID = '66880bb5822a48459696468e620a10d6'
 SPOTIPY_REDIRECT_URI = 'http://127.0.0.1:8080'
 
+di = "unselected"
+
 
 # @author Serenity
 # use this function to get information out of a track uri - least headaches this way
@@ -123,24 +125,28 @@ def serenity_spotify_rec(sp, track):
     # return image, artist_name, track_name
 
 
-def choose_device(sp):
+def get_devices(sp):
     devices = sp.devices()
     if len(devices['devices']) == 0:
-        print("Looks like you don't have any Spotify players for us to use. Turn one on and run this again.")
-        exit()
-    print("Choose which of the following devices SpotiVibe will use to play music from: ")
-    device_number = 1
-    for device in devices['devices']:
-        print(f"Device {device_number}: {device['name']}")
-        device_number += 1
-    raw_choice = input('Enter the device number here: ')
-    try:
-        index = int(raw_choice) - 1
-        device_id = devices['devices'][index]['id']
-        sp.transfer_playback(device_id=device_id)
-        return device_id
-    except ValueError:
-        print("Device number was not entered as a number.")
+        print("No available devices. Get a message through the app that they need a device to choose.")
+        return None
+    else:
+        print("Devices SpotiVibe has detected it can use to play music from: ")
+        device_number = 1
+        for device in devices['devices']:
+            print(f"Device {device_number}: {device['name']}")
+            device_number += 1
+        return devices
+
+
+def set_device_id(dev_id):
+    global di
+    di = dev_id
+    sp.transfer_playback(device_id=dev_id)
+
+
+def get_device_id():
+    return di
 
 
 # note: redirect URI needs to have a port and be http, not https
