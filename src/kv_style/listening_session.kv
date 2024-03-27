@@ -1,0 +1,27 @@
+#:kivy 2.3.0
+
+<ListeningSessionScreen>:
+    Label:
+        id: session_label
+        font_size: 30
+        bold: True
+        pos_hint: {'center_y': 0.95}
+        color: [1, 1, 1, 1]
+
+    Label:
+        id: user_label
+        size_hint: (None, None)
+        size: (600, 40)
+        font_size: 20
+        pos_hint: {'x': -0.06, 'y': 0.005}
+        bold: True
+
+    Button:
+        size_hint: (None, None)
+        size: (130, 30)
+        text: 'Leave'
+        pos_hint: {'x': 0.01, 'y': 0.01}
+        background_color:[0,1,0,1]
+        on_press:
+            root.manager.transition.direction = 'up'
+            root.submit()

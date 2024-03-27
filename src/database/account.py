@@ -8,7 +8,7 @@ def create_account(username, password):
         print('create_account error: user already exists.')
         return None
     else:
-        account.set({'password': password, 'first_name': '', 'last_name': '', 'email': ''})
+        account.set({'password': password, 'first_name': '', 'last_name': '', 'email': '', 'in_session': False})
         return Account(username)
 
 
@@ -49,9 +49,10 @@ class Account:
         self.account = self.db.collection('users').document(username)
         self.username = username
         self.password = self.account.get().to_dict().get('password')
-        self.first_name = ''
-        self.last_name = ''
-        self.email = ''
+        self.first_name = self.account.get().to_dict().get('first_name')
+        self.last_name = self.account.get().to_dict().get('last_name')
+        self.email = self.account.get().to_dict().get('email')
+        self.in_session = self.account.get().to_dict().get('in_session')
 
     def get_username(self):
         return self.username
@@ -83,3 +84,13 @@ class Account:
 
     def get_email(self):
         return self.account.get().to_dict()['email']
+
+    def get_in_session(self):
+        return self.in_session
+
+    def leave_session(self):
+        if not self.in_session:
+            print("leave_session error: user is not in a session")
+            return
+
+        self.in_session = False

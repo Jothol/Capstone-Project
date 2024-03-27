@@ -15,3 +15,7 @@ class LoginScreen(Screen):
         else:
             self.parent.ids.username = username
             self.parent.current = "home_page"
+
+    def on_key_down(self, instance, keyboard, keycode, text, modifiers):
+        if keycode == 40:  # Enter key
+            self.send_message(None)
