@@ -54,9 +54,12 @@ def make_playlist_from_history(sp):
     sp.user_playlist_add_tracks(user=user_id, playlist_id=playlist, tracks=session_history)
 
 
-def play_button_functionality(sp, di):
+def play_button_functionality(sp, di, session):
     try:
         currently_playing = sp.currently_playing()
+        if session.get_uri() != "" and session.get_uri() != currently_playing["tracks"][0]["uri"]:
+            queue_song(sp, session.get_uri())
+            sp.next_track()
         if currently_playing is None:
             print("No track playing. Greyed out play button.")
         elif currently_playing["is_playing"] is False:
@@ -81,9 +84,9 @@ def volume_functionality(sp, volume):
         print("Error in volume:", err)
 
 
-def next_song(sp, session_name):
+def next_song(sp, session):
     try:
-        if session_name == None:
+        if session == None:
             print("next song has been pressed")
             # use spotify_rec to generate a recommendation, currently based on what song is playing for the user
             currently_playing = sp.currently_playing()
@@ -112,11 +115,11 @@ def next_song(sp, session_name):
             uri = recommendation["tracks"][0]["uri"]
             print(recommendation["tracks"][0]["name"])
             # add the generated recommendation to the queue
-            if session_name.get_uri() == "" or session_name.get_uri() == sp.currently_playing()["tracks"][0]["uri"]:
+            if session.get_uri() == "" or session.get_uri() == sp.currently_playing()["tracks"][0]["uri"]:
                 queue_song(sp, uri)
-                session_name.set_uri(uri)
-            elif session_name.get_uri() != sp.currently_playing()["tracks"][0]["uri"]:
-                queue_song(sp, session_name.get_uri())
+                session.set_uri(uri)
+            elif session.get_uri() != sp.currently_playing()["tracks"][0]["uri"]:
+                queue_song(sp, session.get_uri())
             # go to the next song in queue
             sp.next_track()
     except SpotifyException as err:

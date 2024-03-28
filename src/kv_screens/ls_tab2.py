@@ -33,7 +33,7 @@ class LS_Tab2(Screen):
         global di
         currently_playing = sp.currently_playing()
         if di != "unselected":
-            player.play_button_functionality(sp=sp, di=di)
+            player.play_button_functionality(sp=sp, di=di, session=self.ids.session_name)
             if currently_playing["is_playing"] is False:
                 self.ids.play_icon.source = '../other/images/pause_icon.png'
             else:
@@ -45,7 +45,7 @@ class LS_Tab2(Screen):
                 player.play_button_functionality(sp, di)
 
     def skip(self):
-        player.next_song(sp, self.ids.session_name)
+        player.next_song(sp, session=self.ids.session_name)
 
     def volume(self, value):
         print(value)
