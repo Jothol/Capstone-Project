@@ -3,26 +3,20 @@
         Button:
             text: 'Remove Friend'
             size_hint: None, None
-            size: 200, 50
+            size: dp(200), dp(50)
             pos_hint: {'center_x': 0.5, 'center_y': 0.4}
             on_press: root.remove_friend(friend_input.text)
         Button:
-            text: 'Add Friend'
+            text: 'Send Friend Request'
             size_hint: None, None
-            size: 200, 50
+            size: dp(200), dp(50)
             pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-            on_press: root.add_friend(friend_input.text)
-        Button:
-            text: 'Friend Invite'
-            size_hint: None, None
-            size: 200, 50
-            pos_hint: {'center_x': 0.5, 'center_y': 0.6}
             on_press: root.invite_friend(friend_input.text)
         TextInput:
             id: friend_input
             size_hint: None, None
-            size: 200, 50
-            pos_hint: {'center_x': 0.5, 'center_y': 0.7}
+            size: dp(200), dp(50)
+            pos_hint: {'center_x': 0.5, 'center_y': 0.6}
             multiline: False
             hint_text: 'Username'
         BoxLayout:
@@ -30,14 +24,14 @@
             size_hint: None, None
             pos_hint: {'center_x': 0.8, 'top': 0.5}
             size: self.minimum_size
-            padding: 10
+            padding: dp(10)
             canvas.before:
                 Color:
                     rgba: 1, 1, 1, 1  # White color
                 RoundedRectangle:
                     pos: self.pos
                     size: self.size
-                    radius: [5, 5, 5, 5]
+                    radius: [dp(5), dp(5), dp(5), dp(5)]
             Label:
                 id: friend_list
                 size_hint: None, None

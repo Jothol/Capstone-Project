@@ -31,9 +31,10 @@ class Tab3(Screen):
     def on_enter(self, *args):
         invites = self.invites = self.parent.parent.parent.parent.ids.username.get_invites()
         self.ids.dropdown_box.children[0].text = build_dropdown_text(invites)
-        friends = self.friends = self.parent.parent.parent.parent.ids.username.get_friends()
+        friends = self.parent.parent.parent.parent.ids.username.get_friends()
         friends_list = friends.split(", ")
         friends = "\n".join(friends_list)
+        self.friends = friends
         self.ids.friend_list.text = "Friends:\n" + friends
 
     def add_friend(self, username):
