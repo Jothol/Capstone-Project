@@ -7,22 +7,16 @@
             pos_hint: {'center_x': 0.5, 'center_y': 0.4}
             on_press: root.remove_friend(friend_input.text)
         Button:
-            text: 'Add Friend'
+            text: 'Send Friend Request'
             size_hint: None, None
             size: dp(200), dp(50)
             pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-            on_press: root.add_friend(friend_input.text)
-        Button:
-            text: 'Friend Invite'
-            size_hint: None, None
-            size: dp(200), dp(50)
-            pos_hint: {'center_x': 0.5, 'center_y': 0.6}
             on_press: root.invite_friend(friend_input.text)
         TextInput:
             id: friend_input
             size_hint: None, None
             size: dp(200), dp(50)
-            pos_hint: {'center_x': 0.5, 'center_y': 0.7}
+            pos_hint: {'center_x': 0.5, 'center_y': 0.6}
             multiline: False
             hint_text: 'Username'
         BoxLayout:
