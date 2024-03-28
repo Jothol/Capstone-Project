@@ -45,6 +45,8 @@
                         id: username_input
                         multiline: False
                         hint_text: 'Username'
+                        write_tab: False
+                        on_text_validate: root.submit(username_input.text, password_input.text)
 
                 BoxLayout:
                     padding: dp(10)
@@ -54,6 +56,8 @@
                         multiline: False
                         hint_text: 'Password'
                         password: True
+                        write_tab: False
+                        on_text_validate: root.submit(username_input.text, password_input.text)
 
                 AnchorLayout:
                     anchor_x: 'center'
