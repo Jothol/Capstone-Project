@@ -5,6 +5,8 @@ from kivy.clock import Clock
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.screenmanager import Screen, ScreenManager, SlideTransition
+from kivy.metrics import dp
+from kivy.animation import Animation
 
 from src.database import account, socket_client
 from src.database.account import Account
@@ -90,8 +92,8 @@ class TabBar(FloatLayout):
         tab_bar = self.ids.tab_bar
 
         if tab_bar.y < -250:
-            animation_window = Animation(pos=(player_window.x, player_window.y + dp(400)), duration=0.1)
+            animation_window = Animation(pos=(tab_bar.x, tab_bar.y + dp(400)), duration=0.1)
         else:
-            animation_window = Animation(pos=(player_window.x, player_window.y - dp(400)), duration=0.1)
+            animation_window = Animation(pos=(tab_bar.x, tab_bar.y - dp(400)), duration=0.1)
 
         animation_window.start(tab_bar)
