@@ -85,10 +85,13 @@ def next_song(sp):
         # use spotify_rec to generate a recommendation, currently based on what song is playing for the user
         currently_playing = sp.currently_playing()
         if currently_playing is not None:
-            recommendation = serenity_spotify_rec(sp, currently_playing["item"]["name"])
+            features = get_features(sp, currently_playing["item"]["name"])
+            recommendation = spotify_rec_features(sp, currently_playing["item"]["name"], features)
         else:
-            recommendation = serenity_spotify_rec(sp, "Red Rock Riviera")
+            features = get_features(sp, "Red Rock Riviera")
+            recommendation = spotify_rec_features(sp, "Red Rock Riviera", features)
         uri = recommendation["tracks"][0]["uri"]
+        print(recommendation["tracks"][0]["name"])
         # add the generated recommendation to the queue
         queue_song(sp, uri)
         # go to the next song in queue
@@ -101,6 +104,13 @@ def next_song(sp):
     # then adds it to queue
     # then goes to the next song in queue
 
+
+def get_features(sp, track):
+    results = sp.search(q="track:" + track, type="track")
+    track_uri = [(results["tracks"]["items"][0]["uri"]).split(":", 3)[2]]
+    features = sp.audio_features(track_uri)[0]
+    ret = {"danceability": features["danceability"], "energy": features["energy"], "valence": features["valence"]}
+    return ret
 
 # modified version of Kevin's method, returns info
 # delete when recommendation is available
@@ -126,6 +136,22 @@ def serenity_spotify_rec(sp, track):
 
 
 def get_devices(sp):
+def spotify_rec_features(sp, track, features):
+    results = sp.search(q="track:" + track, type="track")
+    artist_uri = [(results["tracks"]["items"][0]["artists"][0]["uri"]).split(":", 3)[2]]
+    track_uri = [(results["tracks"]["items"][0]["uri"]).split(":", 3)[2]]
+    #artistinfo = sp.artist(artist_uri[0])
+    #if artistinfo["genres"]:
+    #    rec = sp.recommendations(seed_artists=artist_uri, seed_tracks=track_uri, seed_genres=[artistinfo["genres"][0]],
+    #                             limit=10, target_danceability=features["danceability"],
+    #                             target_energy=features["energy"], target_valence=features["valence"])
+    #else:
+    rec = sp.recommendations(seed_artists=artist_uri, seed_tracks=track_uri, limit=10,
+                                 target_danceability=features["danceability"], target_energy=features["energy"],
+                                 target_valence=features["valence"])
+    return rec
+
+def get_device(sp):
     devices = sp.devices()
     if len(devices['devices']) == 0:
         print("No available devices. Get a message through the app that they need a device to choose.")
@@ -156,6 +182,8 @@ sp = spotipy.Spotify(auth_manager=auth)
 session_history = list()
 
 membership = sp.current_user()["product"]
+
+# print(spotify_rec_features(sp, "Little Lion Man", []))
 # keepLooping = 1
 # choice = 0
 
