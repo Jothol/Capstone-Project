@@ -80,9 +80,18 @@ class TabBar(FloatLayout):
         # Determine the direction of the transition
         if screen_to_switch.index > self.screen_manager.current_screen.index:
             direction = 'left'
-        else:
             direction = 'right'
 
         # Set the transition and switch to the desired screen
         self.screen_manager.transition = SlideTransition(direction=direction)
         self.screen_manager.current = screen_to_switch.name
+
+    def animate_player(self):
+        tab_bar = self.ids.tab_bar
+
+        if tab_bar.y < -250:
+            animation_window = Animation(pos=(player_window.x, player_window.y + dp(400)), duration=0.1)
+        else:
+            animation_window = Animation(pos=(player_window.x, player_window.y - dp(400)), duration=0.1)
+
+        animation_window.start(tab_bar)
