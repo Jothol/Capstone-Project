@@ -7,6 +7,7 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.screenmanager import Screen, ScreenManager, SlideTransition
 from kivy.metrics import dp
 from kivy.animation import Animation
+from kivy.core.window import Window
 
 from src.database import account, socket_client
 from src.database.account import Account
@@ -44,14 +45,14 @@ class HomeScreen(Screen):
     def on_enter(self):
         bl = BoxLayout(orientation='vertical')
         sm = ScreenManager()
+        tab_bar = TabBar(self, sm)
+        bl.add_widget(tab_bar)
         sm.ids = self.parent.ids
         sm.add_widget(Tab1(name='tab1'))
         sm.add_widget(Tab2(name='tab2'))
         sm.add_widget(Tab3(name='tab3'))
         bl.ids = self.parent.ids
         bl.add_widget(sm)
-        bl.add_widget(TabBar(self, sm))
-
         self.add_widget(bl)
 
     def switch_to(self):
@@ -92,20 +93,17 @@ class TabBar(FloatLayout):
             self.screen_manager.transition = SlideTransition(direction=direction)
             self.screen_manager.current = screen_to_switch.name
 
-        # Check which screen is picked and adjust the color of the button
+        # Check which screen is picked and adjust the color of the buttons
         match int(screen_name):
             case 1:
-                print("1111")
                 self.ids.home_button.background_color = (0, 1, 0, 1)
                 self.ids.search_button.background_color = (0, 0, 0, 0)
                 self.ids.setting_button.background_color = (0, 0, 0, 0)
             case 2:
-                print("2222")
                 self.ids.search_button.background_color = (0, 1, 0, 1)
                 self.ids.home_button.background_color = (0, 0, 0, 0)
                 self.ids.setting_button.background_color = (0, 0, 0, 0)
             case 3:
-                print("3333")
                 self.ids.setting_button.background_color = (0, 1, 0, 1)
                 self.ids.home_button.background_color = (0, 0, 0, 0)
                 self.ids.search_button.background_color = (0, 0, 0, 0)
@@ -113,9 +111,9 @@ class TabBar(FloatLayout):
     def animate_player(self):
         tab_bar = self.ids.tab_bar
 
-        if tab_bar.y < -250:
-            animation_window = Animation(pos=(tab_bar.x, tab_bar.y + dp(400)), duration=0.1)
+        if tab_bar.y > self.parent.height:
+            animation_window = Animation(pos=(tab_bar.x, tab_bar.y - dp(50)), duration=0.1)
         else:
-            animation_window = Animation(pos=(tab_bar.x, tab_bar.y - dp(400)), duration=0.1)
+            animation_window = Animation(pos=(tab_bar.x, tab_bar.y + dp(50)), duration=0.1)
 
         animation_window.start(tab_bar)
