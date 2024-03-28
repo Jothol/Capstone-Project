@@ -42,7 +42,7 @@ class LS_Tab2(Screen):
             if currently_playing is not None:
                 self.ids.play_icon.source = '../other/images/pause_icon.png'
                 di = sp.devices()['devices'][0]['id']
-                player.play_button_functionality(sp, di)
+                player.play_button_functionality(sp, di, self.ids.session_name)
 
     def skip(self):
         player.next_song(sp, session=self.ids.session_name)
