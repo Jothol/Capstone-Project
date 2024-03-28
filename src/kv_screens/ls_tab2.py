@@ -3,6 +3,7 @@ import time
 
 import kivy
 from kivy.animation import Animation
+from kivy.clock import Clock
 from kivy.graphics import RoundedRectangle, Color
 from kivy.metrics import dp
 from kivy.uix.label import Label
@@ -16,6 +17,9 @@ sp = player.sp
 di = "unselected"
 
 
+
+
+
 class LS_Tab2(Screen):
     index = 2
 
@@ -24,20 +28,22 @@ class LS_Tab2(Screen):
         sm = ScreenManager()
         sm.ids.username = None
         sm.ids.session_name = None
-        sm.ids.thread = None
-        sm.ids.stop_event = None
+        sm.ids.check = None
         self.add_widget(sm)
 
     def on_enter(self, *args):
         self.ids.session_name = self.manager.parent.parent.parent.ids.session_name
-        self.ids.stop_event = threading.Event()
-        self.ids.thread = threading.Thread(target=player.get_current_song(session=self.ids.session_name, sp=sp,
-                                                                          stop_event=self.ids.stop_event))
-        self.ids.thread.daemon = True
-        self.ids.thread.start()
+        self.ids.check = Clock.schedule_interval(self.get_current_song, 1)
+
+    def get_current_song(self, dt):
+        print("Testing")
+        if self.ids.session_name.get_uri() != "" and self.ids.session_name.get_uri() != \
+                sp.currently_playing()["item"]["uri"]:
+            player.queue_song(sp, self.ids.session_name.get_uri())
+            sp.next_track()
 
     def on_leave(self, *args):
-        self.ids.stop_event.set()
+        Clock.unschedule(self.get_current_song)
 
     def restart(self):
         pass
