@@ -1,3 +1,4 @@
+import time
 from datetime import datetime
 
 import spotipy
@@ -202,6 +203,17 @@ def set_device_id(dev_id):
 def get_device_id():
     return di
 
+
+def get_current_song(session, sp, stop_event):
+    x = 0
+    while x != 2:
+        time.sleep(1)
+        # print("Test")
+        if session.get_uri() != "" and session.get_uri() != \
+                sp.currently_playing()["item"]["uri"]:
+            queue_song(sp, session.get_uri())
+            sp.next_track()
+        x += 1
 
 # note: redirect URI needs to have a port and be http, not https
 auth = SpotifyPKCE(client_id=SPOTIPY_CLIENT_ID, redirect_uri=SPOTIPY_REDIRECT_URI, scope=scope)
