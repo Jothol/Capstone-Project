@@ -37,7 +37,7 @@ class ListeningSessionScreen(Screen):
         sm.add_widget(LS_Tab3(name='ls_tab3'))
         bl.ids = self.parent.ids
         bl.add_widget(sm)
-        bl.add_widget(TabBar(self, sm))
+        bl.add_widget(TabBar2(self, sm))
         self.add_widget(bl)
 
         if ListeningSessionScreen.user.username == self.manager.ids.session_name.host.username:
@@ -211,9 +211,7 @@ class ListeningSessionScreen(Screen):
         self.ids.user_label.text = 'Hosted by: {}.'.format(ListeningSessionScreen.session_name.host.username)
 
 
-
-
-class TabBar(FloatLayout):
+class TabBar2(FloatLayout):
 
     # self is TabBar object
     # self.screen_manager is ScreenManager for TabBar

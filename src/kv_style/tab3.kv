@@ -1,0 +1,58 @@
+<Tab3>:
+    FloatLayout:
+        Button:
+            text: 'Remove Friend'
+            size_hint: None, None
+            size: dp(200), dp(50)
+            pos_hint: {'center_x': 0.5, 'center_y': 0.4}
+            on_press: root.remove_friend(friend_input.text)
+        Button:
+            text: 'Send Friend Request'
+            size_hint: None, None
+            size: dp(200), dp(50)
+            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+            on_press: root.invite_friend(friend_input.text)
+        TextInput:
+            id: friend_input
+            size_hint: None, None
+            size: dp(200), dp(50)
+            pos_hint: {'center_x': 0.5, 'center_y': 0.6}
+            multiline: False
+            hint_text: 'Username'
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: None, None
+            pos_hint: {'center_x': 0.8, 'top': 0.5}
+            size: self.minimum_size
+            padding: dp(10)
+            canvas.before:
+                Color:
+                    rgba: 1, 1, 1, 1  # White color
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [dp(5), dp(5), dp(5), dp(5)]
+            Label:
+                id: friend_list
+                size_hint: None, None
+                size: self.texture_size
+                color: (0, 0, 0, 1)
+                text: "Friends:\n<loading>"
+        BoxLayout:
+            id: dropdown_box
+            canvas.before:
+                Color:
+                    rgba: 1, 1, 1, 1  # White color
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            orientation: 'vertical'
+            size_hint: None, None
+            pos_hint: {'center_x': 0.18, 'top': 0.5}
+            size: self.minimum_size
+            Button:
+                text: 'Pending Invites'
+                size_hint: None, None
+                size: dp(170), dp(50)
+                on_press:
+                    root.toggle_dropdown()
