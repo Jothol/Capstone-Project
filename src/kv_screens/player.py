@@ -55,11 +55,11 @@ def make_playlist_from_history(sp):
     sp.user_playlist_add_tracks(user=user_id, playlist_id=playlist, tracks=session_history)
 
 
-def play_button_functionality(sp, di, session):
+def play_button_functionality(sp, di, session=None):
     try:
         currently_playing = sp.currently_playing()
         print(currently_playing)
-        if session.get_uri() != "" and session.get_uri() != currently_playing["item"]["uri"]:
+        if session is not None and session.get_uri() != "" and session.get_uri() != currently_playing["item"]["uri"]:
             queue_song(sp, session.get_uri())
             sp.next_track()
         if currently_playing is None:
@@ -86,7 +86,7 @@ def volume_functionality(sp, volume):
         print("Error in volume:", err)
 
 
-def next_song(sp, session):
+def next_song(sp, session=None):
     try:
         if session == None:
             print("next song has been pressed")
@@ -113,9 +113,10 @@ def next_song(sp, session):
                 recommendation = spotify_rec_features(sp, currently_playing["item"]["name"], features)
             else:
                 features = get_features(sp, "Red Rock Riviera")
+                features["energy"] = features["energy"] + 0.01
                 recommendation = spotify_rec_features(sp, "Red Rock Riviera", features)
             uri = recommendation["tracks"][0]["uri"]
-            print(recommendation["tracks"][0]["name"])
+            # print(recommendation["tracks"][0]["name"])
             # add the generated recommendation to the queue
             if session.get_uri() == "" or session.get_uri() == sp.currently_playing()["item"]["uri"]:
                 queue_song(sp, uri)
@@ -151,7 +152,7 @@ def serenity_spotify_rec(sp, track):
     #    print("You are not authorized to access this")
     # else:
     results = sp.search(q="track:" + track, type="track")
-    print(results)
+    # print(results)
     artist_uri = [(results["tracks"]["items"][0]["artists"][0]["uri"]).split(":", 3)[2]]
     track_uri = [(results["tracks"]["items"][0]["uri"]).split(":", 3)[2]]
     artistinfo = sp.artist(artist_uri[0])
@@ -165,6 +166,7 @@ def serenity_spotify_rec(sp, track):
 
 
 def spotify_rec_features(sp, track, features):
+    print("Recommedation running")
     results = sp.search(q="track:" + track, type="track")
     artist_uri = [(results["tracks"]["items"][0]["artists"][0]["uri"]).split(":", 3)[2]]
     track_uri = [(results["tracks"]["items"][0]["uri"]).split(":", 3)[2]]
@@ -177,6 +179,8 @@ def spotify_rec_features(sp, track, features):
     rec = sp.recommendations(seed_artists=artist_uri, seed_tracks=track_uri, limit=10,
                              target_danceability=features["danceability"], target_energy=features["energy"],
                              target_valence=features["valence"])
+    if rec["tracks"][0]["uri"] == sp.currently_playing()["item"]["uri"]:
+        return spotify_rec_features(sp, track, features)
     return rec
 
 

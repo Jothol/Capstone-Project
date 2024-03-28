@@ -33,12 +33,15 @@ class LS_Tab2(Screen):
 
     def on_enter(self, *args):
         self.ids.session_name = self.manager.parent.parent.parent.ids.session_name
-        self.ids.check = Clock.schedule_interval(self.get_current_song, 1)
+        self.ids.check = Clock.schedule_interval(self.get_current_song, 5)
 
     def get_current_song(self, dt):
-        print("Testing")
-        if self.ids.session_name.get_uri() != "" and self.ids.session_name.get_uri() != \
-                sp.currently_playing()["item"]["uri"]:
+        # print("Testing")
+        current = sp.currently_playing()
+        if self.ids.session_name.get_uri() == "" and current is not None:
+            self.ids.session_name.set_uri(current["item"]["uri"])
+        elif self.ids.session_name.get_uri() != "" and self.ids.session_name.get_uri() != \
+                current["item"]["uri"]:
             player.queue_song(sp, self.ids.session_name.get_uri())
             sp.next_track()
 
