@@ -6,7 +6,7 @@ from src.database import session, account
 # Both methods fail since "test" hasn't been created
 def test_01():
     session.get_session("test")
-    session.delete_session("test")
+    session.delete_session()
 
 
 # Cannot create session since account "peter" is not created
@@ -17,10 +17,11 @@ def test_02():
 # Makes a session
 def test_03():
     # Get an account name to become the host of the session
-    account.create_account("bob", "bob_backwards")
+    # account.create_account("bob", "bob_backwards")
+    acc = account.get_account('bob')
 
     # Creates the session
-    group = session.create_session("test_03", "bob")  # fix host_name issue
+    group = session.create_session("test_03", acc)  # fix host_name issue
 
     print("Session created: " + group.get_name())
     print("Hosted by: " + group.host.username)
@@ -49,7 +50,9 @@ def test_04():
 
 # Session not found for get_host()
 def test_05():
-    session.get_host("session_name_entry")
+    sess = session.get_session("session_name_entry")
+    print(sess)
+    session.get_host(sess)
 
 
 # Host gets replaced in session once they leave
@@ -57,7 +60,7 @@ def test_06():
     db = firestore.client()
 
     host = account.create_account("U1_test06", "bird")
-    group = session.create_session("test_06", host.username)
+    group = session.create_session("test_06", host)
     guest1 = account.create_account("U2_test06", "pig")
     guest2 = account.create_account("U3_test06", "skunk")
     group.add_user(guest1)
@@ -74,7 +77,7 @@ def test_06():
 # Session gets deleted
 # ! ! Run test_06 before running this test ! !
 def test_07():
-    session.delete_session("test_06")
+    session.delete_session()
 
 
 # test_08 is how to add fields for a document in a collection thats in a document in a collection
@@ -91,11 +94,14 @@ def test_08():
 
     # for new collections like 'songs' add them in google firebase rather than implement them here
 
+# basic creation of session
 def test_09():
     db = firestore.client()
+    acc = account.get_account('abc123')
 
-    session.create_session("test_09", "abc123")
+    session.create_session("test_09", acc)
 
+# first testing of subcollections in a session
 def test_10():
     db = firestore.client()
     test6_ref = db.collection('sessions').document('test_06')
@@ -103,6 +109,136 @@ def test_10():
     message_ref.set({})
     print(message_ref.get().exists)
 
+# add song test and # of songs saved/played
+def test_11():
+    sess = session.get_session('test_03')
+    count = '1.'
+    song_name = 'Smoke and Mirrors'
+    sess.add_song(count + ' ' + song_name, 'Imagine Dragons')
+
+
+def test_12():
+    # acc = account.create_account('test_12', 'test')
+    # sess = session.create_session('test_12', 'test_12')
+
+    sess = session.get_session('test_12')
+
+    message_ref = sess.name.collection('artists').document('Imagine Dragons')
+    message_ref.set({'Smoke and Mirrors': 'song'})
+
+    message_ref = sess.name.collection('artists').document('Coldplay')
+    message_ref.set({'The Scientist': 'A Rush of Blood to the Head'})
+
+    message_ref = sess.name.collection('artists').document('Michael Jackson')
+    message_ref.set({'Thriller': '1982'})
+
+# song storage idea #1
+def test_13():
+    # acc = account.create_account('test_13', 'test')
+    # sess = session.create_session('test_13', 'test_13')
+
+    sess = session.get_session('test_13')
+
+    message_ref = sess.name.collection('songs').document('Smoke of Mirrors')
+    message_ref.set({'Imagine Dragons': 'artist', 'Smoke + Mirrors (Deluxe)': 'album'})
+
+    message_ref = sess.name.collection('songs').document('The Scientist')
+    message_ref.set({'Coldplay': 'artist', 'A Rush of Blood to the Head': 'album'})
+
+    message_ref = sess.name.collection('songs').document('Thriller')
+    message_ref.set({'Michael Jackson': 'artist', 'Thriller': 'album'})
+
+
+# song storage idea #2
+def test_14():
+    acc = account.create_account('test_14', 'test')
+    sess = session.create_session('test_14', acc)
+
+    sess = session.get_session('test_14')
+    print(sess)
+
+    message_ref = sess.name.collection('albums').document('Smoke + Mirrors (Deluxe')
+    message_ref.set({'Smoke and Mirrors': 'song', 'Imagine Dragons': 'artist'})
+
+    message_ref = sess.name.collection('albums').document('A Rush of Blood to the Head')
+    message_ref.set({'The Scientist': 'song', 'Coldplay': 'artist'})
+
+    message_ref = sess.name.collection('albums').document('Thriller')
+    message_ref.set({'Thriller': 'song', 'Michael Jackson': 'artist'})
+
+# song storage idea #3
+def test_15():
+    # acc = account.create_account('test_15', 'test')
+    acc = account.get_account('test_15')
+    sess = session.create_session('test_15', acc)
+    sess = session.get_session('test_15')
+
+    sess.add_song('Smoke and Mirrors', 'Imagine Dragons')
+    sess.add_song('The Scientist', 'Coldplay')
+    sess.add_song('Thriller', 'Michael Jackson')
+
+# testing session with size of 10 users
+def test_16():
+    # acc1 = account.create_account('t16_1', 'one')
+    # acc2 = account.create_account('t16_2', 'two')
+    # acc3 = account.create_account('t16_3', 'three')
+    # acc4 = account.create_account('t16_4', 'four')
+    # acc5 = account.create_account('t16_5', 'five')
+    # acc6 = account.create_account('t16_6', 'six')
+    # acc7 = account.create_account('t16_7', 'seven')
+    # acc8 = account.create_account('t16_8', 'eight')
+    # acc9 = account.create_account('t16_9', 'nine')
+    # acc10 = account.create_account('t16_10', 'ten')
+
+    acc1 = account.get_account('t16_1')
+    acc2 = account.get_account('t16_2')
+    acc3 = account.get_account('t16_3')
+    acc4 = account.get_account('t16_4')
+    acc5 = account.get_account('t16_5')
+    acc6 = account.get_account('t16_6')
+    acc7 = account.get_account('t16_7')
+    acc8 = account.get_account('t16_8')
+    acc9 = account.get_account('t16_9')
+    acc10 = account.get_account('t16_10')
+
+    user = account.get_account('riley')
+
+    sess = session.create_session('test_16', acc1)
+    # sess = session.get_session('test_16')
+
+    sess.add_user(acc2)
+    sess.add_user(acc3)
+    sess.add_user(acc4)
+    sess.add_user(acc5)
+    sess.add_user(acc6)
+    sess.add_user(acc7)
+    sess.add_user(acc8)
+    sess.add_user(acc9)
+    sess.add_user(acc10)
+
+    sess.add_user(user)
+    sess.remove_user(user)
+
+# testing of retrieving uri and changing uri of current song
+def test_17():
+    acc = account.get_account('riley')
+    # sess = session.create_session('temp', acc)
+    sess = session.get_session("temp")
+    print(sess)
+    print(sess.get_uri())
+    sess.set_uri('bingbong')
+    print(sess.get_uri())
+
+# subcollection deleting test
+def test_18():
+    acc = account.get_account("bob")
+    # sess = session.create_session('test_18', acc)
+    sess = session.get_session("test_18")
+    temp = sess.db.collection('sessions').document('test_18').collections()
+    for col in sess.name.collections():
+        for doc in col.list_documents():
+            doc.delete()
+    sess.name.delete()
 
 
 
@@ -111,4 +247,11 @@ if __name__ == "__main__":
     firebase_admin.initialize_app(cred)
 
     # account.create_account("riley", "pancakes")
-    test_10()
+    # account.create_account("db_test", "d")
+
+    # Just for test_16
+    # sess = session.get_session('test_16')
+    # session.delete_session(sess.name)
+    # Just for test_16
+
+    test_18()

@@ -6,7 +6,6 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.screenmanager import Screen, ScreenManager, SlideTransition
 
-
 from src.database import account, socket_client
 from src.database.account import Account
 from src.kv_screens.chat import ChatScreen
@@ -23,8 +22,6 @@ def show_error(message):
 
 
 class HomeScreen(Screen):
-
-    username = ''
     chat_screen_exists = False
 
     def connect(self):
@@ -51,26 +48,34 @@ class HomeScreen(Screen):
         sm.add_widget(Tab3(name='tab3'))
         bl.ids = self.parent.ids
         bl.add_widget(sm)
-        bl.add_widget(TabBar(sm))
+        bl.add_widget(TabBar(self, sm))
+
         self.add_widget(bl)
+
+    def switch_to(self):
+        pass
+
 
 class TabBar(FloatLayout):
 
     # self is TabBar object
     # self.screen_manager is ScreenManager for TabBar
     # self.parent is BoxLayout object (child of home screen)
-    def __init__(self, screen_manager: ScreenManager):
+    def __init__(self, home_screen: HomeScreen, screen_manager: ScreenManager):
         super().__init__()
         self.screen_manager = screen_manager
-        self.screen_manager.ids.username = ''
-        self.screen_manager.ids.session_name = ''
-        # self.screen_manager.home = home
+        self.screen_manager.ids = home_screen.manager.ids
+        self.screen_manager.home_screen = home_screen
 
     def switch_screen(self, screen_name):
-        # Access the ScreenManager and switch to the desired screen
-        screen_to_switch = self.screen_manager.get_screen(screen_name)
+        screen_to_switch = ''
+
+        for i in self.screen_manager.screen_names:
+            screen_to_switch = self.screen_manager.get_screen(i)
+            if screen_to_switch.index == int(screen_name):
+                break
+
         self.screen_manager.ids = self.screen_manager.parent.ids
-        print(self.screen_manager.ids)
 
         # Determine the direction of the transition
         if screen_to_switch.index > self.screen_manager.current_screen.index:
@@ -80,4 +85,4 @@ class TabBar(FloatLayout):
 
         # Set the transition and switch to the desired screen
         self.screen_manager.transition = SlideTransition(direction=direction)
-        self.screen_manager.current = screen_name
+        self.screen_manager.current = screen_to_switch.name
