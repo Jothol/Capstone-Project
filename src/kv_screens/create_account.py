@@ -12,6 +12,9 @@ class CreateAccount(Screen):
         if password != re_password:
             self.ids.error_message.text = "Passwords do not match."
             self.ids.error_message.color = [1, 0, 0, 1]
+        elif password == "":
+            self.ids.error_message.text = "Password cannot be blank."
+            self.ids.error_message.color = [1, 0, 0, 1]
         elif len(username) > 10:
             self.ids.error_message.text = "Username too long."
             self.ids.error_message.color = [1, 0, 0, 1]

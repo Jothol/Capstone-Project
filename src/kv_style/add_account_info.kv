@@ -8,22 +8,22 @@
         BoxLayout:
             orientation: 'vertical'
             size_hint: (None, None)
-            size: (250, 300)
+            size: (dp(250), dp(300))
             canvas.before:
                 Color:
                     rgba: 1, 1, 1, 1
                 RoundedRectangle:
                     pos: self.pos
                     size: self.size
-                    radius: [10, 10, 10, 10]
+                    radius: [dp(10), dp(10), dp(10), dp(10)]
 
             Label:
                 text: 'Add Account Info'
                 color: [0,0.4,0,1]
-                font_size: 20
+                font_size: dp(20)
                 bold: True
             BoxLayout:
-                padding: 10
+                padding: dp(10)
 
                 TextInput:
                     id: email_input
@@ -31,7 +31,7 @@
                     hint_text: 'Email'
 
             BoxLayout:
-                padding: 10
+                padding: dp(10)
 
                 TextInput:
                     id: first_name_input
@@ -39,7 +39,7 @@
                     hint_text: 'First Name'
 
             BoxLayout:
-                padding: 10
+                padding: dp(10)
 
                 TextInput:
                     id: last_name_input
@@ -52,7 +52,7 @@
 
                 Button:
                     size_hint: (None, None)
-                    size: (130, 30)
+                    size: (dp(130), dp(30))
                     text: 'Update Info'
                     background_color:[0,1,0,1]
                     on_press:
@@ -65,7 +65,7 @@
 
     Button:
         size_hint: (None, None)
-        size: (100, 30)
+        size: (dp(100), dp(30))
         text: 'Add Later'
         pos_hint: {'x': 0.01, 'y': 0.01}
         background_color:[0,1,0,1]

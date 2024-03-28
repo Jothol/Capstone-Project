@@ -8,7 +8,8 @@ def create_account(username, password):
         print('create_account error: user already exists.')
         return None
     else:
-        account.set({'password': password, 'first_name': '', 'last_name': '', 'email': '', 'in_session': False})
+        account.set({'password': password, 'first_name': '', 'last_name': '', 'email': '', 'in_session': False,
+                     'friends': '', 'invites': ''})
         return Account(username)
 
 
@@ -24,6 +25,8 @@ def delete_account(username):
 
 
 def get_account(username):
+    if username is None:
+        return None
     db = firestore.client()
     account = db.collection('users').document(username)
     if account.get().exists:
@@ -53,6 +56,8 @@ class Account:
         self.last_name = self.account.get().to_dict().get('last_name')
         self.email = self.account.get().to_dict().get('email')
         self.in_session = self.account.get().to_dict().get('in_session')
+        self.friends = self.account.get().to_dict().get('friends')
+        self.invites = self.account.get().to_dict().get('invites')
 
     def get_username(self):
         return self.username
@@ -94,3 +99,73 @@ class Account:
             return
 
         self.in_session = False
+
+    def add_friend(self, friend_name):
+        friends = self.account.get().to_dict()['friends']
+        friend = get_account(friend_name)
+        if friend is None:
+            return False
+        if friend_name in friends or friend_name == self.username:
+            return False
+        if len(friends) > 0:
+            friends = friends + ", "
+        friends = friends + friend_name
+        self.account.update({'friends': friends})
+        self.friends = friends
+        return True
+
+    def remove_friend(self, friend_name):
+        friends = self.account.get().to_dict()['friends']
+        if friend_name not in friends:
+            return False
+        friends_list = friends.split(", ")
+        friends_list.remove(friend_name)
+        friends = ", ".join(friends_list)
+        self.account.update({'friends': friends})
+        self.friends = friends
+        return True
+
+    def get_friends(self):
+        return self.account.get().to_dict()['friends']
+
+    def send_invite(self, friend_username):
+        friends = self.account.get().to_dict()['friends']
+        friend = get_account(friend_username)
+        if friend_username in friends:
+            return False
+        if friend is None:
+            return False
+        friends_invites = friend.account.get().to_dict()['invites']
+        if self.username in friends_invites:
+            return False
+        if len(friends_invites) > 0:
+            friends_invites = friends_invites + ", "
+        friends_invites = friends_invites + self.username
+        friend.account.update({'invites': friends_invites})
+        friend.invites = friends_invites
+        return True
+
+    def get_invites(self):
+        return self.account.get().to_dict()['invites']
+
+    def accept_invite(self, friend_username):
+        invites = self.account.get().to_dict()['invites']
+        invites_list = invites.split(", ")
+        invites_list.remove(friend_username)
+        invites = ",".join(invites_list)
+        self.account.update({'invites': invites})
+        self.invites = invites
+        self.add_friend(friend_username)
+        get_account(friend_username).add_friend(self.username)
+        return True
+
+    def decline_invite(self, friend_username):
+        invites = self.account.get().to_dict()['invites']
+        if friend_username not in invites:
+            return False
+        invites_list = invites.split(", ")
+        invites_list.remove(friend_username)
+        invites = ",".join(invites_list)
+        self.account.update({'invites': invites})
+        self.invites = invites
+        return True
