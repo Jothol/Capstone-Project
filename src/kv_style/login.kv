@@ -12,8 +12,8 @@
         Label:
             text: 'Listen together with SpotiVibe.'
             size_hint: (None, None)
-            size: (600, 40)
-            font_size: 20
+            size: (dp(600), dp(40))
+            font_size: dp(20)
             pos_hint: {'center_y': 0.5}
             bold: True
 
@@ -24,7 +24,7 @@
             BoxLayout:
                 orientation: 'vertical'
                 size_hint: (None, None)
-                size: (250, 250)
+                size: (dp(250), dp(250))
                 canvas.before:
                     Color:
                         rgba: 1, 1, 1, 1
@@ -36,10 +36,10 @@
                 Label:
                     text: 'SpotiVibe Log-In.'
                     color: [0,0.4,0,1]
-                    font_size: 20
+                    font_size: dp(20)
                     bold: True
                 BoxLayout:
-                    padding: 10
+                    padding: dp(10)
 
                     TextInput:
                         id: username_input
@@ -47,7 +47,7 @@
                         hint_text: 'Username'
 
                 BoxLayout:
-                    padding: 10
+                    padding: dp(10)
 
                     TextInput:
                         id: password_input
@@ -61,7 +61,7 @@
 
                     Button:
                         size_hint: (None, None)
-                        size: (130, 30)
+                        size: (dp(130), dp(30))
                         text: 'Enter'
                         background_color:[0,1,0,1]
                         on_press:
@@ -74,7 +74,7 @@
 
         Button:
             size_hint: (None, None)
-            size: (130, 30)
+            size: (dp(130), dp(30))
             text: 'Create Account'
             pos_hint: {'x': 0.01, 'y': 0.01}
             background_color:[0,1,0,1]
