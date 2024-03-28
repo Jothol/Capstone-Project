@@ -11,9 +11,16 @@ import src.database.account as account
 kivy.require('2.3.0')
 
 
+def build_dropdown_text(invites):
+    print(invites)
+    if invites == "":
+        return 'Pending Invites (0)'
+    else:
+        return 'Pending Invites (' + str(len(invites.split(", "))) + ')'
+
+
 class Tab3(Screen):
     index = 3
-    accessed = False
     dropdown_open = False
     invites = ""
     friends = ""
@@ -22,13 +29,10 @@ class Tab3(Screen):
         super().__init__(**kwargs)
 
     def on_enter(self, *args):
-        self.invites = account.get_account(self.parent.parent.parent.parent.ids.username).get_invites()
-        if not self.accessed:
-            b = BoxLayout(orientation="vertical")
-            self.ids.dropdown_box.children[0].text = 'Pending Invites (' + str(len(self.invites.split(", ")) - 1) + ')'
-            self.accessed = True
-            self.friends = account.get_account(self.parent.parent.parent.parent.ids.username).get_friends()
-            self.ids.friend_list.text = "Friends:\n" + self.friends
+        invites = self.invites = account.get_account(self.parent.parent.parent.parent.ids.username).get_invites()
+        self.ids.dropdown_box.children[0].text = build_dropdown_text(invites)
+        friends = self.friends = account.get_account(self.parent.parent.parent.parent.ids.username).get_friends()
+        self.ids.friend_list.text = "Friends:\n" + friends
 
     def add_friend(self, username):
         if account.get_account(self.parent.parent.parent.parent.ids.username).add_friend(username):
@@ -50,8 +54,7 @@ class Tab3(Screen):
     def toggle_dropdown(self):
         if self.dropdown_open:
             self.ids.dropdown_box.clear_widgets()
-            button = Button(text='Pending Invites (' + str(len(self.invites.split(", ")) - 1) + ')',
-                            size_hint=(None, None), size=(dp(170), dp(50)))
+            button = Button(text=build_dropdown_text(self.invites), size_hint=(None, None), size=(dp(170), dp(50)))
             button.bind(on_press=lambda instance: self.toggle_dropdown())
             self.ids.dropdown_box.add_widget(button)
             self.dropdown_open = False
