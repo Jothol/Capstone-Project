@@ -114,15 +114,23 @@ class Account:
         self.friends = friends
         return True
 
-    def remove_friend(self, friend_name):
+    def remove_friend(self, friend_username):
         friends = self.account.get().to_dict()['friends']
-        if friend_name not in friends:
+        if friend_username not in friends:
             return False
         friends_list = friends.split(", ")
-        friends_list.remove(friend_name)
+        friends_list.remove(friend_username)
         friends = ", ".join(friends_list)
         self.account.update({'friends': friends})
         self.friends = friends
+
+        friend = get_account(friend_username)
+        friend_friends = friend.get_friends()
+        if self.username in friend_friends:
+            friend_friends_list = friend_friends.split(", ")
+            friend_friends_list.remove(self.username)
+            friend_friends = ", ".join(friend_friends_list)
+            friend.account.update({'friends': friend_friends})
         return True
 
     def get_friends(self):
@@ -152,11 +160,13 @@ class Account:
         invites = self.account.get().to_dict()['invites']
         invites_list = invites.split(", ")
         invites_list.remove(friend_username)
-        invites = ",".join(invites_list)
+        invites = ", ".join(invites_list)
         self.account.update({'invites': invites})
         self.invites = invites
         self.add_friend(friend_username)
         get_account(friend_username).add_friend(self.username)
+
+        self.delete_invite(friend_username)
         return True
 
     def decline_invite(self, friend_username):
@@ -165,7 +175,18 @@ class Account:
             return False
         invites_list = invites.split(", ")
         invites_list.remove(friend_username)
-        invites = ",".join(invites_list)
+        invites = ", ".join(invites_list)
         self.account.update({'invites': invites})
         self.invites = invites
+
+        self.delete_invite(friend_username)
         return True
+
+    def delete_invite(self, friend_username):
+        friend = get_account(friend_username)
+        friend_invites = friend.get_invites()
+        if self.username in friend_invites:
+            friend_invites_list = friend_invites.split(", ")
+            friend_invites_list.remove(self.username)
+            friend_invites = ", ".join(friend_invites_list)
+            friend.account.update({'invites': friend_invites})

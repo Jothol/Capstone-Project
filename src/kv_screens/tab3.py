@@ -32,6 +32,8 @@ class Tab3(Screen):
         invites = self.invites = account.get_account(self.parent.parent.parent.parent.ids.username).get_invites()
         self.ids.dropdown_box.children[0].text = build_dropdown_text(invites)
         friends = self.friends = account.get_account(self.parent.parent.parent.parent.ids.username).get_friends()
+        friends_list = friends.split(", ")
+        friends = "\n".join(friends_list)
         self.ids.friend_list.text = "Friends:\n" + friends
 
     def add_friend(self, username):
