@@ -116,10 +116,10 @@ def next_song(sp, session):
             uri = recommendation["tracks"][0]["uri"]
             print(recommendation["tracks"][0]["name"])
             # add the generated recommendation to the queue
-            if session.get_uri() == "" or session.get_uri() == sp.currently_playing()["tracks"][0]["uri"]:
+            if session.get_uri() == "" or session.get_uri() == sp.currently_playing()["item"]["uri"]:
                 queue_song(sp, uri)
                 session.set_uri(uri)
-            elif session.get_uri() != sp.currently_playing()["tracks"][0]["uri"]:
+            elif session.get_uri() != sp.currently_playing()["item"]["uri"]:
                 queue_song(sp, session.get_uri())
             # go to the next song in queue
             sp.next_track()
