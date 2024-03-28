@@ -24,6 +24,13 @@ class LS_Tab2(Screen):
         self.add_widget(sm)
 
     def on_enter(self, *args):
+        print(self.manager)
+        print(self.parent)
+        print(self.manager.parent)
+        print(self.manager.parent.parent)
+        print(self.manager.parent.parent.parent)
+        print(self.manager.parent.parent.parent.parent)
+        print(self.manager.parent.parent.parent.parent.parent)
         pass
 
     def restart(self):
