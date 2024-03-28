@@ -29,23 +29,23 @@ class Tab3(Screen):
         super().__init__(**kwargs)
 
     def on_enter(self, *args):
-        invites = self.invites = account.get_account(self.parent.parent.parent.parent.ids.username).get_invites()
+        invites = self.invites = self.parent.parent.parent.parent.ids.username.get_invites()
         self.ids.dropdown_box.children[0].text = build_dropdown_text(invites)
-        friends = self.friends = account.get_account(self.parent.parent.parent.parent.ids.username).get_friends()
+        friends = self.friends = self.parent.parent.parent.parent.ids.username.get_friends()
         self.ids.friend_list.text = "Friends:\n" + friends
 
     def add_friend(self, username):
-        if account.get_account(self.parent.parent.parent.parent.ids.username).add_friend(username):
+        if self.parent.parent.parent.parent.ids.username.add_friend(username):
             if self.friends != "":
                 self.friends = self.friends + "\n"
             self.friends = self.friends + username
             self.ids.friend_list.text = "Friends:\n" + self.friends
 
     def invite_friend(self, username):
-        account.get_account(self.parent.parent.parent.parent.ids.username).send_invite(username)
+        self.parent.parent.parent.parent.ids.username.send_invite(username)
 
     def remove_friend(self, username):
-        if account.get_account(self.parent.parent.parent.parent.ids.username).remove_friend(username):
+        if self.parent.parent.parent.parent.ids.username.remove_friend(username):
             friends_list = self.friends.split("\n")
             friends_list.remove(username)
             self.friends = "\n".join(friends_list)
@@ -85,10 +85,10 @@ class Tab3(Screen):
             self.friends = self.friends + "\n"
         self.friends = self.friends + username
         self.ids.friend_list.text = "Friends:\n" + self.friends
-        account.get_account(self.parent.parent.parent.parent.ids.username).accept_invite(username)
+        self.parent.parent.parent.parent.ids.username.accept_invite(username)
 
     def decline_invite(self, username):
-        account.get_account(self.parent.parent.parent.parent.ids.username).decline_invite(username)
+        self.parent.parent.parent.parent.ids.username.decline_invite(username)
         invites_list = self.invites.split(", ")
         invites_list.remove(username)
         self.invites = ", ".join(invites_list)

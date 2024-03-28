@@ -5,8 +5,6 @@ from kivy.uix.dropdown import DropDown
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.properties import ObjectProperty
 
-from src.kv_screens.session_home import SessionHomeScreen
-
 from src.database import session
 
 from src.kv_screens.listening_session import ListeningSessionScreen
@@ -99,6 +97,7 @@ class Tab1(Screen):
                 self.ids.error_message.text = ''
                 print(self.manager.home_screen.manager.current)
                 self.manager.home_screen.manager.current = "listening_session_page"
+                self.manager.home_screen.manager.ids.session_name = Tab1.session_name
         else:
             if button_input == "Create":
                 self.ids.error_message.text = "Session already created"
@@ -110,5 +109,6 @@ class Tab1(Screen):
                 self.manager.home_screen.manager.ids.session_name = Tab1.session_name
                 self.ids.error_message.text = ''
                 self.manager.home_screen.manager.current = "listening_session_page"
+                self.manager.home_screen.manager.ids.session_name = Tab1.session_name
 
         pass

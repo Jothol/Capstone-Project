@@ -24,7 +24,7 @@ class LS_Tab2(Screen):
         self.add_widget(sm)
 
     def on_enter(self, *args):
-        pass
+        self.ids.session_name = self.manager.parent.parent.parent.ids.session_name
 
     def restart(self):
         pass
@@ -45,7 +45,7 @@ class LS_Tab2(Screen):
                 player.play_button_functionality(sp, di)
 
     def skip(self):
-        player.next_song(sp)
+        player.next_song(sp, self.ids.session_name)
 
     def volume(self, value):
         print(value)
