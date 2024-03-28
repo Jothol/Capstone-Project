@@ -27,9 +27,9 @@
 
 
     Button:
-        size_hint_x: None  # Disable the x-size hint
-        width: dp(50)  # Set the width in dp (adjust as needed)
-        pos: root.width / 6 - self.width / 2, (root.height - self.height) / 2
+        size_hint: None, None  # Disable the x-size hint
+        size: dp(50), dp(50)  # Set the width in dp (adjust as needed)
+        pos_hint: {'center_x': 1/6, 'center_y': 0.5}
         background_color: 0, 0, 0, 0
 
         on_press:
@@ -38,8 +38,7 @@
         Image:
             id: my_image
             source: '../other/images/home_icon.png'
-            center_x: self.parent.center_x
-            center_y: 1.6 * self.parent.center_y
+            center: self.parent.center
             size: self.parent.height * 0.6, self.parent.height * 0.6
 
     # Button:
