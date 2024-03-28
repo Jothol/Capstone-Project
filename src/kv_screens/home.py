@@ -82,11 +82,33 @@ class TabBar(FloatLayout):
         # Determine the direction of the transition
         if screen_to_switch.index > self.screen_manager.current_screen.index:
             direction = 'left'
+        elif screen_to_switch.index < self.screen_manager.current_screen.index:
             direction = 'right'
+        else:
+            direction = 'None'
 
-        # Set the transition and switch to the desired screen
-        self.screen_manager.transition = SlideTransition(direction=direction)
-        self.screen_manager.current = screen_to_switch.name
+        if direction != 'None':
+            # Set the transition and switch to the desired screen
+            self.screen_manager.transition = SlideTransition(direction=direction)
+            self.screen_manager.current = screen_to_switch.name
+
+        # Check which screen is picked and adjust the color of the button
+        match int(screen_name):
+            case 1:
+                print("1111")
+                self.ids.home_button.background_color = (0, 1, 0, 1)
+                self.ids.search_button.background_color = (0, 0, 0, 0)
+                self.ids.setting_button.background_color = (0, 0, 0, 0)
+            case 2:
+                print("2222")
+                self.ids.search_button.background_color = (0, 1, 0, 1)
+                self.ids.home_button.background_color = (0, 0, 0, 0)
+                self.ids.setting_button.background_color = (0, 0, 0, 0)
+            case 3:
+                print("3333")
+                self.ids.setting_button.background_color = (0, 1, 0, 1)
+                self.ids.home_button.background_color = (0, 0, 0, 0)
+                self.ids.search_button.background_color = (0, 0, 0, 0)
 
     def animate_player(self):
         tab_bar = self.ids.tab_bar
