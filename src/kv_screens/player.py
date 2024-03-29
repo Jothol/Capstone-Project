@@ -198,6 +198,7 @@ def get_devices(sp):
         return devices
 
 
+
 def set_device_id(dev_id):
     global di
     di = dev_id
