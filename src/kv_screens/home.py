@@ -2,8 +2,10 @@ import sys
 
 import kivy
 from kivy.clock import Clock
+from kivy.graphics import Color
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.image import Image
 from kivy.uix.screenmanager import Screen, ScreenManager, SlideTransition
 
 from src.database import account, socket_client
@@ -19,6 +21,15 @@ kivy.require('2.3.0')
 def show_error(message):
     print(message)
     Clock.schedule_once(sys.exit, 10)
+
+
+def set_opacity(image: Image, opacity):
+    # Find the Color instruction in canvas.after
+    for instruction in image.canvas.after.children:
+        if isinstance(instruction, Color):
+            # Modify the opacity value
+            instruction.rgba = (instruction.rgba[0], instruction.rgba[1], instruction.rgba[2], opacity)
+            break
 
 
 class HomeScreen(Screen):
@@ -69,6 +80,17 @@ class TabBar(FloatLayout):
 
     def switch_screen(self, screen_name):
         screen_to_switch = ''
+
+        set_opacity(self.ids.home_image, 0)
+        set_opacity(self.ids.search_image, 0)
+        set_opacity(self.ids.settings_image, 0)
+
+        if int(screen_name) == 1:
+            set_opacity(self.ids.home_image, 0.5)
+        elif int(screen_name) == 2:
+            set_opacity(self.ids.search_image, 0.5)
+        else:
+            set_opacity(self.ids.settings_image, 0.5)
 
         for i in self.screen_manager.screen_names:
             screen_to_switch = self.screen_manager.get_screen(i)

@@ -66,22 +66,6 @@
                         text: ''
                         color: [1,0,0,0]
 
-        BoxLayout:
-            orientation: 'vertical'
-            size_hint: None, None
-            size: self.minimum_size
-            padding: 10
-
-            pos_hint: {'center_x': 0.25, 'center_y': 0.5}
-
-            canvas.before:
-                Color:
-                    rgba: 1, 1, 1, 1
-                RoundedRectangle:
-                    pos: self.pos
-                    size: self.size
-                    radius: [10, 10, 10, 10]
-
             # Button:
             #     text: 'Devices'
             #     size_hint: None, None
