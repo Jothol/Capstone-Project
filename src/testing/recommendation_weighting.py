@@ -49,9 +49,9 @@ def balanceValues(features, likes, dislikes):
     difference = ((dislikes - likes)/(likes + dislikes))/10
     if difference == 0:
         if random() > 0.5:
-            difference = 0.5
+            difference = 0.05
         else:
-            difference = -0.5
+            difference = -0.05
     new_features["danceability"] = max(1, min(0, round(features["danceability"]+difference, 3)))
     new_features["energy"] = max(1, min(0, round(features["energy"]+difference, 3)))
     new_features["valence"] = max(1, min(0, round(features["valence"]+difference, 3)))
