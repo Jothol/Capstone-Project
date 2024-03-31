@@ -8,6 +8,7 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 from kivy.uix.screenmanager import Screen, ScreenManager, SlideTransition
 from kivy.graphics import Color, Rectangle
+from kivy.clock import Clock
 
 from src.kv_screens.ls_tab1 import LS_Tab1
 from src.kv_screens.ls_tab2 import LS_Tab2
@@ -27,6 +28,8 @@ class ListeningSessionScreen(Screen):
     add_button_layout = None
     remove_button_layout = None
     new_host_button_layout = None
+    end_session_button_layout = None
+    clock_test = None
 
     def on_enter(self, *args):
         bl = BoxLayout(orientation='vertical')
@@ -41,7 +44,7 @@ class ListeningSessionScreen(Screen):
         self.add_widget(bl)
 
         if ListeningSessionScreen.user.username == self.manager.ids.session_name.host.username:
-            bl2 = BoxLayout(orientation='horizontal', size_hint=(.4, .1), size=(200, 20),
+            bl2 = BoxLayout(orientation='horizontal', size_hint=(.6, .1), size=(200, 20),
                             pos_hint={'center_x': .5, 'center_y': 1})
             bl2.ids = self.parent.ids
             bl2.canvas.before.add(Color(0.1, 0.1, 0.1, 1))
@@ -52,8 +55,14 @@ class ListeningSessionScreen(Screen):
                                   pos=(600, 850), size=(130, 30), on_press=self.open_remove_user))
             bl2.add_widget(Button(text='New Host', background_color=[0, 1, 0, 1], size_hint=(.5, .5),
                                   pos=(600, 850), size=(130, 30), on_press=self.open_new_host))
+            bl2.add_widget(Button(text='End Session', background_color=[0, 1, 0, 1], size_hint=(.5, .5),
+                                  pos=(600, 850), size=(130, 30), on_press=self.open_end_session))
             self.add_widget(bl2)
             ListeningSessionScreen.host_bar = bl2
+
+        # new variables for clock testing end session button and host replacement
+        ListeningSessionScreen.clock_test = Clock.schedule_interval(self.force_leave, 5)
+        ListeningSessionScreen.clock_host_test = Clock.schedule_interval(self.host_replacement, 5)
 
     def on_pre_enter(self, *args):
         sess = self.manager.ids.session_name
@@ -63,6 +72,17 @@ class ListeningSessionScreen(Screen):
         self.ids.user_label.text = 'Hosted by: {}.'.format(sess.host.username)
 
         pass
+
+    # new method added for 'End Session' button from host
+    # needs 2+ people for testing
+    def force_leave(self, instance):
+        if session.get_session(ListeningSessionScreen.session_name.name.id) is None:
+            self.parent.ids.session_name = None
+            self.manager.current = "home_page"
+            return
+
+    def on_leave(self, *args):
+        Clock.unschedule(self.force_leave)
 
     def add_account(self):
         sess = self.manager.ids.session_name
@@ -81,6 +101,10 @@ class ListeningSessionScreen(Screen):
             ListeningSessionScreen.host_bar = None
         else:
             sess.remove_user(user)
+        Clock.unschedule(self.host_replacement)
+        Clock.unschedule(self.force_leave)
+        ListeningSessionScreen.clock_test = None
+        ListeningSessionScreen.clock_host_test = None
 
         self.parent.ids.session_name = None
         self.manager.current = "home_page"
@@ -101,6 +125,9 @@ class ListeningSessionScreen(Screen):
         if ListeningSessionScreen.new_host_button_layout is not None:
             self.remove_widget(ListeningSessionScreen.new_host_button_layout)
             ListeningSessionScreen.new_host_button_layout = None
+        if ListeningSessionScreen.end_session_button_layout is not None:
+            self.remove_widget(ListeningSessionScreen.end_session_button_layout)
+            ListeningSessionScreen.end_session_button_layout = None
 
         bl = BoxLayout(orientation="horizontal", size_hint=(.4, .070), size=(100, 60),
                        pos=(350, 795))
@@ -140,6 +167,9 @@ class ListeningSessionScreen(Screen):
         if ListeningSessionScreen.new_host_button_layout is not None:
             self.remove_widget(ListeningSessionScreen.new_host_button_layout)
             ListeningSessionScreen.new_host_button_layout = None
+        if ListeningSessionScreen.end_session_button_layout is not None:
+            self.remove_widget(ListeningSessionScreen.end_session_button_layout)
+            ListeningSessionScreen.end_session_button_layout = None
 
         bl = BoxLayout(orientation="horizontal", size_hint=(.4, .070), size=(100, 60),
                        pos=(350, 795))
@@ -179,6 +209,9 @@ class ListeningSessionScreen(Screen):
         if ListeningSessionScreen.remove_button_layout is not None:
             self.remove_widget(ListeningSessionScreen.remove_button_layout)
             ListeningSessionScreen.remove_button_layout = None
+        if ListeningSessionScreen.end_session_button_layout is not None:
+            self.remove_widget(ListeningSessionScreen.end_session_button_layout)
+            ListeningSessionScreen.end_session_button_layout = None
 
         bl = BoxLayout(orientation="horizontal", size_hint=(.4, .070), size=(100, 60),
                        pos=(350, 795))
@@ -191,7 +224,6 @@ class ListeningSessionScreen(Screen):
                              on_press=self.new_host))
         ListeningSessionScreen.new_host_button_layout = bl
         self.add_widget(bl)
-        print(ListeningSessionScreen.new_host_button_layout.children)
 
         pass
 
@@ -209,6 +241,82 @@ class ListeningSessionScreen(Screen):
         ListeningSessionScreen.host_bar = None
         ListeningSessionScreen.new_host_button_layout = None
         self.ids.user_label.text = 'Hosted by: {}.'.format(ListeningSessionScreen.session_name.host.username)
+
+    # new method added for testing (needs 2 people)
+    def host_replacement(self, instance):
+        if ListeningSessionScreen.host_bar is not None:
+            return
+        host = ListeningSessionScreen.session_name.host
+        acc = ListeningSessionScreen.user
+        if acc.username == host.username:
+            bl2 = BoxLayout(orientation='horizontal', size_hint=(.6, .1), size=(200, 20),
+                            pos_hint={'center_x': .5, 'center_y': 1})
+            bl2.ids = self.parent.ids
+            bl2.canvas.before.add(Color(0.1, 0.1, 0.1, 1))
+            bl2.canvas.before.add(Rectangle(size=(1200, 50), pos=(0, 850)))
+            bl2.add_widget(Button(text='Add User', background_color=[0, 1, 0, 1], size_hint=(.5, .5),
+                                  pos=(600, 850), size=(130, 30), on_press=self.open_add_user))
+            bl2.add_widget(Button(text='Remove User', background_color=[0, 1, 0, 1], size_hint=(.5, .5),
+                                  pos=(600, 850), size=(130, 30), on_press=self.open_remove_user))
+            bl2.add_widget(Button(text='New Host', background_color=[0, 1, 0, 1], size_hint=(.5, .5),
+                                  pos=(600, 850), size=(130, 30), on_press=self.open_new_host))
+            bl2.add_widget(Button(text='End Session', background_color=[0, 1, 0, 1], size_hint=(.5, .5),
+                                  pos=(600, 850), size=(130, 30), on_press=self.open_end_session))
+            self.add_widget(bl2)
+            ListeningSessionScreen.host_bar = bl2
+
+        Clock.unschedule(self.host_replacement)
+        ListeningSessionScreen.clock_host_test = None
+
+        pass
+
+    def open_end_session(self, instance):
+        sess = ListeningSessionScreen.session_name
+        user = ListeningSessionScreen.user
+        if sess.host.username != user.username:
+            print("Only host can add users")
+            return
+        if ListeningSessionScreen.end_session_button_layout is not None:
+            self.remove_widget(ListeningSessionScreen.end_session_button_layout)
+            ListeningSessionScreen.end_session_button_layout = None
+            return
+        if ListeningSessionScreen.add_button_layout is not None:
+            self.remove_widget(ListeningSessionScreen.add_button_layout)
+            ListeningSessionScreen.add_button_layout = None
+        if ListeningSessionScreen.remove_button_layout is not None:
+            self.remove_widget(ListeningSessionScreen.remove_button_layout)
+            ListeningSessionScreen.remove_button_layout = None
+        if ListeningSessionScreen.new_host_button_layout is not None:
+            self.remove_widget(ListeningSessionScreen.new_host_button_layout)
+            ListeningSessionScreen.new_host_button_layout = None
+
+        bl = BoxLayout(orientation="horizontal", size_hint=(.25, .070), size=(100, 60),
+                       pos=(450, 795))
+        bl.padding = 10
+        bl.canvas.before.add(Color(0.2, 0.2, 0.2, 1))
+        bl.canvas.before.add(Rectangle(size=(285, 50), pos=(465, 800)))
+        bl.add_widget(Label(text='Are you sure?', color=[1, 1, 1, 1], bold=True, size_hint=(.60, 1)))
+        bl.add_widget(Button(text='Yes', background_color=[0, 1, 0, 1], size_hint=(.2, .8),
+                             pos_hint={'center_x': .5, 'center_y': .5}, on_press=self.end_session))
+        bl.add_widget(Button(text='No', background_color=[0, 1, 0, 1], size_hint=(.2, .8),
+                             pos_hint={'center_x': .5, 'center_y': .5}, on_press=self.cancel_end_session_request))
+        ListeningSessionScreen.end_session_button_layout = bl
+        self.add_widget(bl)
+
+    def end_session(self, instance):
+        self.parent.ids.session_name = None
+        self.manager.current = "home_page"
+        self.remove_widget(ListeningSessionScreen.end_session_button_layout)
+        ListeningSessionScreen.end_session_button_layout = None
+        for col in ListeningSessionScreen.session_name.name.collections():
+            for doc in col.list_documents():
+                doc.delete()
+        ListeningSessionScreen.session_name.name.delete()  # actual deletion of session name in firebase
+        pass
+
+    def cancel_end_session_request(self, instance):
+        self.remove_widget(ListeningSessionScreen.end_session_button_layout)
+        ListeningSessionScreen.end_session_button_layout = None
 
 
 class TabBar2(FloatLayout):
