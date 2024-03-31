@@ -38,6 +38,10 @@ class Spotivibe(App):
 
         return sm
 
+    def check_user_session(self):
+        if self.root.ids.session_name is not None:
+            self.root.ids.session_name.remove_user(self.root.ids.username)
+
 
 if __name__ == '__main__':
     cred = credentials.Certificate(r"..\other\database-access-key.json")
@@ -57,4 +61,8 @@ if __name__ == '__main__':
     Builder.load_file("kv_style/ls_tab2.kv")
     Builder.load_file("kv_style/ls_tab3.kv")
 
-    Spotivibe().run()
+    # Spotivibe().run()
+
+    sv = Spotivibe()
+    sv.run()
+    sv.check_user_session()

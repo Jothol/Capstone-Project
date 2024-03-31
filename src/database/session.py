@@ -93,12 +93,19 @@ def update_collection_from_remove(sess, removed_user):
 
     user_list = sess.get().to_dict()
     sess.set({})
+    if user_list.__len__() == 1:
+        for col in sess.collections():
+            for doc in col.list_documents():
+                doc.delete()
+        sess.delete()  # actual deletion of session name in firebase
+        return
+
     while user_list.__len__() > 0:
         temp = user_list.popitem()
         if temp[0] != removed_user.username:
             sess.update({temp[0]: temp[1]})
 
-    return None
+    return
 
 
 class Session:
@@ -152,18 +159,12 @@ class Session:
         update_collection_from_remove(self.name, user)
 
     def remove_host(self):
-        update_collection_from_remove(self.name, self.host)
-        # self.db.collection('users').document(self.host.username).update({'in_session': False})
         self.host.account.update({'in_session': False})
         self.host.in_session = False
+        update_collection_from_remove(self.name, self.host)
         self.host = None
-        if self.name.get().to_dict().__len__() == 0:
-            # extra loops for deleting subcollections for sesion in firebase
-            for col in self.name.collections():
-                for doc in col.list_documents():
-                    doc.delete()
-            self.name.delete() # actual deletion of session name in firebase
-        else:
+
+        if self.name.get().exists is True:
             self.find_new_host()
 
         return

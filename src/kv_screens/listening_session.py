@@ -61,7 +61,7 @@ class ListeningSessionScreen(Screen):
             ListeningSessionScreen.host_bar = bl2
 
         # new variables for clock testing end session button and host replacement
-        ListeningSessionScreen.clock_test = Clock.schedule_interval(self.force_leave, 5)
+        ListeningSessionScreen.clock_test = Clock.schedule_interval(self.force_leave, .5)
         ListeningSessionScreen.clock_host_test = Clock.schedule_interval(self.host_replacement, 5)
 
     def on_pre_enter(self, *args):
@@ -76,10 +76,11 @@ class ListeningSessionScreen(Screen):
     # new method added for 'End Session' button from host
     # needs 2+ people for testing
     def force_leave(self, instance):
-        if session.get_session(ListeningSessionScreen.session_name.name.id) is None:
+        if self.manager.ids.session_name.name.get().exists is False:
             self.parent.ids.session_name = None
             self.manager.current = "home_page"
             return
+        print("Hello")
 
     def on_leave(self, *args):
         Clock.unschedule(self.force_leave)
