@@ -42,7 +42,7 @@ class LS_Tab2(Screen):
             self.ids.session_name.set_uri(current["item"]["uri"])
         elif self.ids.session_name.get_uri() != "" and self.ids.session_name.get_uri() != \
                 current["item"]["uri"]:
-            player.queue_song(sp, self.ids.session_name.get_uri())
+            player.queue_song(sp, self.ids.session_name.get_uri(), session=self.ids.session_name)
             sp.next_track()
 
     def on_leave(self, *args):
