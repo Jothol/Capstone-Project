@@ -14,6 +14,7 @@ class LoginScreen(Screen):
             self.ids.error_message.color = [1, 0, 0, 1]
         else:
             acc = account.get_account(username)
+            acc.leave_session()
             self.parent.ids.username = acc
             self.parent.current = "home_page"
 

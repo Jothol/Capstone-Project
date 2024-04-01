@@ -48,6 +48,8 @@ class Tab3(Screen):
         self.parent.parent.parent.parent.ids.username.send_invite(username)
 
     def remove_friend(self, username):
+        if username == "":
+            return
         if self.parent.parent.parent.parent.ids.username.remove_friend(username):
             friends_list = self.friends.split("\n")
             friends_list.remove(username)
