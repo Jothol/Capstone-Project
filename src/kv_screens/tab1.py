@@ -95,7 +95,6 @@ class Tab1(Screen):
                 Tab1.session_name = session.create_session(session_name, Tab1.user)
                 self.manager.home_screen.manager.ids.session_name = Tab1.session_name
                 self.ids.error_message.text = ''
-                print(self.manager.home_screen.manager.current)
                 self.manager.home_screen.manager.current = "listening_session_page"
                 self.manager.home_screen.manager.ids.session_name = Tab1.session_name
         else:

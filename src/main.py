@@ -40,7 +40,10 @@ class Spotivibe(App):
 
     def check_user_session(self):
         if self.root.ids.session_name is not None:
-            self.root.ids.session_name.remove_user(self.root.ids.username)
+            if self.root.ids.session_name.host.username == self.root.ids.username.username:
+                self.root.ids.session_name.remove_host()
+            else:
+                self.root.ids.session_name.remove_user(self.root.ids.username)
 
 
 if __name__ == '__main__':

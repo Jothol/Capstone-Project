@@ -29,7 +29,6 @@ class ListeningSessionScreen(Screen):
     remove_button_layout = None
     new_host_button_layout = None
     end_session_button_layout = None
-    clock_test = None
 
     def on_enter(self, *args):
         bl = BoxLayout(orientation='vertical')
@@ -61,8 +60,9 @@ class ListeningSessionScreen(Screen):
             ListeningSessionScreen.host_bar = bl2
 
         # new variables for clock testing end session button and host replacement
-        ListeningSessionScreen.clock_test = Clock.schedule_interval(self.force_leave, .5)
-        ListeningSessionScreen.clock_host_test = Clock.schedule_interval(self.host_replacement, 5)
+        Clock.schedule_interval(self.force_leave, .5)
+        Clock.schedule_interval(self.host_replacement, .5)
+        Clock.schedule_interval(self.kick_user, .5)
 
     def on_pre_enter(self, *args):
         sess = self.manager.ids.session_name
@@ -80,10 +80,11 @@ class ListeningSessionScreen(Screen):
             self.parent.ids.session_name = None
             self.manager.current = "home_page"
             return
-        print("Hello")
 
     def on_leave(self, *args):
         Clock.unschedule(self.force_leave)
+        Clock.unschedule(self.host_replacement)
+        Clock.unschedule(self.kick_user)
 
     def add_account(self):
         sess = self.manager.ids.session_name
@@ -96,18 +97,21 @@ class ListeningSessionScreen(Screen):
     def submit(self):
         sess = self.manager.ids.session_name
         user = self.manager.ids.username
+        Clock.unschedule(self.host_replacement)
+        Clock.unschedule(self.force_leave)
         if sess.host.username == user.username:
+            print("Hello 1")
+            print(user.in_session)
             sess.remove_host()
+            print(user.in_session)
             self.remove_widget(ListeningSessionScreen.host_bar)
             ListeningSessionScreen.host_bar = None
         else:
+            print("Hello 2")
             sess.remove_user(user)
-        Clock.unschedule(self.host_replacement)
-        Clock.unschedule(self.force_leave)
-        ListeningSessionScreen.clock_test = None
-        ListeningSessionScreen.clock_host_test = None
 
         self.parent.ids.session_name = None
+        self.parent.ids.username.in_session = False
         self.manager.current = "home_page"
 
     def open_add_user(self, instance):
@@ -267,7 +271,6 @@ class ListeningSessionScreen(Screen):
             ListeningSessionScreen.host_bar = bl2
 
         Clock.unschedule(self.host_replacement)
-        ListeningSessionScreen.clock_host_test = None
 
         pass
 
@@ -308,12 +311,27 @@ class ListeningSessionScreen(Screen):
         self.parent.ids.session_name = None
         self.manager.current = "home_page"
         self.remove_widget(ListeningSessionScreen.end_session_button_layout)
+        Clock.unschedule(self.force_leave)
+        Clock.unschedule(self.host_replacement)
         ListeningSessionScreen.end_session_button_layout = None
         for col in ListeningSessionScreen.session_name.name.collections():
             for doc in col.list_documents():
                 doc.delete()
+        user_list = ListeningSessionScreen.session_name.name.get().to_dict()
+        while user_list.__len__() > 0:
+            temp = user_list.popitem()
+            acc = account.get_account(temp[0])
+            acc.account.update({'in_session': False})
+            acc.in_session = False
+
+        self.parent.ids.username.in_session = False
         ListeningSessionScreen.session_name.name.delete()  # actual deletion of session name in firebase
         pass
+
+    def kick_user(self, instance):
+        if self.parent.ids.username.in_session is False:
+            self.parent.ids.session_name = None
+            self.manager.current = "home_page"
 
     def cancel_end_session_request(self, instance):
         self.remove_widget(ListeningSessionScreen.end_session_button_layout)

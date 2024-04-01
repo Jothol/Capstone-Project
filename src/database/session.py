@@ -21,6 +21,7 @@ def create_session(session_name, user_host):
         return
 
     session.set({host.id: 'host'})
+    user_host.in_session = True
     return Session(session_name)
 
 
@@ -165,6 +166,7 @@ class Session:
         self.host = None
 
         if self.name.get().exists is True:
+            print("grass")
             self.find_new_host()
 
         return
