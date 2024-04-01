@@ -6,7 +6,7 @@ HEADER_LENGTH = 10
 client_socket = None
 
 # Connects to the server
-def connect(ip, port, my_username, error_callback):
+def connect(ip, port, my_username, error_callback, session_name=None):
     global client_socket
 
     # Create a socket
@@ -24,7 +24,7 @@ def connect(ip, port, my_username, error_callback):
 
     # Prepare username and header and send them
     # We need to encode username to bytes, then count number of bytes and prepare header of fixed size, that we encode to bytes as well
-    username = my_username.encode('utf-8')
+    username = (my_username + "-" + session_name).encode('utf-8')
     username_header = f"{len(username):<{HEADER_LENGTH}}".encode('utf-8')
     client_socket.send(username_header + username)
 
@@ -42,12 +42,12 @@ def send(message):
 # Starts listening function in a thread
 # incoming_message_callback - callback to be called when new message arrives
 # error_callback - callback to be called on error
-def start_listening(incoming_message_callback, error_callback):
-    Thread(target=listen, args=(incoming_message_callback, error_callback), daemon=True).start()
+def start_listening(incoming_message_callback, error_callback, session_name=None):
+    Thread(target=listen, args=(incoming_message_callback, error_callback, session_name), daemon=True).start()
 
 
 # Listens for incomming messages
-def listen(incoming_message_callback, error_callback):
+def listen(incoming_message_callback, error_callback, session_name=None):
     while True:
 
         try:
@@ -71,10 +71,16 @@ def listen(incoming_message_callback, error_callback):
                 message_length = int(message_header.decode('utf-8').strip())
                 message = client_socket.recv(message_length).decode('utf-8')
 
+                if session_name is not None:
+                    if username.split('-')[1] == session_name:
+                        incoming_message_callback(username.split('-')[0], message)
+                else:
+                    incoming_message_callback(username, message)
                 # Print message
-                incoming_message_callback(username, message)
+
 
         except Exception as e:
             # Any other exception - something happened, exit
+            print(e)
             error_callback('Reading error: {}'.format(str(e)))
     sys.exit()
