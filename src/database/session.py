@@ -131,13 +131,18 @@ class Session:
 
     # used to update the user's collection of session histories (if it ever gets reached :(()
     def update_user_history(self, user):
-        session_history = self.name.collection('saved_songs')
+        session_history = self.name.collection('saved_songs').get()
         # could add current time as well to remove any confusion w/ duplicate names
         session_name = self.get_name() + str(date.today())
         print(session_history)
         print(session_name)
-        session_entry = user.account.previous_sessions.collection(session_name)
-        session_entry.set(session_history)
+        print(user)
+        print(user.previous_sessions.get())
+        aa = user.previous_sessions.get()
+        for e in aa:
+            print(e)
+        # user.previous_sessions.collection("session_history").set(session_history)
+        # print("update_user_history: got to the end fuck yes")
 
     # Updates the saved songs field in the database
     # name and album are optional fields
@@ -175,6 +180,7 @@ class Session:
         # self.db.collection('users').document(self.host.username).update({'in_session': False})
         self.host.account.update({'in_session': False})
         self.host.in_session = False
+        self.update_user_history(user=self.host)
         self.host = None
         if self.name.get().to_dict().__len__() == 0:
             # extra loops for deleting subcollections for sesion in firebase
