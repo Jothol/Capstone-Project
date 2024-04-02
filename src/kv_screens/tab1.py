@@ -45,6 +45,7 @@ class Tab1(Screen):
         print(self.children)
         self.children[1].ids.username = self.manager.ids.username
         self.manager.ids.session_name = self.children[1].ids.session_name
+        self.ids.welcome_label.text = 'Welcome, {}!'.format(self.manager.ids.username.username)
 
         pass
 

@@ -112,6 +112,7 @@ def update_collection_from_remove(sess, removed_user):
 class Session:
     def __init__(self, session_name):
         self.db = firestore.client()
+        self.batch = self.db.batch()
         self.name = self.db.collection('sessions').document(session_name)
         self.host = get_host(self.name)
         self.host.account.update({'in_session': True})
@@ -119,6 +120,8 @@ class Session:
         self.saved_song = self.name.collection('saved songs').document(' ')
         self.saved_song.set({'URI': '', 'song_name': '', 'album': ''})
         self.current_song = self.name.collection('session info').document('current song')
+        # self.user_list = self.name.get().to_dict()
+        self.exist = self.name.get()
         if self.current_song.get().to_dict() is None:
             self.current_song.set({'URI': '', 'song_name': '', 'album': ''})
 
