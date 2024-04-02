@@ -76,8 +76,9 @@ class ListeningSessionScreen(Screen):
     # new method added for 'End Session' button from host
     # needs 2+ people for testing
     def force_leave(self, instance):
-        if self.manager.ids.session_name.name.get().exists is False:
+        if self.parent.ids.session_name is None or self.manager.ids.session_name.name.get().exists is False:
             self.parent.ids.session_name = None
+            self.parent.ids.username = account.get_account(self.parent.ids.username.username)
             self.manager.current = "home_page"
             return
 
@@ -251,7 +252,7 @@ class ListeningSessionScreen(Screen):
     def host_replacement(self, instance):
         if ListeningSessionScreen.host_bar is not None:
             return
-        host = ListeningSessionScreen.session_name.host
+        host = ListeningSessionScreen.session_name.host.username.get()
         acc = ListeningSessionScreen.user
         if acc.username == host.username:
             bl2 = BoxLayout(orientation='horizontal', size_hint=(.6, .1), size=(200, 20),
