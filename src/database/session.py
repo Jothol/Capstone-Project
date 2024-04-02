@@ -22,6 +22,7 @@ def create_session(session_name, user_host):
         return
 
     session.set({host.id: 'host'})
+    user_host.in_session = True
     return Session(session_name)
 
 
@@ -94,12 +95,19 @@ def update_collection_from_remove(sess, removed_user):
 
     user_list = sess.get().to_dict()
     sess.set({})
+    if user_list.__len__() == 1:
+        for col in sess.collections():
+            for doc in col.list_documents():
+                doc.delete()
+        sess.delete()  # actual deletion of session name in firebase
+        return
+
     while user_list.__len__() > 0:
         temp = user_list.popitem()
         if temp[0] != removed_user.username:
             sess.update({temp[0]: temp[1]})
 
-    return None
+    return
 
 
 class Session:
@@ -142,8 +150,8 @@ class Session:
         for e in aa:
             print(e)
         # user.previous_sessions.collection("session_history").set(session_history)
-        # print("update_user_history: got to the end fuck yes")
-
+        # print("update_user_history: got to the end")
+        
     # Updates the saved songs field in the database
     # name and album are optional fields
     def update_session_history(self, uri, name='', album=''):
@@ -172,23 +180,19 @@ class Session:
 
         user.account.update({'in_session': False})
         user.in_session = False
-        self.update_user_history(user=user)
+        # self.update_user_history(user=user)
         update_collection_from_remove(self.name, user)
 
     def remove_host(self):
-        update_collection_from_remove(self.name, self.host)
-        # self.db.collection('users').document(self.host.username).update({'in_session': False})
         self.host.account.update({'in_session': False})
         self.host.in_session = False
-        self.update_user_history(user=self.host)
+        update_collection_from_remove(self.name, self.host)
+        # TODO: this (commenting out the calls to update user history in case this merges into your branch) (sorry)
+        # self.update_user_history(user=self.host)
         self.host = None
-        if self.name.get().to_dict().__len__() == 0:
-            # extra loops for deleting subcollections for sesion in firebase
-            for col in self.name.collections():
-                for doc in col.list_documents():
-                    doc.delete()
-            self.name.delete() # actual deletion of session name in firebase
-        else:
+
+        if self.name.get().exists is True:
+            print("grass")
             self.find_new_host()
 
         return

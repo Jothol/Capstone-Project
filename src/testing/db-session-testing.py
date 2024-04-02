@@ -222,8 +222,8 @@ def test_16():
 # testing of retrieving uri and changing uri of current song
 def test_17():
     acc = account.get_account('riley')
-    # sess = session.create_session('temp', acc)
-    sess = session.get_session("temp")
+    sess = session.create_session('temp', acc)
+    # sess = session.get_session("temp")
     print(sess)
     print(sess.get_uri())
     sess.set_uri('bingbong')
@@ -254,4 +254,7 @@ if __name__ == "__main__":
     # session.delete_session(sess.name)
     # Just for test_16
 
-    test_18()
+    test_17()
+
+# helpful links
+# https://cloud.google.com/firestore/docs/manage-data/delete-data#collections
