@@ -38,12 +38,18 @@ def get_data_from_track_uri(uri):
         print("Error in get_data_from_track_uri:", err)
 
 
-def queue_song(sp, uri):
+def queue_song(sp, uri, session=None):
     try:
         sp.add_to_queue(uri)
         # this is going to be interesting - the session history is shared across users, sp is local to each user.
         # maybe solution should be to give this a list of each user's sp's to add to each queue individually?
-        session_history.append(uri)
+        if session is not None:
+            print("queue_song: session is *not* none")
+            track = sp.track(uri)
+            session.update_session_history(uri, name=track["name"])
+        elif session is None:
+            print("queue_song: session is none")
+            session_history.append(uri)
     except SpotifyException as err:
         print("Error in enqueue:", err)
 
@@ -60,7 +66,7 @@ def play_button_functionality(sp, di, session=None):
         currently_playing = sp.currently_playing()
         print(currently_playing)
         if session is not None and session.get_uri() != "" and session.get_uri() != currently_playing["item"]["uri"]:
-            queue_song(sp, session.get_uri())
+            queue_song(sp, session.get_uri(), session=session)
             sp.next_track()
         if currently_playing is None:
             print("No track playing. Greyed out play button.")
@@ -122,7 +128,7 @@ def next_song(sp, session=None):
                 queue_song(sp, uri)
                 session.set_uri(uri)
             elif session.get_uri() != sp.currently_playing()["item"]["uri"]:
-                queue_song(sp, session.get_uri())
+                queue_song(sp, session.get_uri(), session=session)
             # go to the next song in queue
             sp.next_track()
     except SpotifyException as err:

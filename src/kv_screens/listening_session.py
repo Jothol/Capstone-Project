@@ -95,7 +95,7 @@ class ListeningSessionScreen(Screen):
             self.ids.error_message.color = [1, 0, 0, 1]
         pass
 
-    def submit(self):
+    def submit(self):  # this is the leave button handler
         sess = self.manager.ids.session_name
         user = self.manager.ids.username
         Clock.unschedule(self.host_replacement)
@@ -110,7 +110,7 @@ class ListeningSessionScreen(Screen):
         else:
             print("Hello 2")
             sess.remove_user(user)
-
+        print("leave button handler has been called!")
         self.parent.ids.session_name = None
         self.parent.ids.username.in_session = False
         self.manager.current = "home_page"

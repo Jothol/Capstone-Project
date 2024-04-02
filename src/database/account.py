@@ -58,6 +58,7 @@ class Account:
         self.in_session = self.account.get().to_dict().get('in_session')
         self.friends = self.account.get().to_dict().get('friends')
         self.invites = self.account.get().to_dict().get('invites')
+        self.previous_sessions = self.account.collection('previous_sessions')
 
     def get_username(self):
         return self.username
@@ -190,3 +191,6 @@ class Account:
             friend_invites_list.remove(self.username)
             friend_invites = ", ".join(friend_invites_list)
             friend.account.update({'invites': friend_invites})
+
+    def get_previous_sessions(self):
+        return self.previous_sessions

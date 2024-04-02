@@ -1,11 +1,16 @@
 #:kivy 2.3.0
 
 <HomeScreen>:
-    Image:
-        source: '../other/images/temp_logo.png'
-        fit_mode: 'scale-down'
+    BoxLayout:
+        orientation: 'vertical'
+
+        Image:
+            source: '../other/images/temp_logo.png'
+            fit_mode: 'scale-down'
+
 
 <TabBar>:
+    id: tab_bar
     size_hint_y: None
     height: dp(50)  # Set the height in dp (adjust as needed)
 
@@ -26,10 +31,11 @@
 
 
     Button:
+        id: home_button
         size_hint: None, None  # Disable the x-size hint
         size: dp(50), dp(50)  # Set the width in dp (adjust as needed)
         pos_hint: {'center_x': 1/6, 'center_y': 0.5}
-        background_color: 0, 0, 0, 0
+        background_color: 0, 1, 0, 1
 
         on_press:
             root.switch_screen('1')
@@ -41,6 +47,7 @@
             size: self.parent.height * 0.6, self.parent.height * 0.6
 
     Button:
+        id: search_button
         size_hint: None, None  # Disable the x-size hint
         size: dp(50), dp(50)  # Set the width in dp (adjust as needed)
         pos_hint: {'center_x': 0.5, 'center_y': 0.5}
@@ -56,6 +63,7 @@
             size: self.parent.height * 0.5, self.parent.height * 0.5
 
     Button:
+        id: setting_button
         size_hint: None, None  # Disable the x-size hint
         size: dp(50), dp(50)  # Set the width in dp (adjust as needed)
         pos_hint: {'center_x': 5/6, 'center_y': 0.5}
