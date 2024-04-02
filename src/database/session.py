@@ -129,14 +129,15 @@ class Session:
     def set_uri(self, new_uri):
         self.current_song.update({'URI': new_uri})
 
-    # TODO: store session history information on user on cleanup (name of session + date, contains list of URIs)
+    # used to update the user's collection of session histories (if it ever gets reached :(()
     def update_user_history(self, user):
         session_history = self.name.collection('saved_songs')
         # could add current time as well to remove any confusion w/ duplicate names
         session_name = self.get_name() + str(date.today())
         print(session_history)
         print(session_name)
-        user.account.previous_sessions.collection(session_name)
+        session_entry = user.account.previous_sessions.collection(session_name)
+        session_entry.set(session_history)
 
     # Updates the saved songs field in the database
     # name and album are optional fields
@@ -166,6 +167,7 @@ class Session:
 
         user.account.update({'in_session': False})
         user.in_session = False
+        self.update_user_history(user=user)
         update_collection_from_remove(self.name, user)
 
     def remove_host(self):

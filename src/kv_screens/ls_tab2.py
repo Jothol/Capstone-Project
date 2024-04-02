@@ -17,11 +17,9 @@ sp = player.sp
 di = "unselected"
 
 
-
-
-
 class LS_Tab2(Screen):
     index = 2
+    check_event = None  # Store the reference to the scheduled event
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -33,7 +31,7 @@ class LS_Tab2(Screen):
 
     def on_enter(self, *args):
         self.ids.session_name = self.manager.parent.parent.parent.ids.session_name
-        self.ids.check = Clock.schedule_interval(self.get_current_song, 5)
+        self.check_event = Clock.schedule_interval(self.get_current_song, 5)  # Store the event reference
 
     def get_current_song(self, dt):
         # print("Testing")
@@ -46,7 +44,10 @@ class LS_Tab2(Screen):
             sp.next_track()
 
     def on_leave(self, *args):
-        Clock.unschedule(self.get_current_song)
+        print("on_leave reached")
+        if self.check_event:  # Check if the event reference exists
+            print("please work")
+            Clock.unschedule(self.check_event)  # Use the stored reference to unschedule the event
 
     def restart(self):
         pass
