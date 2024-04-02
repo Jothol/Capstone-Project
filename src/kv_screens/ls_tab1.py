@@ -48,6 +48,6 @@ class LS_Tab1(Screen):
             self.chat_page = ChatScreen(self.ids.session_name.get_name(), self.ids.username.get_username())
             screen = Screen(name="chat_page")
             screen.add_widget(self.chat_page)
-            self.parent.add_widget(screen)
+            self.add_widget(screen)
             self.chat_screen_exists = True
-        self.parent.current = 'chat_page'
+        self.current = 'chat_page'
