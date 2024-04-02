@@ -29,6 +29,8 @@
                     id: email_input
                     multiline: False
                     hint_text: 'Email'
+                    write_tab: False
+                    on_text_validate: root.submit(email_input.text, first_name_input.text, last_name_input.text)
 
             BoxLayout:
                 padding: dp(10)
@@ -37,6 +39,8 @@
                     id: first_name_input
                     multiline: False
                     hint_text: 'First Name'
+                    write_tab: False
+                    on_text_validate: root.submit(email_input.text, first_name_input.text, last_name_input.text)
 
             BoxLayout:
                 padding: dp(10)
@@ -45,6 +49,8 @@
                     id: last_name_input
                     multiline: False
                     hint_text: 'Last Name'
+                    write_tab: False
+                    on_text_validate: root.submit(email_input.text, first_name_input.text, last_name_input.text)
 
             AnchorLayout:
                 anchor_x: 'center'
