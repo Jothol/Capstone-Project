@@ -47,6 +47,7 @@ class Tab1(Screen):
         self.ids.welcome_label.text = 'Welcome, {}!'.format(self.manager.ids.username.username)
 
         if len(self.manager.ids.username.session_invites) != 0:
+            self.session_invites = DropDown()
             print("Hello", self.manager.ids.username.session_invites)
 
         pass
