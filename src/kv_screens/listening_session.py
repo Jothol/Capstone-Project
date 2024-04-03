@@ -129,7 +129,11 @@ class ListeningSessionScreen(Screen):
             print("User not found")
         else:
             print("user found!")
-            ListeningSessionScreen.session_name.add_user(user)
+            # ListeningSessionScreen.session_name.add_user(user)
+            print(user.session_invites)
+            user.session_invites.append(self.parent.ids.session_name.name.id)
+            print(user.session_invites)
+            user.account.update({'session_invites': user.session_invites})
 
     def open_add_user(self, instance):
         sess = ListeningSessionScreen.session_name
@@ -334,6 +338,7 @@ class TabBar2(FloatLayout):
         # self.screen_manager.home = home
 
     def switch_screen(self, screen_name):
+        print(self.screen_manager.current)
         # Access the ScreenManager and switch to the desired screen
         screen_to_switch = ''
 

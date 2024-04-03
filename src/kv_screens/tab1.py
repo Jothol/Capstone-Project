@@ -92,6 +92,7 @@ class Tab1(Screen):
             if button_input == "Join":
                 self.ids.error_message.text = "Session not found."
                 self.ids.error_message.color = [1, 0, 0, 1]
+                # update in here
             else:
                 Tab1.session_name = session.create_session(session_name, Tab1.user)
                 self.manager.home_screen.manager.ids.session_name = Tab1.session_name
@@ -103,6 +104,15 @@ class Tab1(Screen):
                 self.ids.error_message.text = "Session already created"
                 self.ids.error_message.color = [1, 0, 0, 1]
             else:
+                try:
+                    Tab1.user.session_invites = Tab1.user.account.get().get('session_invites')
+                    index = Tab1.user.session_invites.index(Tab1.session_name.name.id)
+                    Tab1.user.session_invites.pop(index)
+                    Tab1.user.account.update({'session_invites': Tab1.user.session_invites})
+                except ValueError:
+                    self.ids.error_message.text = "User not invited."
+                    return
+
                 # SessionHomeScreen.session_name = session_name
                 # sess = session.get_session(session_name)
                 Tab1.session_name.add_user(Tab1.user)
