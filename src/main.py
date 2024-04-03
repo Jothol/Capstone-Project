@@ -41,8 +41,8 @@ class Spotivibe(App):
         sm.add_widget(ListeningSessionScreen(name='listening_session_page'))
         sm.add_widget(ChangePassword(name='change_password_page'))
 
-        Window.minimum_width = dp(800)
-        Window.minimum_height = dp(600)
+        Window.minimum_width = 800
+        Window.minimum_height = 600
 
         return sm
 
