@@ -59,6 +59,7 @@ class ListeningSessionScreen(Screen):
                               pos=(600, 850), size=(130, 30), on_press=self.open_new_host))
         bl2.add_widget(Button(text='End Session', background_color=[0, 1, 0, 1], size_hint=(.5, .5),
                               pos=(600, 850), size=(130, 30), on_press=self.open_end_session))
+        # Add a bl2.bind() method
         ListeningSessionScreen.host_box_layout = bl2
         if ListeningSessionScreen.user.username == self.manager.ids.session_name.host.username:
 
@@ -121,19 +122,23 @@ class ListeningSessionScreen(Screen):
     # END OF CLOCK METHOD
 
     # BEGINNING OF HOST BUTTON METHODS
-    # BEGINNING OF ADD USER BUTTON
+    # BEGINNING OF INVITE USER BUTTON
     def add_acc(self, instance):
         user_name = ListeningSessionScreen.add_button_layout.children[1].text
         user = account.get_account(user_name)
+        sess = ListeningSessionScreen.session_name
         if user is None:
             print("User not found")
         else:
+            try:
+                index = user.friends.index(sess.host.username)
+                user.session_invites.append(self.parent.ids.session_name.name.id)
+                user.account.update({'session_invites': user.session_invites})
+            except ValueError:
+                print("You are not friends with the user")
+                return
             print("user found!")
             # ListeningSessionScreen.session_name.add_user(user)
-            print(user.session_invites)
-            user.session_invites.append(self.parent.ids.session_name.name.id)
-            print(user.session_invites)
-            user.account.update({'session_invites': user.session_invites})
 
     def open_add_user(self, instance):
         sess = ListeningSessionScreen.session_name
@@ -167,7 +172,7 @@ class ListeningSessionScreen(Screen):
         ListeningSessionScreen.add_button_layout = bl
         self.add_widget(bl)
 
-    # END OF ADD USER BUTTON
+    # END OF INVITE USER BUTTON
 
     # BEGINNING OF REMOVE USER BUTTON
     def remove_acc(self, instance):
@@ -219,6 +224,7 @@ class ListeningSessionScreen(Screen):
         user = account.get_account(user_name)
         if session.get_user(ListeningSessionScreen.session_name.name, user_name) is None:
             print("User not found")
+            return
         print("user found!")
         ListeningSessionScreen.session_name.name.update({ListeningSessionScreen.user.username: 'user'})
         ListeningSessionScreen.session_name.name.update({user_name: 'host'})
