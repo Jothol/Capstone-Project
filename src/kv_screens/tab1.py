@@ -42,10 +42,12 @@ class Tab1(Screen):
         # self has multiple files gathered in arrays, so get only one child
         # make sure you are getting the ScreenManager for session_home and listening_session
         # self.children[0] is currently the ScreenManager for them
-        print(self.children)
         self.children[1].ids.username = self.manager.ids.username
         self.manager.ids.session_name = self.children[1].ids.session_name
         self.ids.welcome_label.text = 'Welcome, {}!'.format(self.manager.ids.username.username)
+
+        if len(self.manager.ids.username.session_invites) != 0:
+            print("Hello", self.manager.ids.username.session_invites)
 
         pass
 
@@ -90,9 +92,17 @@ class Tab1(Screen):
         Tab1.session_name = session.get_session(session_name)
         if Tab1.session_name is None:
             if button_input == "Join":
-                self.ids.error_message.text = "Session not found."
                 self.ids.error_message.color = [1, 0, 0, 1]
-                # update in here
+                try:
+                    print("Hello 1")
+                    Tab1.user.session_invites = Tab1.user.account.get().get('session_invites')
+                    index = Tab1.user.session_invites.index(session_name)
+                    Tab1.user.session_invites.pop(index)
+                    Tab1.user.account.update({'session_invites': Tab1.user.session_invites})
+                    self.ids.error_message.text = "Session ended."
+                except ValueError:
+                    self.ids.error_message.text = "Session not found."
+                    return
             else:
                 Tab1.session_name = session.create_session(session_name, Tab1.user)
                 self.manager.home_screen.manager.ids.session_name = Tab1.session_name

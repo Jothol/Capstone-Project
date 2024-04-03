@@ -51,7 +51,7 @@ class ListeningSessionScreen(Screen):
         bl2.ids = self.parent.ids
         bl2.canvas.before.add(Color(0.1, 0.1, 0.1, 1))
         bl2.canvas.before.add(Rectangle(size=(1200, 50), pos=(0, 850)))
-        bl2.add_widget(Button(text='Add User', background_color=[0, 1, 0, 1], size_hint=(.5, .5),
+        bl2.add_widget(Button(text='Invite User', background_color=[0, 1, 0, 1], size_hint=(.5, .5),
                               pos=(600, 850), size=(130, 30), on_press=self.open_add_user))
         bl2.add_widget(Button(text='Remove User', background_color=[0, 1, 0, 1], size_hint=(.5, .5),
                               pos=(600, 850), size=(130, 30), on_press=self.open_remove_user))
@@ -161,7 +161,7 @@ class ListeningSessionScreen(Screen):
         bl.canvas.before.add(Color(0.2, 0.2, 0.2, 1))
         bl.canvas.before.add(Rectangle(size=(500, 50), pos=(350, 800)))
         bl.add_widget(Label(text='Insert name:', color=[1, 1, 1, 1], bold=True, size_hint=(.35, 1)))
-        bl.add_widget(TextInput(multiline=False, hint_text='Add User', size_hint=(.50, 1)))
+        bl.add_widget(TextInput(multiline=False, hint_text='Invite User', size_hint=(.50, 1)))
         bl.add_widget(Button(text='Enter', background_color=[0, 1, 0, 1], size_hint=(.15, 1), pos_hint={'center_x': .5},
                              on_press=self.add_acc))
         ListeningSessionScreen.add_button_layout = bl
