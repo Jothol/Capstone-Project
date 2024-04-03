@@ -56,7 +56,7 @@
                     text: 'Update Info'
                     background_color:[0,1,0,1]
                     on_press:
-                        root.manager.transition.direction = 'right'
+                        root.manager.transition.direction = 'down'
                         root.submit(email_input.text, first_name_input.text, last_name_input.text)
             Label:
                 id: error_message
@@ -70,5 +70,5 @@
         pos_hint: {'x': 0.01, 'y': 0.01}
         background_color:[0,1,0,1]
         on_press:
-            root.manager.transition.direction = 'right'
+            root.manager.transition.direction = 'down'
             root.manager.current = 'home_page'
