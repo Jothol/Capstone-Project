@@ -34,6 +34,7 @@ def set_opacity(image: Image, opacity):
 
 class HomeScreen(Screen):
     chat_screen_exists = False
+    accessed = False
 
     def connect(self):
         ip = "spotivibe.net"
@@ -51,17 +52,19 @@ class HomeScreen(Screen):
     # self is home screen
     # self.parent is main.py
     def on_enter(self):
-        bl = BoxLayout(orientation='vertical')
-        sm = ScreenManager()
-        sm.ids = self.parent.ids
-        sm.add_widget(Tab1(name='tab1'))
-        sm.add_widget(Tab2(name='tab2'))
-        sm.add_widget(Tab3(name='tab3'))
-        bl.ids = self.parent.ids
-        bl.add_widget(sm)
-        bl.add_widget(TabBar(self, sm))
+        if not self.accessed:
+            bl = BoxLayout(orientation='vertical')
+            sm = ScreenManager()
+            sm.ids = self.parent.ids
+            sm.add_widget(Tab1(name='tab1'))
+            sm.add_widget(Tab2(name='tab2'))
+            sm.add_widget(Tab3(name='tab3'))
+            bl.ids = self.parent.ids
+            bl.add_widget(sm)
+            bl.add_widget(TabBar(self, sm))
 
-        self.add_widget(bl)
+            self.add_widget(bl)
+            self.accessed = True
 
     def switch_to(self):
         pass

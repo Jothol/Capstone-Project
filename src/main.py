@@ -2,11 +2,14 @@ import sys
 
 from kivy.app import App
 from kivy.clock import Clock
+from kivy.core.window import Window
 from kivy.lang import Builder
+from kivy.metrics import dp
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import ScreenManager, Screen
 
 from src.kv_screens.add_account_info import AddAccountInfo
+from src.kv_screens.change_password import ChangePassword
 from src.kv_screens.create_account import CreateAccount
 from src.kv_screens.home import HomeScreen
 from src.kv_screens.login import LoginScreen
@@ -21,10 +24,11 @@ from src.kv_screens.listening_session import ListeningSessionScreen
 
 
 class Spotivibe(App):
+    screen_manager = ScreenManager()
 
     def build(self):
         # Create the screen manager
-        sm = ScreenManager()
+        sm = self.screen_manager
         sm.ids.username = None
         sm.ids.recInput = ''
         sm.ids.session_name = None
@@ -35,8 +39,28 @@ class Spotivibe(App):
         sm.add_widget(RecommendationScreen(name='recommendation_page'))
         sm.add_widget(RecommendationInputScreen(name='recommendation_input_page'))
         sm.add_widget(ListeningSessionScreen(name='listening_session_page'))
+        sm.add_widget(ChangePassword(name='change_password_page'))
+
+        Window.minimum_width = dp(800)
+        Window.minimum_height = dp(600)
 
         return sm
+
+    def logout(self):
+        sm = self.screen_manager
+        sm.ids.username = None
+        sm.ids.recInput = ''
+        sm.ids.session_name = None
+        sm.clear_widgets()
+
+        sm.add_widget(LoginScreen(name='login_page'))
+        sm.add_widget(CreateAccount(name='create_account_page'))
+        sm.add_widget(AddAccountInfo(name='add_account_info_page'))
+        sm.add_widget(HomeScreen(name='home_page'))
+        sm.add_widget(RecommendationScreen(name='recommendation_page'))
+        sm.add_widget(RecommendationInputScreen(name='recommendation_input_page'))
+        sm.add_widget(ListeningSessionScreen(name='listening_session_page'))
+        sm.add_widget(ChangePassword(name='change_password_page'))
 
 
 if __name__ == '__main__':
@@ -56,5 +80,6 @@ if __name__ == '__main__':
     Builder.load_file("kv_style/ls_tab1.kv")
     Builder.load_file("kv_style/ls_tab2.kv")
     Builder.load_file("kv_style/ls_tab3.kv")
+    Builder.load_file("kv_style/change_password.kv")
 
     Spotivibe().run()
