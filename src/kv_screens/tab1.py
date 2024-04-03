@@ -18,6 +18,7 @@ sp = player.sp
 class Tab1(Screen):
     index = 1
     device_dropdown = ObjectProperty(None)
+    invite_dropdown = ObjectProperty(None)
     user = None
     session_name = None
 
@@ -27,6 +28,7 @@ class Tab1(Screen):
     # self.manager.parent is boxlayout child from home
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.invite_button = None
         sm = ScreenManager()
         sm.ids.username = None
         sm.ids.session_name = None
@@ -42,13 +44,22 @@ class Tab1(Screen):
         # self has multiple files gathered in arrays, so get only one child
         # make sure you are getting the ScreenManager for session_home and listening_session
         # self.children[0] is currently the ScreenManager for them
+        print(self.children)
         self.children[1].ids.username = self.manager.ids.username
         self.manager.ids.session_name = self.children[1].ids.session_name
         self.ids.welcome_label.text = 'Welcome, {}!'.format(self.manager.ids.username.username)
 
         if len(self.manager.ids.username.session_invites) != 0:
-            self.session_invites = DropDown()
-            print("Hello", self.manager.ids.username.session_invites)
+            self.invite_dropdown = DropDown()
+            for invite in self.manager.ids.username.session_invites:
+                button = Button(text=invite, size_hint_y=None, height=44, pos=(800, 10))
+                # button.bind(on_release=self.select_option)
+                self.invite_dropdown.add_widget(button)
+
+            self.add_widget(self.invite_dropdown)
+            self.invite_button = Button(text='Invites', size_hint=(None, None), size=(180, 50), pos=(800, 10))
+            self.invite_button.bind(on_release=self.open_invites)
+            self.add_widget(self.invite_button)
 
         pass
 
@@ -58,6 +69,9 @@ class Tab1(Screen):
     def open_dropdown(self, instance):
         self.create_device_dropdown()
         self.device_dropdown.open(instance)
+
+    def open_invites(self, instance):
+        pass
 
     def select_option(self, button):
         print(f'Selected option: {button}')
