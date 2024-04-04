@@ -1,8 +1,10 @@
 import sys
 
 import kivy
+from kivy.animation import Animation
 from kivy.clock import Clock
 from kivy.graphics import Color
+from kivy.metrics import dp
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.image import Image
@@ -93,12 +95,19 @@ class TabBar(FloatLayout):
         elif int(screen_name) == 2:
             set_opacity(self.ids.search_image, 0.5)
         else:
+            bg_anim = Animation(padding=(dp(200), dp(200), dp(200), dp(200)), duration=0.1)
+            bg_anim.start(self.parent.parent.ids.background_image_container)
             set_opacity(self.ids.settings_image, 0.5)
 
         for i in self.screen_manager.screen_names:
             screen_to_switch = self.screen_manager.get_screen(i)
             if screen_to_switch.index == int(screen_name):
                 break
+
+        if self.screen_manager.current == 'tab3' and int(screen_name) != 3:
+            bg_anim = Animation(padding=(0, 0, 0, 0), duration=0.1)
+            bg_anim.start(self.parent.parent.ids.background_image_container)
+
 
         self.screen_manager.ids = self.screen_manager.parent.ids
 
