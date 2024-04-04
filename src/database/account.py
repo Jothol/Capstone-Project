@@ -17,6 +17,12 @@ def delete_account(username):
     db = firestore.client()
     account = db.collection('users').document(username)
     if account.get().exists:
+        friends = account.get().to_dict()['friends']
+        if friends != '':
+            friends_list = friends.split(", ")
+            account_instance = get_account(username)
+            for friend in friends_list:
+                account_instance.remove_friend(friend)
         account.delete()
         return True
     else:
