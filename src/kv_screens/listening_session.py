@@ -49,8 +49,20 @@ class ListeningSessionScreen(Screen):
         bl2 = BoxLayout(orientation='horizontal', size_hint=(.6, .1), size=(200, 20),
                         pos_hint={'center_x': .5, 'center_y': 1})
         bl2.ids = self.parent.ids
-        bl2.canvas.before.add(Color(0.1, 0.1, 0.1, 1))
+        bl2.canvas.before.add(Color(0.1, 0.7, 0.1, 1))
         bl2.canvas.before.add(Rectangle(size=(1200, 50), pos=(0, 850)))
+        print(self.size_hint_max)
+        print(self.x)
+        print(self.y)
+        print(self.height)
+        print(self.width)
+        print(self.pos)
+        print(self.pos_hint)
+        print(self.center_x)
+        print(self.center_y)
+        bl2.bind(height=self.update_height)
+        bl2.bind(width=self.update_width)
+        # bl2.canvas.before.add(Rectangle(size=(1200, 50), pos_hint={'center_x': .1, 'center_y': 1}))
         bl2.add_widget(Button(text='Invite User', background_color=[0, 1, 0, 1], size_hint=(.5, .5),
                               pos=(600, 850), size=(130, 30), on_press=self.open_add_user))
         bl2.add_widget(Button(text='Remove User', background_color=[0, 1, 0, 1], size_hint=(.5, .5),
@@ -69,6 +81,16 @@ class ListeningSessionScreen(Screen):
         # new variables for clock testing end session button and host replacement
         # Clock.schedule_interval(self.host_replacement, 1.3)
         Clock.schedule_interval(self.kick_user, 1.3)
+
+    def update_width(self, instance, value):
+        print(self.width)
+        print("value", value)
+        value = self.width
+
+    def update_height(self, instance, value):
+        print(self.height)
+        print("height", value)
+        value = self.height
 
     def on_pre_enter(self, *args):
         sess = self.manager.ids.session_name
