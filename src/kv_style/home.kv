@@ -2,6 +2,7 @@
 
 <HomeScreen>:
     BoxLayout:
+        id: background_image_container
         orientation: 'vertical'
 
         Image:
@@ -35,16 +36,23 @@
         size_hint: None, None  # Disable the x-size hint
         size: dp(50), dp(50)  # Set the width in dp (adjust as needed)
         pos_hint: {'center_x': 1/6, 'center_y': 0.5}
-        background_color: 0, 1, 0, 1
+        background_color: 0, 0, 0, 0
 
         on_press:
             root.switch_screen('1')
 
         Image:
-            id: my_image
+            id: home_image
             source: '../other/images/home_icon.png'
             center: self.parent.center
             size: self.parent.height * 0.6, self.parent.height * 0.6
+            canvas.after:
+                Color:
+                    rgba: 0, 1, 0, 0.5  # Red tint with 50% opacity
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+                    source: self.source
 
     Button:
         id: search_button
@@ -57,10 +65,17 @@
             root.switch_screen('2')
 
         Image:
-            id: my_image
+            id: search_image
             source: '../other/images/search_icon.png'
             center: self.parent.center
             size: self.parent.height * 0.5, self.parent.height * 0.5
+            canvas.after:
+                Color:
+                    rgba: 0, 1, 0, 0  # Red tint with 50% opacity
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+                    source: self.source
 
     Button:
         id: setting_button
@@ -73,7 +88,14 @@
             root.switch_screen('3')
 
         Image:
-            id: my_image
+            id: settings_image
             source: '../other/images/settings_icon.png'
             size: self.parent.height * 0.5, self.parent.height * 0.5
             center: self.parent.center
+            canvas.after:
+                Color:
+                    rgba: 0, 1, 0, 0  # Red tint with 50% opacity
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+                    source: self.source

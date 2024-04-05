@@ -61,8 +61,14 @@ class ListeningSessionScreen(Screen):
         sess = self.manager.ids.session_name
         ListeningSessionScreen.user = self.manager.ids.username
         ListeningSessionScreen.session_name = self.manager.ids.session_name
-        self.ids.session_label.text = 'Server: {}.'.format(sess.name.id)
-        self.ids.user_label.text = 'Hosted by: {}.'.format(sess.host.username)
+        if sess and sess.name:
+            self.ids.session_label.text = 'Server: {}.'.format(sess.name.id)
+        else:
+            self.ids.session_label.text = 'Server: Unknown.'
+        if sess and sess.host:
+            self.ids.user_label.text = 'Hosted by: {}.'.format(sess.host.username)
+        else:
+            self.ids.user_label.text = 'Hosted by: Unknown.'
 
         pass
 
