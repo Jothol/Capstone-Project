@@ -10,6 +10,7 @@ from kivy.uix.scrollview import ScrollView
 from kivy.uix.textinput import TextInput
 
 from src.database import socket_client
+from src.database.socket_client import ListenChat
 
 
 def show_error(message):
@@ -45,7 +46,7 @@ class ScrollableLabel(ScrollView):
 
 class ChatScreen(GridLayout):
 
-    def __init__(self, session_name, username, **kwargs):
+    def __init__(self, session_name, username,listener, **kwargs):
         super().__init__(**kwargs)
         self.cols = 1
         self.rows = 2
@@ -68,7 +69,8 @@ class ChatScreen(GridLayout):
         self.bind(size=self.adjust_fields)
 
         Clock.schedule_once(self.focus_text_input, 1)
-        socket_client.start_listening(self.incoming_message, show_error, self.session_name)
+        self.listener = listener
+        self.listener.start_listening(self.incoming_message, error_callback=show_error, session_name=self.session_name)
 
     def adjust_fields(self, *_):
 
@@ -93,17 +95,18 @@ class ChatScreen(GridLayout):
     def on_key_down(self, instance, keyboard, keycode, text, modifiers):
         if keycode == 40:  # Enter key
             self.send_message(None)
-        # if keycode == 43:  # Tab key
-        #    self.parent.parent.current = 'home_page'
+        if keycode == 43 and self.parent is not None:  # Tab key
+            self.listener.cancel_message()
+            self.parent.parent.disconnect()
 
 
     def send_message(self, _):
         message = self.new_message.text
         self.new_message.text = ""
-        if message:
+        if message != "/t":
             self.history.update_chat_history(
                 f"[color=dd2020]{self.username}[/color] >  {message}")
-            socket_client.send(message)
+            self.listener.send(message)
 
         Clock.schedule_once(self.focus_text_input, 0.1)
 

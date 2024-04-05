@@ -17,9 +17,6 @@ sp = player.sp
 di = "unselected"
 
 
-
-
-
 class LS_Tab2(Screen):
     index = 2
 
