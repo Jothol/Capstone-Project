@@ -42,12 +42,20 @@ class LS_Tab1(Screen):
     def connect(self):
         ip = "spotivibe.net"
         port = 5000
+        self.remove_widget(self.ids.add_button)
         if not self.chat_screen_exists:
             if not socket_client.connect(ip, port, self.ids.username.get_username(), show_error, self.ids.session_name.get_name()):
                 return
             self.chat_page = ChatScreen(self.ids.session_name.get_name(), self.ids.username.get_username())
-            screen = Screen(name="chat_page")
-            screen.add_widget(self.chat_page)
-            self.add_widget(screen)
+            self.screen = Screen(name="chat_page")
+            self.screen.add_widget(self.chat_page)
+            self.add_widget(self.screen)
             self.chat_screen_exists = True
         self.current = 'chat_page'
+
+    def disconnect(self):
+        if self.chat_screen_exists:
+            self.add_widget(self.ids.add_button)
+            self.screen.remove_widget(self.chat_page)
+            self.remove_widget(self.screen)
+            self.chat_screen_exists = False

@@ -52,7 +52,7 @@ class ChatScreen(GridLayout):
         self.session_name = session_name
         self.username = username
 
-        self.history = ScrollableLabel(height=Window.size[1] * 0.9, size_hint_y=None)
+        self.history = ScrollableLabel(height=Window.size[1] * 0.8, size_hint_y=None)
         self.add_widget(self.history)
 
         self.new_message = TextInput(width=Window.size[0] * 0.8, size_hint_x=None, multiline=False)
@@ -76,7 +76,7 @@ class ChatScreen(GridLayout):
         if Window.size[1] * 0.1 < 50:
             new_height = Window.size[1] - 50
         else:
-            new_height = Window.size[1] * 0.9
+            new_height = Window.size[1] * 0.8
         self.history.height = new_height
 
         # New message input width - 80%, but at least 160px for send button
@@ -93,8 +93,8 @@ class ChatScreen(GridLayout):
     def on_key_down(self, instance, keyboard, keycode, text, modifiers):
         if keycode == 40:  # Enter key
             self.send_message(None)
-        # if keycode == 43:  # Tab key
-        #    self.parent.parent.current = 'home_page'
+        if keycode == 43 and self.parent is not None:  # Tab key
+            self.parent.parent.disconnect()
 
 
     def send_message(self, _):
