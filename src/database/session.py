@@ -117,8 +117,8 @@ class Session:
         self.host = get_host(self.name)
         self.host.account.update({'in_session': True})
         self.songs_played = 0
-        self.saved_song = self.name.collection('saved songs').document(' ')
-        self.saved_song.set({'URI': '', 'song_name': '', 'album': ''})
+        self.saved_song = self.name.collection('saved songs')#.document(' ')
+        # self.saved_song.set({'URI': '', 'song_name': '', 'album': ''})
         self.current_song = self.name.collection('session info').document('current song')
         if self.current_song.get().to_dict() is None:
             self.current_song.set({'URI': '', 'song_name': '', 'album': ''})
@@ -139,16 +139,22 @@ class Session:
 
     # used to update the user's collection of session histories (if it ever gets reached :(()
     def update_user_history(self, user):
-        session_history = self.name.collection('saved_songs').get()
+        # session_history = self.name.collection('saved songs').stream()
+        collections = self.db.collection('sessions').document(self.get_name()).collections()
+        print(collections)
+        print("update_user_history before loop")
+        for e in collections:
+            print("update_user_history loop nest 1")
+            for doc in e.stream():
+                print("update_user_history loop nest 2")
+                print(f"{doc.id} => {doc.to_dict()}")
+        print("update_user_history after loop")
         # could add current time as well to remove any confusion w/ duplicate names
         session_name = self.get_name() + str(date.today())
-        print(session_history)
+        # print(session_history)
         print(session_name)
-        print(user)
-        print(user.previous_sessions.get())
-        aa = user.previous_sessions.get()
-        for e in aa:
-            print(e)
+        print(user.previous_sessions)
+
         # user.previous_sessions.collection("session_history").set(session_history)
         # print("update_user_history: got to the end")
         
@@ -180,7 +186,7 @@ class Session:
 
         user.account.update({'in_session': False})
         user.in_session = False
-        # self.update_user_history(user=user)
+        self.update_user_history(user=user)
         update_collection_from_remove(self.name, user)
 
     def remove_host(self):
@@ -188,7 +194,7 @@ class Session:
         self.host.in_session = False
         update_collection_from_remove(self.name, self.host)
         # TODO: this (commenting out the calls to update user history in case this merges into your branch) (sorry)
-        # self.update_user_history(user=self.host)
+        self.update_user_history(user=self.host)
         self.host = None
 
         if self.name.get().exists is True:

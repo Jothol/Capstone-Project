@@ -45,10 +45,12 @@ def queue_song(sp, uri, session=None):
         # maybe solution should be to give this a list of each user's sp's to add to each queue individually?
         if session is not None:
             print("queue_song: session is *not* none")
+            print(session)
             track = sp.track(uri)
             session.update_session_history(uri, name=track["name"])
-        elif session is None:
+        else:
             print("queue_song: session is none")
+            print(session)
             session_history.append(uri)
     except SpotifyException as err:
         print("Error in enqueue:", err)
@@ -125,7 +127,7 @@ def next_song(sp, session=None):
             # print(recommendation["tracks"][0]["name"])
             # add the generated recommendation to the queue
             if session.get_uri() == "" or session.get_uri() == sp.currently_playing()["item"]["uri"]:
-                queue_song(sp, uri)
+                queue_song(sp, uri, session=session)
                 session.set_uri(uri)
             elif session.get_uri() != sp.currently_playing()["item"]["uri"]:
                 queue_song(sp, session.get_uri(), session=session)
