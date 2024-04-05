@@ -95,7 +95,7 @@ class TabBar(FloatLayout):
         elif int(screen_name) == 2:
             set_opacity(self.ids.search_image, 0.5)
         else:
-            bg_anim = Animation(padding=(dp(200), dp(200), dp(200), dp(200)), duration=0.1)
+            bg_anim = Animation(padding=(dp(200), dp(200), dp(200), dp(200)), duration=0.35)
             bg_anim.start(self.parent.parent.ids.background_image_container)
             set_opacity(self.ids.settings_image, 0.5)
 
@@ -105,7 +105,7 @@ class TabBar(FloatLayout):
                 break
 
         if self.screen_manager.current == 'tab3' and int(screen_name) != 3:
-            bg_anim = Animation(padding=(0, 0, 0, 0), duration=0.1)
+            bg_anim = Animation(padding=(0, 0, 0, 0), duration=0.35)
             bg_anim.start(self.parent.parent.ids.background_image_container)
 
 
