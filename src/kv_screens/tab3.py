@@ -137,7 +137,7 @@ class Tab3(Screen):
         if message != '':
             message_label.text = message
             error_window.x = dp(-200)
-        if error_window.x <= -7:
+        if error_window.x <= dp(-7):
             self.ids.friend_input.text = ''
             self.error_window_open = True
             animation_window = Animation(pos=(error_window.x + dp(195), error_window.y), duration=0.1)
