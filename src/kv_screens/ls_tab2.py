@@ -46,7 +46,7 @@ class LS_Tab2(Screen):
             sp.next_track()
 
     def on_leave(self, *args):
-        Clock.unschedule(self.get_current_song)
+        Clock.unschedule(self.ids.check)
 
     def restart(self):
         pass

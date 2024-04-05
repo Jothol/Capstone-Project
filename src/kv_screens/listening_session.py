@@ -1,6 +1,7 @@
 import sys
 
 import kivy
+from kivy.app import App
 from kivy.clock import Clock
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
@@ -83,8 +84,7 @@ class ListeningSessionScreen(Screen):
         else:
             sess.remove_user(user)
         if self.children[0].children[1].current is "ls_tab2":
-            Clock.unschedule(LS_Tab2.get_current_song)
-            # TODO fix this as it does not currently work
+            self.children[0].children[1].current = "ls_tab1"
         self.parent.ids.session_name = None
         self.manager.current = "home_page"
 
