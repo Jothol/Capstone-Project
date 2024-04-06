@@ -49,17 +49,8 @@ class ListeningSessionScreen(Screen):
         bl2 = BoxLayout(orientation='horizontal', size_hint=(.6, .1), size=(200, 20),
                         pos_hint={'center_x': .5, 'center_y': 1})
         bl2.ids = self.parent.ids
-        bl2.canvas.before.add(Color(0.1, 0.7, 0.1, 1))
+        bl2.canvas.before.add(Color(0.1, 0.1, 0.1, 1))
         bl2.canvas.before.add(Rectangle(size=(1200, 50), pos=(0, 850)))
-        print(self.size_hint_max)
-        print(self.x)
-        print(self.y)
-        print(self.height)
-        print(self.width)
-        print(self.pos)
-        print(self.pos_hint)
-        print(self.center_x)
-        print(self.center_y)
         bl2.bind(height=self.update_height)
         bl2.bind(width=self.update_width)
         # bl2.canvas.before.add(Rectangle(size=(1200, 50), pos_hint={'center_x': .1, 'center_y': 1}))
