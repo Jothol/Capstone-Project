@@ -34,9 +34,7 @@ def connect(ip, port, my_username, error_callback, session_name=None):
 # Sends a message to the server
 def send(message):
     # Encode message to bytes, prepare header and convert to bytes, like for username above, then send
-    print("Message:"+message)
-    if message == "/t":
-        print(message.encode('utf-8'))
+    if message.encode('utf-8') == b'\t':
         return
     message = message.encode('utf-8')
     message_header = f"{len(message):<{HEADER_LENGTH}}".encode('utf-8')
