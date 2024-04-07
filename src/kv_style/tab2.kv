@@ -18,16 +18,20 @@
                 text: 'Volume'
                 color: [0,0,0,1]
 
-            Slider:
-                id: volume_slider
-                min: 0
-                max: 100
-                step: 1
-                value: 50
-                on_value: root.volume(volume_slider.value)
+            Widget:
+                id: volume_slider_placeholder
+
+            # Slider:
+            #    id: volume_slider
+            #    min: 0
+            #    max: 100
+            #    step: 1
+            #    value: 50
+            #    on_value: root.volume(volume_slider.value)
 
             Label:
-                text: f'Volume: {int(volume_slider.value)}%'
+                id: volume_label
+                text: f'Volume: 50'
                 color: [0,0,0,1]
         FloatLayout:
             id: player_window
