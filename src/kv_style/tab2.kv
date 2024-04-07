@@ -1,6 +1,7 @@
 <Tab2>:
     FloatLayout:
         BoxLayout:
+            id: volume_box
             size_hint: (None, None)
             size: (dp(100), dp(80))
             pos_hint: {'center_x': 0.5, 'center_y': 0.7}
@@ -17,9 +18,6 @@
             Label:
                 text: 'Volume'
                 color: [0,0,0,1]
-
-            Widget:
-                id: volume_slider_placeholder
 
             # Slider:
             #    id: volume_slider

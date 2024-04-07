@@ -47,7 +47,7 @@ class Tab2(Screen):
         volume_slider_instance = VolumeSlider()
         volume_slider_instance.bind(on_release=volume)
         volume_slider_instance.bind(value=self.update_slider_label)
-        self.ids.volume_slider_placeholder.add_widget(volume_slider_instance)
+        self.ids.volume_box.add_widget(volume_slider_instance)
 
     def on_enter(self, *args):
         pass
