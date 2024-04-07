@@ -2,39 +2,17 @@ import kivy
 from kivy.animation import Animation
 from kivy.graphics import RoundedRectangle, Color
 from kivy.metrics import dp
-from kivy.uix.slider import Slider
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen, ScreenManager
 
-from src.kv_screens import player
+from src.kv_screens import player, volume_slider
 
 kivy.require('2.3.0')
 
 sp = player.sp
 
 
-class VolumeSlider(Slider):
-    def __init__(self, **kwargs):
-        self.register_event_type('on_release')
-        self.step = 1
-        self.min = 0
-        self.max = 100
-        self.id = "volume_slider"
-        # self.value = TODO: initialize with users current device volume
-        super(VolumeSlider, self).__init__(**kwargs)
-
-    def on_release(self):
-        pass
-
-    def on_touch_up(self, touch):
-        super(VolumeSlider, self).on_touch_up(touch)
-        if touch.grab_current == self:
-            self.dispatch('on_release')
-            return True
-
-
 def volume(slider):
-    print(slider.value)
     player.volume_functionality(sp, slider.value)
 
 
@@ -44,10 +22,14 @@ class Tab2(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.add_widget(Label(text="Tab 2!"))
-        volume_slider_instance = VolumeSlider()
+        starting_volume = player.get_device_volume()
+        volume_slider_instance = volume_slider.VolumeSlider(value=starting_volume)
         volume_slider_instance.bind(on_release=volume)
         volume_slider_instance.bind(value=self.update_slider_label)
+        volume_percentage_label = Label(text=f"Volume: {starting_volume}%", color=[0, 0, 0, 1])
+        volume_percentage_label.id = 'volume_label'
         self.ids.volume_box.add_widget(volume_slider_instance)
+        self.ids.volume_box.add_widget(volume_percentage_label)
 
     def on_enter(self, *args):
         pass
@@ -76,9 +58,7 @@ class Tab2(Screen):
         player.next_song(sp)
 
     def update_slider_label(self, slider, value):
-        print(slider)
-        print(value)
-        self.ids.volume_label.text = f"Volume: {int(value)}%"
+        self.ids.volume_box.children[0].text = f"Volume: {int(value)}%"
 
     def shuffle(self):
         pass
