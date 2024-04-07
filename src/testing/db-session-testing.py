@@ -240,6 +240,15 @@ def test_18():
             doc.delete()
     sess.name.delete()
 
+def test_19():
+    sess = session.get_session("imtheaprilfool")
+    print(sess.name.collection("saved songs").id)
+
+    for i in sess.name.collection("saved songs").list_documents():
+        print(i.get().get("URI"))
+
+    print(sess.name.collection("saved songs").get("track1"))
+
 
 
 if __name__ == "__main__":
@@ -254,7 +263,7 @@ if __name__ == "__main__":
     # session.delete_session(sess.name)
     # Just for test_16
 
-    test_17()
+    test_19()
 
 # helpful links
 # https://cloud.google.com/firestore/docs/manage-data/delete-data#collections
