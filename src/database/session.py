@@ -120,10 +120,10 @@ class Session:
         self.saved_song = self.name.collection('saved songs').document(' ')
         self.saved_song.set({'URI': '', 'song_name': '', 'album': ''})
         self.current_song = self.name.collection('session info').document('current song')
-        # self.user_list = self.name.get().to_dict()
-        self.exist = self.name.get()
         if self.current_song.get().to_dict() is None:
-            self.current_song.set({'URI': '', 'song_name': '', 'album': ''})
+            self.current_song.set({'URI': '', 'song_name': '', 'album': '', 'likes': 0, 'dislikes': 0})
+        self.likes = self.get_likes()
+        self.dislikes = self.get_dislikes()
 
 
     def get_name(self):
@@ -136,6 +136,48 @@ class Session:
         return self.current_song.get().to_dict().get('URI')
 
         pass
+
+    def get_likes(self):
+        return self.current_song.get().get('likes')
+
+    # Increases likes when user presses like button
+    def increment_likes(self):
+        self.likes += 1
+        self.current_song.update({'likes': self.likes})
+
+    # Decrease likes when user unpresses like button
+    def decrement_likes(self):
+        if self.likes == 0:
+            print("Likes is at 0 and cannot be a negative number")
+            return
+
+        self.likes -= 1
+        self.current_song.update({'likes': self.likes})
+
+    def get_dislikes(self):
+        return self.current_song.get().get('dislikes')
+
+    # Increase dislikes when user presses dislike button
+    def increment_dislikes(self):
+        self.dislikes += 1
+        self.current_song.update({'dislikes': self.dislikes})
+
+    # Decrease dislikes when user unpresses dislike button
+    def decrement_dislikes(self):
+        if self.dislikes == 0:
+            print("Dislikes is at 0 and cannot be a negative number")
+            return
+
+        self.dislikes -= 1
+        self.current_song.update({'dislikes': self.dislikes})
+
+
+    # Used for moving to next song and need to reset fields for likes and dislikes
+    def reset_likes_and_dislikes(self):
+        self.likes = 0
+        self.dislikes = 0
+        self.current_song.update({'likes': self.likes})
+        self.current_song.update({'dislikes': self.dislikes})
 
     def set_uri(self, new_uri):
         self.current_song.update({'URI': new_uri})
