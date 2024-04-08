@@ -23,4 +23,5 @@ class AddAccountInfo(Screen):
             account.set_email(email)
             account.set_first_name(first_name)
             account.set_last_name(last_name)
+            self.manager.ids.username = account
             self.parent.current = 'home_page'

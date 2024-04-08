@@ -9,6 +9,7 @@ from kivy.uix.button import Button
 from kivy.uix.screenmanager import Screen, ScreenManager, SlideTransition
 from kivy.graphics import Color, Rectangle
 from kivy.clock import Clock
+from kivy.metrics import dp
 
 from src.kv_screens.ls_tab1 import LS_Tab1
 from src.kv_screens.ls_tab2 import LS_Tab2
@@ -45,23 +46,26 @@ class ListeningSessionScreen(Screen):
         bl.add_widget(TabBar2(self, sm))
         self.add_widget(bl)
 
+        print("width", self.width)
+        print("height", self.height)
+        print("pos", self)
+        print("dp(1200)", dp(1200))
+        print("dp(300)", dp(300))
+
         # host box layout
-        bl2 = BoxLayout(orientation='horizontal', size_hint=(.6, .1), size=(200, 20),
+        bl2 = BoxLayout(orientation='horizontal', size_hint=(.6, .1), size=(dp(200), dp(20)),
                         pos_hint={'center_x': .5, 'center_y': 1})
         bl2.ids = self.parent.ids
-        bl2.canvas.before.add(Color(0.1, 0.1, 0.1, 1))
-        bl2.canvas.before.add(Rectangle(size=(1200, 50), pos=(0, 850)))
-        bl2.bind(height=self.update_height)
-        bl2.bind(width=self.update_width)
-        # bl2.canvas.before.add(Rectangle(size=(1200, 50), pos_hint={'center_x': .1, 'center_y': 1}))
-        bl2.add_widget(Button(text='Invite User', background_color=[0, 1, 0, 1], size_hint=(.5, .5),
-                              pos=(600, 850), size=(130, 30), on_press=self.open_add_user))
-        bl2.add_widget(Button(text='Remove User', background_color=[0, 1, 0, 1], size_hint=(.5, .5),
-                              pos=(600, 850), size=(130, 30), on_press=self.open_remove_user))
-        bl2.add_widget(Button(text='New Host', background_color=[0, 1, 0, 1], size_hint=(.5, .5),
-                              pos=(600, 850), size=(130, 30), on_press=self.open_new_host))
-        bl2.add_widget(Button(text='End Session', background_color=[0, 1, 0, 1], size_hint=(.5, .5),
-                              pos=(600, 850), size=(130, 30), on_press=self.open_end_session))
+        bl2.canvas.before.add(Color(0.1, 0.8, 0.1, 1))
+        bl2.canvas.before.add(Rectangle(size=(1200, 50), pos=(dp(0), dp(850)), size_hint=(None, None)))
+        bl2.add_widget(Button(text='Invite User', background_color=[0, 1, 0, 1], size_hint=(None, None),
+                              pos=(600, 850), size=(dp(130), dp(30)), on_press=self.open_add_user))
+        bl2.add_widget(Button(text='Remove User', background_color=[0, 1, 0, 1], size_hint=(None, None),
+                              pos=(600, 850), size=(dp(130), dp(30)), on_press=self.open_remove_user))
+        bl2.add_widget(Button(text='New Host', background_color=[0, 1, 0, 1], size_hint=(None, None),
+                              pos=(600, 850), size=(dp(130), dp(30)), on_press=self.open_new_host))
+        bl2.add_widget(Button(text='End Session', background_color=[0, 1, 0, 1], size_hint=(None, None),
+                              pos=(600, 850), size=(dp(130), dp(30)), on_press=self.open_end_session))
         # Add a bl2.bind() method
         ListeningSessionScreen.host_box_layout = bl2
         if ListeningSessionScreen.user.username == self.manager.ids.session_name.host.username:

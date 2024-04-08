@@ -21,15 +21,15 @@
         pos_hint: {'x': 0.65, 'y': 0.09}
         bold: True
 
-    Button:
-        size_hint: (None, None)
-        size: (130, 30)
-        text: 'Leave'
-        pos_hint: {'x': 0.01, 'y': 0.09}
-        background_color:[0,1,0,1]
-        on_press:
-            root.manager.transition.direction = 'up'
-            root.submit()
+    # Button:
+        # size_hint: (None, None)
+        # size: (130, 30)
+        # text: 'Leave'
+        # pos_hint: {'x': 0.01, 'y': 0.09}
+        # background_color:[0,1,0,1]
+        # on_press:
+            # root.manager.transition.direction = 'up'
+            # root.submit()
 
     Label:
         id: error_message
