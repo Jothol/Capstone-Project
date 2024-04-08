@@ -13,3 +13,4 @@ for script in scripts:
 
 for process in processes:
     process.wait()
+

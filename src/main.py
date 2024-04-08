@@ -2,14 +2,11 @@ import sys
 
 from kivy.app import App
 from kivy.clock import Clock
-from kivy.core.window import Window
 from kivy.lang import Builder
-from kivy.metrics import dp
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import ScreenManager, Screen
 
 from src.kv_screens.add_account_info import AddAccountInfo
-from src.kv_screens.change_password import ChangePassword
 from src.kv_screens.create_account import CreateAccount
 from src.kv_screens.home import HomeScreen
 from src.kv_screens.login import LoginScreen
@@ -46,6 +43,13 @@ class Spotivibe(App):
 
         return sm
 
+    def check_user_session(self):
+        if self.root.ids.session_name is not None:
+            if self.root.ids.session_name.host.username == self.root.ids.username.username:
+                self.root.ids.session_name.remove_host()
+            else:
+                self.root.ids.session_name.remove_user(self.root.ids.username)
+
     def logout(self):
         sm = self.screen_manager
         sm.ids.username = None
@@ -80,6 +84,9 @@ if __name__ == '__main__':
     Builder.load_file("kv_style/ls_tab1.kv")
     Builder.load_file("kv_style/ls_tab2.kv")
     Builder.load_file("kv_style/ls_tab3.kv")
-    Builder.load_file("kv_style/change_password.kv")
 
-    Spotivibe().run()
+    # Spotivibe().run()
+
+    sv = Spotivibe()
+    sv.run()
+    sv.check_user_session()

@@ -222,8 +222,8 @@ def test_16():
 # testing of retrieving uri and changing uri of current song
 def test_17():
     acc = account.get_account('riley')
-    # sess = session.create_session('temp', acc)
-    sess = session.get_session("temp")
+    sess = session.create_session('temp', acc)
+    # sess = session.get_session("temp")
     print(sess)
     print(sess.get_uri())
     sess.set_uri('bingbong')
@@ -240,6 +240,57 @@ def test_18():
             doc.delete()
     sess.name.delete()
 
+def test_19():
+    sess = session.get_session("imtheaprilfool")
+    print(sess.name.collection("saved songs").id)
+
+    for i in sess.name.collection("saved songs").list_documents():
+        print(i.get().get("URI"))
+
+    print(sess.name.collection("saved songs").get("track1"))
+
+# Testing likes and dislikes
+def test_20():
+    acc = account.get_account("george")
+    # sess = session.create_session("poptart", acc)
+    sess = session.get_session("poptart")
+
+    # likes field in firebase increases by 2
+    sess.increment_likes()
+    sess.increment_likes()
+
+    # dislikes field in firebase increases by 4
+    sess.increment_dislikes()
+    sess.increment_dislikes()
+    sess.increment_dislikes()
+    sess.increment_dislikes()
+
+    # prints out likes and dislikes
+    print("Likes: ", sess.get_likes())
+    print("Dislikes: ", sess.get_dislikes())
+    print("\n")
+
+    # likes field in firebase decreases by 3
+    sess.decrement_likes()
+    sess.decrement_likes()
+    sess.decrement_likes()  # does not go through since current values of likes is 0
+
+    # dislikes field in firebase decreases by 2
+    sess.decrement_dislikes()
+    sess.decrement_dislikes()
+
+    # another print statement of likes and dislikes
+    print("Likes: ", sess.get_likes())
+    print("Dislikes: ", sess.get_dislikes())
+    print("\n")
+
+    # rests all likes and dislikes when a new song is played
+    sess.reset_likes_and_dislikes()
+
+    # final print statement of likes and dislikes
+    print("Likes: ", sess.get_likes())
+    print("Dislikes: ", sess.get_dislikes())
+
 
 
 if __name__ == "__main__":
@@ -254,4 +305,7 @@ if __name__ == "__main__":
     # session.delete_session(sess.name)
     # Just for test_16
 
-    test_18()
+    test_20()
+
+# helpful links
+# https://cloud.google.com/firestore/docs/manage-data/delete-data#collections

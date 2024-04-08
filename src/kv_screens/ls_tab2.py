@@ -37,6 +37,9 @@ class LS_Tab2(Screen):
 
     def get_current_song(self, dt):
         # print("Testing")
+        if self.ids.session_name.name is None:
+            return
+
         current = sp.currently_playing()
         if self.ids.session_name.get_uri() == "" and current is not None:
             self.ids.session_name.set_uri(current["item"]["uri"])
