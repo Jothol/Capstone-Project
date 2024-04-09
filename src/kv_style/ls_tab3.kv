@@ -82,7 +82,7 @@
                 anchor_y: 'top'
                 size_hint: None, None
                 size: self.parent.width - dp(60), dp(150)
-                padding: dp(10)
+                padding: dp(5)
                 canvas.before:
                     Color:
                         rgba: 0.1, 0.1, 0.1, 1
@@ -94,11 +94,16 @@
                     Line:
                         width: dp(1)
                         rectangle: self.x, self.y, self.width, self.height
-                Label:
-                    id: account_info
-                    size_hint: None, None
-                    size: self.texture_size
-                    text: "<loading>"
+                ScrollView:
+                    do_scroll_x: False
+                    do_scroll_y: True
+                    scroll_y: 10
+                    Label:
+                        id: song_info
+                        size_hint: None, None
+                        size: self.parent.width - dp(50), dp(50)
+                        text_size: self.width, None
+                        text: "<loading>"
             AnchorLayout:
                 anchor_x: 'center'  # Aligns children to the left
                 anchor_y: 'top'

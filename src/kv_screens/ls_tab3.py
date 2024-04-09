@@ -6,11 +6,16 @@ from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
 from kivy.graphics import Color, Rectangle
 from kivy.uix.screenmanager import Screen, ScreenManager
+from kivy.clock import Clock
 
 from src.database import account
 from src.database import session
 
+from src.kv_screens import player
+
 kivy.require('2.3.0')
+
+sp = player.sp
 
 
 class LS_Tab3(Screen):
@@ -20,6 +25,7 @@ class LS_Tab3(Screen):
     add_button_layout = None
     remove_button_layout = None
     user_list = None
+    song_list = ""
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -44,6 +50,30 @@ class LS_Tab3(Screen):
                 user_str += ", " + i
         print("user_array", user_str)
         self.ids.accs_list.text = user_str
+        Clock.schedule_interval(self.refresh_settings, 1.5)
+
+    def on_leave(self, *args):
+        Clock.unschedule(self.refresh_settings)
+
+    def refresh_settings(self, instance):
+        current = sp.currently_playing()
+        if current["is_playing"] is True:
+            album_name = current["item"]["album"]["name"]  # album name retrieval
+            song_name = current["item"]["name"]  # song name retrieval
+            artist_names = ""
+            for i in current["item"]["artists"]:  # artist(s) name retrieval
+                if artist_names == "":
+                    artist_names = i["name"]
+                else:
+                    artist_names += ", " + i["name"]
+            song = song_name + ": " + artist_names
+            index = LS_Tab3.song_list.find(song)
+            if index == -1:  # checks if song name is not already included
+                if LS_Tab3.song_list == "":
+                    LS_Tab3.song_list = song
+                else:
+                    LS_Tab3.song_list += "     " + song
+                self.ids.song_info.text = LS_Tab3.song_list
 
     def submit(self):
         sess = self.manager.ids.session_name
