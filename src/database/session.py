@@ -124,6 +124,9 @@ class Session:
             self.current_song.set({'URI': '', 'song_name': '', 'album': '', 'likes': 0, 'dislikes': 0})
         self.likes = self.get_likes()
         self.dislikes = self.get_dislikes()
+        self.session_status = self.name.collection('session info').document('session status')
+        if self.session_status.get().to_dict() is None:
+            self.session_status.set({'status': 'private'})
 
 
     def get_name(self):

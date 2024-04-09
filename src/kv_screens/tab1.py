@@ -145,14 +145,16 @@ class Tab1(Screen):
                 self.ids.error_message.text = "Session already created"
                 self.ids.error_message.color = [1, 0, 0, 1]
             else:
-                try:
-                    Tab1.user.session_invites = Tab1.user.account.get().get('session_invites')
-                    index = Tab1.user.session_invites.index(Tab1.session_name.name.id)
-                    Tab1.user.session_invites.pop(index)
-                    Tab1.user.account.update({'session_invites': Tab1.user.session_invites})
-                except ValueError:
-                    self.ids.error_message.text = "User not invited."
-                    return
+                if Tab1.session_name.session_status.get().get("status") == "private":
+                    try:
+                        Tab1.user.session_invites = Tab1.user.account.get().get('session_invites')
+                        index = Tab1.user.session_invites.index(Tab1.session_name.name.id)
+                        Tab1.user.session_invites.pop(index)
+                        Tab1.user.account.update({'session_invites': Tab1.user.session_invites})
+                    except ValueError:
+                        self.ids.error_message.text = "User not invited."
+                        self.ids.error_message.color = [1, 0, 0, 1]
+                        return
 
                 # SessionHomeScreen.session_name = session_name
                 # sess = session.get_session(session_name)
