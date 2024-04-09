@@ -213,7 +213,7 @@ def get_device_id():
 def get_device_volume():
     global dv, di
     devices = sp.devices()
-    if di == "unselected":
+    if di == "unselected" and len(devices['devices']) != 0:
         dv = int(devices['devices'][0]['volume_percent'])
     else:
         for device in devices['devices']:
