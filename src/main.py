@@ -2,11 +2,13 @@ import sys
 
 from kivy.app import App
 from kivy.clock import Clock
+from kivy.core.window import Window
 from kivy.lang import Builder
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import ScreenManager, Screen
 
 from src.kv_screens.add_account_info import AddAccountInfo
+from src.kv_screens.change_password import ChangePassword
 from src.kv_screens.create_account import CreateAccount
 from src.kv_screens.home import HomeScreen
 from src.kv_screens.login import LoginScreen

@@ -80,10 +80,10 @@ class LS_Tab2(Screen):
         pass
 
     def like(self):
-        pass
+        self.ids.session_name.increment_likes()
 
     def dislike(self):
-        pass
+        self.ids.session_name.increment_dislikes()
 
     def animate_player(self):
         player_window = self.ids.player_window
