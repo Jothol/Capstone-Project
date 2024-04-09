@@ -30,7 +30,6 @@
             width: 1
             points: [2 * self.width / 3, 0, 2 * self.width / 3, self.height]
 
-
     Button:
         id: home_button
         size_hint: None, None  # Disable the x-size hint
@@ -45,7 +44,7 @@
             id: home_image
             source: '../other/images/home_icon.png'
             center: self.parent.center
-            size: self.parent.height * 0.6, self.parent.height * 0.6
+            size: self.parent.height * 0.8, self.parent.height * 0.8
             canvas.after:
                 Color:
                     rgba: 0, 1, 0, 0.5  # Red tint with 50% opacity

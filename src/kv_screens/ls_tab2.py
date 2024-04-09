@@ -9,7 +9,7 @@ from kivy.metrics import dp
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen, ScreenManager
 
-from src.kv_screens import player
+from src.kv_screens import player, volume_slider
 
 kivy.require('2.3.0')
 
@@ -17,7 +17,8 @@ sp = player.sp
 di = "unselected"
 
 
-
+def volume(slider):
+    player.volume_functionality(sp, slider.value)
 
 
 class LS_Tab2(Screen):
@@ -30,6 +31,14 @@ class LS_Tab2(Screen):
         sm.ids.session_name = None
         sm.ids.check = None
         self.add_widget(sm)
+        starting_volume = player.get_device_volume()
+        volume_slider_instance = volume_slider.VolumeSlider(value=starting_volume)
+        volume_slider_instance.bind(on_release=volume)
+        volume_slider_instance.bind(value=self.update_slider_label)
+        volume_percentage_label = Label(text=f"Volume: {starting_volume}%", color=[0, 0, 0, 1])
+        volume_percentage_label.id = 'volume_label'
+        self.ids.volume_box.add_widget(volume_slider_instance)
+        self.ids.volume_box.add_widget(volume_percentage_label)
 
     def on_enter(self, *args):
         self.ids.session_name = self.manager.parent.parent.parent.ids.session_name
@@ -72,9 +81,8 @@ class LS_Tab2(Screen):
     def skip(self):
         player.next_song(sp, session=self.ids.session_name)
 
-    def volume(self, value):
-        print(value)
-        player.volume_functionality(sp, value)
+    def update_slider_label(self, slider, value):
+        self.ids.volume_box.children[0].text = f"Volume: {int(value)}%"
 
     def shuffle(self):
         pass

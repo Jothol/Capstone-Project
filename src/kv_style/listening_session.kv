@@ -58,6 +58,7 @@
 
 
     Button:
+        id: chat_button
         size_hint: None, None  # Disable the x-size hint
         size: dp(50), dp(50)  # Set the width in dp (adjust as needed)
         pos_hint: {'center_x': 1/6, 'center_y': 0.5}
@@ -67,12 +68,20 @@
             root.switch_screen('1')
 
         Image:
-            id: my_image
+            id: chat_image
             source: '../other/images/chat_icon.png'
             center: self.parent.center
-            size: self.parent.height * 0.6, self.parent.height * 0.6
+            size: self.parent.height * 0.8, self.parent.height * 0.8
+            canvas.after:
+                Color:
+                    rgba: 0, 1, 0, 0.5  # Red tint with 50% opacity
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+                    source: self.source
 
     Button:
+        id: music_button
         size_hint: None, None  # Disable the x-size hint
         size: dp(50), dp(50)  # Set the width in dp (adjust as needed)
         pos_hint: {'center_x': 0.5, 'center_y': 0.5}
@@ -82,12 +91,20 @@
             root.switch_screen('2')
 
         Image:
-            id: my_image
+            id: music_image
             source: '../other/images/music_icon.png'
             center: self.parent.center
             size: self.parent.height * 0.5, self.parent.height * 0.5
+            canvas.after:
+                Color:
+                    rgba: 0, 1, 0, 0  # Red tint with 50% opacity
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+                    source: self.source
 
     Button:
+        id: setting_button
         size_hint: None, None  # Disable the x-size hint
         size: dp(50), dp(50)  # Set the width in dp (adjust as needed)
         pos_hint: {'center_x': 5/6, 'center_y': 0.5}
@@ -97,7 +114,14 @@
             root.switch_screen('3')
 
         Image:
-            id: my_image
+            id: settings_image
             source: '../other/images/settings_icon.png'
             size: self.parent.height * 0.5, self.parent.height * 0.5
             center: self.parent.center
+            canvas.after:
+                Color:
+                    rgba: 0, 1, 0, 0  # Red tint with 50% opacity
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+                    source: self.source

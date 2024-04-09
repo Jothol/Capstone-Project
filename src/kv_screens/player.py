@@ -23,6 +23,7 @@ SPOTIPY_CLIENT_ID = '66880bb5822a48459696468e620a10d6'
 SPOTIPY_REDIRECT_URI = 'http://127.0.0.1:8080'
 
 di = "unselected"
+dv = -1
 
 
 # @author Serenity
@@ -207,6 +208,18 @@ def set_device_id(dev_id):
 
 def get_device_id():
     return di
+
+
+def get_device_volume():
+    global dv, di
+    devices = sp.devices()
+    if di == "unselected":
+        dv = int(devices['devices'][0]['volume_percent'])
+    else:
+        for device in devices['devices']:
+            if device['id'] == di:
+                dv = int(device['volume_percent'])
+    return dv
 
 
 # note: redirect URI needs to have a port and be http, not https
