@@ -28,5 +28,5 @@ class CreateAccount(Screen):
             self.ids.error_message.text = "Username taken."
             self.ids.error_message.color = [1, 0, 0, 1]
         else:
-            self.parent.ids.username = username
+            self.parent.ids.username = account.get_account(username)
             self.parent.current = 'add_account_info_page'

@@ -1,8 +1,12 @@
 import sys
 
 import kivy
+from kivy.app import App
+from kivy.clock import Clock
+from kivy.animation import Animation
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.image import Image
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
@@ -19,6 +23,15 @@ kivy.require('2.3.0')
 
 from src.database import account
 from src.database import session
+
+
+def set_opacity(image: Image, opacity):
+    # Find the Color instruction in canvas.after
+    for instruction in image.canvas.after.children:
+        if isinstance(instruction, Color):
+            # Modify the opacity value
+            instruction.rgba = (instruction.rgba[0], instruction.rgba[1], instruction.rgba[2], opacity)
+            break
 
 
 class ListeningSessionScreen(Screen):
@@ -91,8 +104,14 @@ class ListeningSessionScreen(Screen):
         sess = self.manager.ids.session_name
         ListeningSessionScreen.user = self.manager.ids.username
         ListeningSessionScreen.session_name = self.manager.ids.session_name
-        self.ids.session_label.text = 'Server: {}.'.format(sess.name.id)
-        self.ids.user_label.text = 'Hosted by: {}.'.format(sess.host.username)
+        if sess and sess.name:
+            self.ids.session_label.text = 'Server: {}.'.format(sess.name.id)
+        else:
+            self.ids.session_label.text = 'Server: Unknown.'
+        if sess and sess.host:
+            self.ids.user_label.text = 'Hosted by: {}.'.format(sess.host.username)
+        else:
+            self.ids.user_label.text = 'Hosted by: Unknown.'
 
         pass
 
@@ -111,7 +130,8 @@ class ListeningSessionScreen(Screen):
             ListeningSessionScreen.host_bar = None
         else:
             sess.remove_user(user)
-
+        if self.children[0].children[1].current is "ls_tab2":
+            self.children[0].children[1].current = "ls_tab1"
         self.parent.ids.session_name = None
         self.parent.ids.username.in_session = False
         self.manager.current = "home_page"
@@ -365,10 +385,37 @@ class TabBar2(FloatLayout):
         # Access the ScreenManager and switch to the desired screen
         screen_to_switch = ''
 
+        set_opacity(self.ids.chat_image, 0)
+        set_opacity(self.ids.music_image, 0)
+        set_opacity(self.ids.settings_image, 0)
+
+        if int(screen_name) == 1:
+            set_opacity(self.ids.chat_image, 0.5)
+            Animation(size=(self.ids.chat_button.width * 0.8, self.ids.chat_button.height * 0.8),
+                      center=self.ids.chat_button.center, duration=0.1).start(self.ids.chat_image)
+        elif int(screen_name) == 2:
+            set_opacity(self.ids.music_image, 0.5)
+            Animation(size=(self.ids.music_button.width * 0.7, self.ids.music_button.height * 0.7),
+                      center=self.ids.music_button.center, duration=0.1).start(self.ids.music_image)
+        else:
+            set_opacity(self.ids.settings_image, 0.5)
+            Animation(size=(self.ids.setting_button.width * 0.7, self.ids.setting_button.height * 0.7),
+                      center=self.ids.setting_button.center, duration=0.1).start(self.ids.settings_image)
+
         for i in self.screen_manager.screen_names:
             screen_to_switch = self.screen_manager.get_screen(i)
             if screen_to_switch.index == int(screen_name):
                 break
+
+        if self.screen_manager.current == 'ls_tab3' and int(screen_name) != 3:
+            Animation(size=(self.ids.setting_button.width * 0.5, self.ids.setting_button.height * 0.5),
+                      center=self.ids.setting_button.center, duration=0.1).start(self.ids.settings_image)
+        elif self.screen_manager.current == 'ls_tab2' and int(screen_name) != 2:
+            Animation(size=(self.ids.music_button.width * 0.5, self.ids.music_button.height * 0.5),
+                      center=self.ids.music_button.center, duration=0.1).start(self.ids.music_image)
+        elif self.screen_manager.current == 'ls_tab1' and int(screen_name) != 1:
+            Animation(size=(self.ids.chat_button.width * 0.6, self.ids.chat_button.height * 0.6),
+                      center=self.ids.chat_button.center, duration=0.1).start(self.ids.chat_image)
 
         self.screen_manager.ids = self.screen_manager.parent.ids
 

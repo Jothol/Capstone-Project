@@ -1,6 +1,8 @@
 import subprocess
 
 scripts = ["./main.py",
+           "./main.py",
+           "./main.py",
            "./main.py"]
 
 processes = []
@@ -11,3 +13,4 @@ for script in scripts:
 
 for process in processes:
     process.wait()
+
