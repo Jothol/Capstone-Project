@@ -58,7 +58,6 @@ def make_playlist_from_history(sp):
 def play_button_functionality(sp, di, session=None):
     try:
         currently_playing = sp.currently_playing()
-        print(currently_playing)
         if session is not None and session.get_uri() != "" and session.get_uri() != currently_playing["item"]["uri"]:
             queue_song(sp, session.get_uri())
             sp.next_track()
@@ -108,6 +107,7 @@ def next_song(sp, session=None):
             print("next song has been pressed")
             # use spotify_rec to generate a recommendation, currently based on what song is playing for the user
             currently_playing = sp.currently_playing()
+            print(currently_playing["item"]["name"])
             if currently_playing is not None:
                 features = get_features(sp, currently_playing["item"]["name"])
                 recommendation = spotify_rec_features(sp, currently_playing["item"]["name"], features)

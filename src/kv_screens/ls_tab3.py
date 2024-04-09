@@ -116,3 +116,14 @@ class LS_Tab3(Screen):
     #         print("user found!")
     #         LS_Tab3.session_name.remove_user(user)
     #     pass
+
+    def submit(self):
+        sess = self.manager.ids.session_name
+        user = self.manager.ids.username
+        # Clock.unschedule(self.host_replacement)
+        if sess.host.username == user.username:
+            sess.remove_host()
+            # self.remove_widget(LS_Tab3.host_bar)
+            # cLS_Tab3.host_bar = None
+        else:
+            sess.remove_user(user)

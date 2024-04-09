@@ -1,18 +1,163 @@
 <LS_Tab3>
-    # Button:
-        # id: add_button
-        # size_hint: (None, None)
-        # size: (130, 30)
-        # text: 'Add User'
-        # pos_hint: {'x': 0.01, 'y': 0.08}
-        # on_press:
-            # root.open_add_account()
+    BoxLayout:
+        orientation: 'vertical'
+        BoxLayout:
+            orientation: 'vertical'
+            padding: dp(30)
+            spacing: dp(10)
+            AnchorLayout:
+                anchor_x: 'left'
+                size_hint: None, None
+                size: self.parent.width - dp(60), dp(30)
+                Label:
+                    text: 'Users in Session:'
+                    font_size: dp(30)
+                    size_hint: None, None
+                    size: self.texture_size
+            AnchorLayout:
+                anchor_x: 'left'  # Aligns children to the left
+                anchor_y: 'top'
+                size_hint: None, None
+                size: self.parent.width - dp(60), dp(150)
+                padding: dp(10)
+                canvas.before:
+                    Color:
+                        rgba: 0.1, 0.1, 0.1, 1
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+                    Color:
+                        rgba: 1, 1, 1, 1
+                    Line:
+                        width: dp(1)
+                        rectangle: self.x, self.y, self.width, self.height
+                Label:
+                    id: friend_list
+                    size_hint: None, None
+                    size: self.texture_size
+                    text: "<loading>"
+            AnchorLayout:
+                anchor_x: 'center'  # Aligns children to the left
+                anchor_y: 'top'
+                BoxLayout:
+                    orientation: 'vertical'
+                    spacing: dp(10)
+                    BoxLayout:
+                        orientation: 'vertical'
+                        spacing: dp(5)
+                        TextInput:
+                            # id: friend_input
+                            size_hint: None, None
+                            size: dp(150), dp(30)
+                            multiline: False
+                            hint_text: 'Username'
+                        BoxLayout:
+                            size_hint: None, None
+                            size: dp(150), dp(10)
+                        Button:
+                            text: 'Send Friend Request'
+                            size_hint: None, None
+                            size: dp(150), dp(30)
+                            background_color:[0,1,0,1]
+                            # on_press: root.invite_friend(friend_input.text)
+                        BoxLayout:
+                            # id: blank_space
+                            orientation: 'vertical'
+                    BoxLayout:
+                        orientation: 'vertical'
+                        size_hint_x: None
+                        width: self.minimum_size[0]
+                        BoxLayout:
+                            id: dropdown_box
+                            canvas.before:
+                                Color:
+                                    rgba: 1, 1, 1, 1  # White color
+                                Rectangle:
+                                    pos: self.pos
+                                    size: self.size
+                            orientation: 'vertical'
+                            size_hint: None, None
+                            size: self.minimum_size
+                            Button:
+                                text: 'Pending Invites'
+                                size_hint: None, None
+                                size: dp(150), dp(50)
+                                background_color: (0.1, 0.1, 0.1, 1)
+                                on_press:
+                                    # root.toggle_dropdown()
+                        BoxLayout:
+                            id: blank_space
+                            orientation: 'vertical'
+        BoxLayout:
+            orientation: 'vertical'
+            padding: dp(30)
+            spacing: dp(10)
+            AnchorLayout:
+                anchor_x: 'left'
+                size_hint: None, None
+                size: self.parent.width - dp(60), dp(30)
+                Label:
+                    text: 'Played Songs:'
+                    font_size: dp(30)
+                    size_hint: None, None
+                    size: self.texture_size
+            AnchorLayout:
+                anchor_x: 'left'  # Aligns children to the left
+                anchor_y: 'top'
+                size_hint: None, None
+                size: self.parent.width - dp(60), dp(150)
+                padding: dp(10)
+                canvas.before:
+                    Color:
+                        rgba: 0.1, 0.1, 0.1, 1
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+                    Color:
+                        rgba: 1, 1, 1, 1
+                    Line:
+                        width: dp(1)
+                        rectangle: self.x, self.y, self.width, self.height
+                Label:
+                    id: account_info
+                    size_hint: None, None
+                    size: self.texture_size
+                    text: "<loading>"
+            AnchorLayout:
+                anchor_x: 'center'  # Aligns children to the left
+                anchor_y: 'top'
+                BoxLayout:
+                    id: account_management
+                    orientation: 'vertical'
+                    size_hint_x: None
+                    width: self.minimum_size[0]
+                    spacing: dp(5)
+                    Button:
+                        text: 'Edit Account Info'
+                        size_hint: None, None
+                        size: dp(150), dp(30)
+                        background_color:[0,1,0,1]
+                        on_press:
+                            # root.parent.parent.parent.parent.transition.direction = 'up'
+                            # root.parent.parent.parent.parent.current = 'add_account_info_page'
+                    Button:
+                        text: 'Change Password'
+                        size_hint: None, None
+                        size: dp(150), dp(30)
+                        background_color:[0,1,0,1]
+                        on_press:
+                            # root.parent.parent.parent.parent.transition.direction = 'up'
+                            # root.parent.parent.parent.parent.current = 'change_password_page'
+                    BoxLayout:
+                        id: blank_space
+                        orientation: 'vertical'
 
-    # Button:
-        # id: remove_button
-        # size_hint: (None, None)
-        # size: (130, 30)
-        # text: 'Remove User'
-        # pos_hint: {'x': 0.21, 'y': 0.08}
-        # on_press:
-            # root.open_remove_account()
+    Button:
+        size_hint: (None, None)
+        size: (130, 30)
+        text: 'Leave'
+        pos_hint: {'x': 0.01, 'y': 0.09}
+        background_color:[0,1,0,1]
+        on_press:
+            root.manager.transition.direction = 'up'
+            root.submit()
