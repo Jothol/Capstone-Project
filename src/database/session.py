@@ -21,6 +21,7 @@ def create_session(session_name, user_host):
         return
 
     session.set({host.id: 'host'})
+    user_host.in_session = True
     return Session(session_name)
 
 
@@ -93,17 +94,25 @@ def update_collection_from_remove(sess, removed_user):
 
     user_list = sess.get().to_dict()
     sess.set({})
+    if user_list.__len__() == 1:
+        for col in sess.collections():
+            for doc in col.list_documents():
+                doc.delete()
+        sess.delete()  # actual deletion of session name in firebase
+        return
+
     while user_list.__len__() > 0:
         temp = user_list.popitem()
         if temp[0] != removed_user.username:
             sess.update({temp[0]: temp[1]})
 
-    return None
+    return
 
 
 class Session:
     def __init__(self, session_name):
         self.db = firestore.client()
+        self.batch = self.db.batch()
         self.name = self.db.collection('sessions').document(session_name)
         self.host = get_host(self.name)
         self.host.account.update({'in_session': True})
@@ -112,7 +121,9 @@ class Session:
         self.saved_song.set({'URI': '', 'song_name': '', 'album': ''})
         self.current_song = self.name.collection('session info').document('current song')
         if self.current_song.get().to_dict() is None:
-            self.current_song.set({'URI': '', 'song_name': '', 'album': ''})
+            self.current_song.set({'URI': '', 'song_name': '', 'album': '', 'likes': 0, 'dislikes': 0})
+        self.likes = self.get_likes()
+        self.dislikes = self.get_dislikes()
 
 
     def get_name(self):
@@ -125,6 +136,48 @@ class Session:
         return self.current_song.get().to_dict().get('URI')
 
         pass
+
+    def get_likes(self):
+        return self.current_song.get().get('likes')
+
+    # Increases likes when user presses like button
+    def increment_likes(self):
+        self.likes += 1
+        self.current_song.update({'likes': self.likes})
+
+    # Decrease likes when user unpresses like button
+    def decrement_likes(self):
+        if self.likes == 0:
+            print("Likes is at 0 and cannot be a negative number")
+            return
+
+        self.likes -= 1
+        self.current_song.update({'likes': self.likes})
+
+    def get_dislikes(self):
+        return self.current_song.get().get('dislikes')
+
+    # Increase dislikes when user presses dislike button
+    def increment_dislikes(self):
+        self.dislikes += 1
+        self.current_song.update({'dislikes': self.dislikes})
+
+    # Decrease dislikes when user unpresses dislike button
+    def decrement_dislikes(self):
+        if self.dislikes == 0:
+            print("Dislikes is at 0 and cannot be a negative number")
+            return
+
+        self.dislikes -= 1
+        self.current_song.update({'dislikes': self.dislikes})
+
+
+    # Used for moving to next song and need to reset fields for likes and dislikes
+    def reset_likes_and_dislikes(self):
+        self.likes = 0
+        self.dislikes = 0
+        self.current_song.update({'likes': self.likes})
+        self.current_song.update({'dislikes': self.dislikes})
 
     def set_uri(self, new_uri):
         self.current_song.update({'URI': new_uri})
@@ -152,18 +205,13 @@ class Session:
         update_collection_from_remove(self.name, user)
 
     def remove_host(self):
-        update_collection_from_remove(self.name, self.host)
-        # self.db.collection('users').document(self.host.username).update({'in_session': False})
         self.host.account.update({'in_session': False})
         self.host.in_session = False
+        update_collection_from_remove(self.name, self.host)
         self.host = None
-        if self.name.get().to_dict().__len__() == 0:
-            # extra loops for deleting subcollections for sesion in firebase
-            for col in self.name.collections():
-                for doc in col.list_documents():
-                    doc.delete()
-            self.name.delete() # actual deletion of session name in firebase
-        else:
+
+        if self.name.get().exists is True:
+            print("grass")
             self.find_new_host()
 
         return

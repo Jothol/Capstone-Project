@@ -9,7 +9,7 @@ def create_account(username, password):
         return None
     else:
         account.set({'password': password, 'first_name': '', 'last_name': '', 'email': '', 'in_session': False,
-                     'friends': '', 'invites': ''})
+                     'friends': '', 'invites': '', 'session_invites': []})
         return Account(username)
 
 
@@ -64,6 +64,7 @@ class Account:
         self.in_session = self.account.get().to_dict().get('in_session')
         self.friends = self.account.get().to_dict().get('friends')
         self.invites = self.account.get().to_dict().get('invites')
+        self.session_invites = self.account.get().to_dict().get('session_invites')
 
     def get_username(self):
         return self.username

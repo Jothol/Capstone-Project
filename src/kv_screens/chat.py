@@ -13,8 +13,8 @@ from src.database import socket_client
 
 
 def show_error(message):
-    print(message)
-    Clock.schedule_once(sys.exit, 10)
+    raise Exception(message)
+    # Clock.schedule_once(sys.exit, 10)
 
 
 class ScrollableLabel(ScrollView):
@@ -45,12 +45,14 @@ class ScrollableLabel(ScrollView):
 
 class ChatScreen(GridLayout):
 
-    def __init__(self, **kwargs):
+    def __init__(self, session_name, username, **kwargs):
         super().__init__(**kwargs)
         self.cols = 1
         self.rows = 2
+        self.session_name = session_name
+        self.username = username
 
-        self.history = ScrollableLabel(height=Window.size[1] * 0.9, size_hint_y=None)
+        self.history = ScrollableLabel(height=Window.size[1] * 0.8, size_hint_y=None)
         self.add_widget(self.history)
 
         self.new_message = TextInput(width=Window.size[0] * 0.8, size_hint_x=None, multiline=False)
@@ -66,7 +68,7 @@ class ChatScreen(GridLayout):
         self.bind(size=self.adjust_fields)
 
         Clock.schedule_once(self.focus_text_input, 1)
-        socket_client.start_listening(self.incoming_message, show_error)
+        socket_client.start_listening(self.incoming_message, show_error, self.session_name)
 
     def adjust_fields(self, *_):
 
@@ -74,7 +76,7 @@ class ChatScreen(GridLayout):
         if Window.size[1] * 0.1 < 50:
             new_height = Window.size[1] - 50
         else:
-            new_height = Window.size[1] * 0.9
+            new_height = Window.size[1] * 0.8
         self.history.height = new_height
 
         # New message input width - 80%, but at least 160px for send button
@@ -91,8 +93,8 @@ class ChatScreen(GridLayout):
     def on_key_down(self, instance, keyboard, keycode, text, modifiers):
         if keycode == 40:  # Enter key
             self.send_message(None)
-        if keycode == 43:  # Tab key
-            self.parent.parent.current = 'home_page'
+        if keycode == 43 and self.parent is not None:  # Tab key
+            self.parent.parent.disconnect()
 
 
     def send_message(self, _):
@@ -100,7 +102,7 @@ class ChatScreen(GridLayout):
         self.new_message.text = ""
         if message:
             self.history.update_chat_history(
-                f"[color=dd2020]{self.parent.parent.ids.username}[/color] >  {message}")
+                f"[color=dd2020]{self.username}[/color] >  {message}")
             socket_client.send(message)
 
         Clock.schedule_once(self.focus_text_input, 0.1)
@@ -109,7 +111,7 @@ class ChatScreen(GridLayout):
         self.new_message.focus = True
 
     def incoming_message(self, username, message):
-        if username == self.parent.parent.ids.username:
+        if username == self.username:
             self.history.update_chat_history(f"[color=dd2020]{username}[/color] >  {message}")
         else:
             self.history.update_chat_history(f"[color=20dd20]{username}[/color] >  {message}")
