@@ -19,6 +19,7 @@ class LS_Tab3(Screen):
     session_name = None
     add_button_layout = None
     remove_button_layout = None
+    user_list = None
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -31,91 +32,18 @@ class LS_Tab3(Screen):
     def on_pre_enter(self, *args):
         LS_Tab3.user = self.manager.ids.username
         LS_Tab3.session_name = self.manager.ids.session_name
-        # if LS_Tab3.user.username == LS_Tab3.session_name.host.username:
-        #     self.ids.add_button.background_color = [0, 1, 0, 1]
-        #     self.ids.remove_button.background_color = [0, 1, 0, 1]
-        # else:
-        #     self.ids.add_button.background_color = [1, 1, 1, 1]
-        #     self.ids.remove_button.background_color = [1, 1, 1, 1]
 
-    # def open_add_account(self):
-    #     sess = self.manager.ids.session_name
-    #     user = self.manager.ids.username
-    #     if sess.host.username != user.username:
-    #         print("Only host can add users")
-    #         return
-    #     if LS_Tab3.add_button_layout is not None:
-    #         self.remove_widget(LS_Tab3.add_button_layout)
-    #         LS_Tab3.add_button_layout = None
-    #         return
-    #     if LS_Tab3.remove_button_layout is not None:
-    #         self.remove_widget(LS_Tab3.remove_button_layout)
-    #         LS_Tab3.remove_button_layout = None
-    #
-    #     bl = BoxLayout(orientation="vertical", size_hint=(.2, .2), size=(200, 200),
-    #                    pos_hint={'center_x': .5, 'center_y': .5})
-    #     bl.padding = 10
-    #     bl.canvas.before.add(Color(1., 1., 1))
-    #     bl.canvas.before.add(Rectangle(size=(800, 200), pos=(475, 300)))
-    #
-    #     bl.add_widget(Label(text='Enter user to add', color=[0, 0.4, 0, 1], bold=True))
-    #     bl.add_widget(TextInput(multiline=False, hint_text='User'))
-    #     bl.add_widget(Button(text='Enter', background_color=[0, 1, 0, 1], size_hint=(.5, 1), pos_hint={'center_x': .5},
-    #                          ))
-    #     LS_Tab3.add_button_layout = bl
-    #
-    #     self.add_widget(bl)
-
-    # def open_remove_account(self):
-    #     sess = self.manager.ids.session_name
-    #     user = self.manager.ids.username
-    #     if sess.host.username != user.username:
-    #         print("Only host can add users")
-    #         return
-    #     if LS_Tab3.remove_button_layout is not None:
-    #         self.remove_widget(LS_Tab3.remove_button_layout)
-    #         LS_Tab3.remove_button_layout = None
-    #         return
-    #     if LS_Tab3.add_button_layout is not None:
-    #         self.remove_widget(LS_Tab3.add_button_layout)
-    #         LS_Tab3.add_button_layout = None
-    #
-    #     bl = BoxLayout(orientation="vertical", size_hint=(.2, .2), size=(200, 200),
-    #                    pos_hint={'center_x': .5, 'center_y': .5})
-    #     bl.padding = 10
-    #     bl.canvas.before.add(Color(1., 1., 1))
-    #     bl.canvas.before.add(Rectangle(size=(250, 200), pos=(475, 300)))
-    #
-    #     bl.add_widget(Label(text='Enter user to remove', color=[0, 0.4, 0, 1], bold=True))
-    #     bl.add_widget(TextInput(multiline=False, hint_text='User'))
-    #     bl.add_widget(Button(text='Enter', background_color=[0, 1, 0, 1], size_hint=(.5, 1), pos_hint={'center_x': .5},
-    #                          on_press=self.remove_account))
-    #     LS_Tab3.remove_button_layout = bl
-    #
-    #     self.add_widget(bl)
-
-    # @staticmethod
-    # def add_account(self):
-    #     print("It works")
-    #     user_name = LS_Tab3.add_button_layout.children[1].text
-    #     user = account.get_account(user_name)
-    #     if user is None:
-    #         print("User not found")
-    #     else:
-    #         print("user found!")
-    #         LS_Tab3.session_name.add_user(user)
-    #     pass
-
-    # @staticmethod
-    # def remove_account(self):
-    #     user_name = LS_Tab3.remove_button_layout[1].text
-    #     user = account.get_account(user_name)
-    #     if user is None:
-    #         print("User not found")
-    #     else:
-    #         print("user found!")
-    #         LS_Tab3.session_name.remove_user(user)
-    #     pass
+    def on_enter(self, *args):
+        LS_Tab3.user_list = self.manager.parent.parent.user_list
+        user_str = ""
+        print(LS_Tab3.user_list)
+        for i in LS_Tab3.user_list:
+            if user_str == "":
+                user_str = i
+            else:
+                user_str += ", " + i
+        print("user_array", user_str)
+        self.ids.accs_list.text = user_str
 
     def submit(self):
         sess = self.manager.ids.session_name

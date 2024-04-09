@@ -36,14 +36,16 @@ def set_opacity(image: Image, opacity):
 
 class ListeningSessionScreen(Screen):
     # self.manager is from main.py
-    user = None
-    session_name = None
-    host_box_layout = None
-    host_bar = None
-    add_button_layout = None
-    remove_button_layout = None
-    new_host_button_layout = None
-    end_session_button_layout = None
+    user = None  # Account object of current user
+    session_name = None  # Session object of listening session
+    host_box_layout = None  # the boxlayout of host permissions created in on_enter
+    host_bar = None  # Used to show or hide the host_bar depending on the user
+    add_button_layout = None  # layout for inviting user
+    remove_button_layout = None  # layout for removing user
+    new_host_button_layout = None  # layout for replacing host
+    end_session_button_layout = None  # layout for ending session
+    screen_manager = None  # helper created for removing hostbar on ls_tab3
+    user_list = None
 
     def on_enter(self, *args):
         ListeningSessionScreen.session_name.name = (
@@ -54,20 +56,15 @@ class ListeningSessionScreen(Screen):
         sm.add_widget(LS_Tab1(name='ls_tab1'))
         sm.add_widget(LS_Tab2(name='ls_tab2'))
         sm.add_widget(LS_Tab3(name='ls_tab3'))
+        ListeningSessionScreen.screen_manager = sm
         bl.ids = self.parent.ids
         bl.add_widget(sm)
         bl.add_widget(TabBar2(self, sm))
         self.add_widget(bl)
 
-        print("width", self.width)
-        print("height", self.height)
-        print("pos", self)
-        print("dp(1200)", dp(1200))
-        print("dp(300)", dp(300))
-
         # host box layout
         bl2 = BoxLayout(orientation='horizontal', size_hint=(.6, .1), size=(dp(200), dp(20)),
-                        pos_hint={'center_x': .5, 'center_y': 1})
+                        pos_hint={'center_x': .4, 'center_y': 1})
         bl2.ids = self.parent.ids
         bl2.canvas.before.add(Color(0.1, 0.8, 0.1, 1))
         bl2.canvas.before.add(Rectangle(size=(1200, 50), pos=(dp(0), dp(850)), size_hint=(None, None)))
@@ -79,26 +76,18 @@ class ListeningSessionScreen(Screen):
                               pos=(600, 850), size=(dp(130), dp(30)), on_press=self.open_new_host))
         bl2.add_widget(Button(text='End Session', background_color=[0, 1, 0, 1], size_hint=(None, None),
                               pos=(600, 850), size=(dp(130), dp(30)), on_press=self.open_end_session))
+        bl2.add_widget(BoxLayout())
+        bl2.add_widget(Button(text='Private', background_color=[1, 0, 0.4, 1], size_hint=(None, None),
+                              size=(dp(130), dp(30)), on_press=self.change_status))
         # Add a bl2.bind() method
         ListeningSessionScreen.host_box_layout = bl2
         if ListeningSessionScreen.user.username == self.manager.ids.session_name.host.username:
-
             self.add_widget(ListeningSessionScreen.host_box_layout)
             ListeningSessionScreen.host_bar = ListeningSessionScreen.host_box_layout
 
         # new variables for clock testing end session button and host replacement
         # Clock.schedule_interval(self.host_replacement, 1.3)
-        Clock.schedule_interval(self.kick_user, 1.3)
-
-    def update_width(self, instance, value):
-        print(self.width)
-        print("value", value)
-        value = self.width
-
-    def update_height(self, instance, value):
-        print(self.height)
-        print("height", value)
-        value = self.height
+        Clock.schedule_interval(self.session_refresher, 1.3)
 
     def on_pre_enter(self, *args):
         sess = self.manager.ids.session_name
@@ -117,7 +106,7 @@ class ListeningSessionScreen(Screen):
 
     def on_leave(self, *args):
         # Clock.unschedule(self.host_replacement)
-        Clock.unschedule(self.kick_user)
+        Clock.unschedule(self.session_refresher)
 
     # Method process of User leaving session and back to home screen
     def submit(self):
@@ -136,25 +125,40 @@ class ListeningSessionScreen(Screen):
         self.parent.ids.username.in_session = False
         self.manager.current = "home_page"
 
+    def change_status(self, instance):
+        if instance.text == "Private":
+            instance.text = "Public"
+            instance.background_color = [0, 1, 0.6, 1]
+            self.parent.ids.session_name.session_status.update({'status': 'public'})
+        else:
+            instance.text = "Private"
+            instance.background_color = [1, 0, 0.4, 1]
+            self.parent.ids.session_name.session_status.update({'status': 'private'})
+
     # BEGINNING OF CLOCK METHOD
-    def kick_user(self, instance):
+    def session_refresher(self, instance):
         sess = ListeningSessionScreen.session_name
         acc = ListeningSessionScreen.user
-        data = sess.name.get().to_dict()
-        if data is None:
+        ListeningSessionScreen.user_list = data = sess.name.get().to_dict()
+        if data is None:  # session ended and user goes back to home page
             self.parent.ids.session_name = None
             self.manager.current = "home_page"
             self.parent.ids.username.in_session = False
-        elif acc.username not in data:
+        elif acc.username not in data:  # user got kicked from session and goes to home page
             self.parent.ids.session_name = None
             self.manager.current = "home_page"
             self.parent.ids.username.in_session = False
-        elif data.get(acc.username) == "host" and ListeningSessionScreen.host_bar is None:
-            print(acc.username, "yeppers")
-            self.add_widget(ListeningSessionScreen.host_box_layout)
-            sess.host = acc
-            self.ids.user_label.text = 'Hosted by: {}.'.format(sess.host.username)
-            ListeningSessionScreen.host_bar = ListeningSessionScreen.host_box_layout
+        elif data.get(acc.username) == "host":  # decides when host sees host bar
+            if ListeningSessionScreen.host_bar is None:
+                sess.host = acc  # update in case acc just became new host
+                if ListeningSessionScreen.screen_manager.current != "ls_tab3":
+                    ListeningSessionScreen.host_bar = ListeningSessionScreen.host_box_layout
+                    self.add_widget(ListeningSessionScreen.host_bar)
+                    self.ids.user_label.text = 'Hosted by: {}.'.format(sess.host.username)
+            else:
+                if ListeningSessionScreen.screen_manager.current == "ls_tab3":
+                    self.remove_widget(ListeningSessionScreen.host_bar)
+                    ListeningSessionScreen.host_bar = None
 
     # END OF CLOCK METHOD
 
@@ -308,7 +312,7 @@ class ListeningSessionScreen(Screen):
 
     # BEGINNING OF END SESSION BUTTON
     def end_session(self, instance):
-        Clock.unschedule(self.kick_user)
+        Clock.unschedule(self.session_refresher)
         # Clock.unschedule(self.host_replacement)
         self.parent.ids.session_name = None
         self.manager.current = "home_page"
