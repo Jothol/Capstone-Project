@@ -1,10 +1,16 @@
 import kivy
+from kivy.graphics import Color, Line, BorderImage, RoundedRectangle, Rectangle
+from kivy.metrics import dp
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.image import Image
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.dropdown import DropDown
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.properties import ObjectProperty
 from kivy.clock import Clock
+from kivy.uix.scrollview import ScrollView
 
 from src.database import session
 
@@ -22,7 +28,7 @@ class Tab1(Screen):
     invite_dropdown = ObjectProperty(None)
     user = None
     session_name = None
-
+    create_session_friends = []
 
     # self is tab1 screen
     # self.manager is ScreenManager for tab1 screen
@@ -48,8 +54,9 @@ class Tab1(Screen):
         self.children[1].ids.username = self.manager.ids.username
         print(self.children[1].ids)
         self.manager.ids.session_name = self.children[1].ids.session_name
-        self.ids.welcome_label.text = 'Welcome, {}!'.format(self.manager.ids.username.username)
+        self.ids.welcome_label.text = 'Welcome home, {}!'.format(self.manager.ids.username.username)
         self.invite_dropdown = DropDown()
+        self.create_session_friends = []
 
         Clock.schedule_interval(self.build_invite_dropdown, 1)
 
@@ -80,7 +87,6 @@ class Tab1(Screen):
 
     def button_submit(self, instance):
         self.submit(instance.text, "Join")
-
 
     def select_option(self, button):
         print(f'Selected option: {button}')
@@ -158,3 +164,88 @@ class Tab1(Screen):
                 Clock.unschedule(self.build_invite_dropdown)
 
         pass
+
+    def create_session(self, is_closed):
+        if not is_closed:
+            self.ids.scroll_contents.clear_widgets()
+            self.create_session_friends = []
+            self.ids.create_session_window.pos_hint = {'center_x': -0.5}
+            self.ids.create_session.disabled = False
+            self.ids.join_session.disabled = False
+            return
+        friends = self.manager.home_screen.manager.ids.username.get_friends().split(', ')
+        for friend in friends:
+            scroll = self.ids.scroll_contents
+            option = Option()
+            option.set_text(friend)
+            scroll.add_widget(option)
+        self.ids.create_session_window.pos_hint = {'center_x': 0.5}
+        self.ids.create_session.disabled = True
+        self.ids.join_session.disabled = True
+
+
+class Option(BoxLayout):
+
+    def __init__(self):
+        super(Option, self).__init__()
+
+    def set_text(self, text):
+        self.ids.option_label.text = text
+
+    def add(self, username):
+        tab1 = self.parent.parent.parent.parent.parent
+        tab1.create_session_friends.append(username)
+        self.remove_widget(self.children[0])
+        self.add_widget(RemoveButton())
+        self.ids.option_label.opacity = 1
+        self.ids.option_label.font_size = self.ids.option_label.font_size + dp(1)
+        print(tab1.create_session_friends)
+
+    def remove(self, username):
+        tab1 = self.parent.parent.parent.parent.parent
+        tab1.create_session_friends.remove(username)
+        self.remove_widget(self.children[0])
+        self.add_widget(AddButton())
+        self.ids.option_label.opacity = 0.4
+        self.ids.option_label.font_size = self.ids.option_label.font_size - dp(1)
+        print(tab1.create_session_friends)
+
+
+class AddButton(Button):
+    def __init__(self, **kwargs):
+        super(AddButton, self).__init__(**kwargs)
+        self.size_hint = (None, None)
+        self.size = (dp(25), dp(25))
+        self.pos_hint = {'center_y': 0.5}
+        self.background_color = (0, 0, 0, 0)
+        self.bind(on_release=self.on_press)
+
+        icon = Image(source='../other/images/accept_icon.png', center=self.center,
+                     size=(0.6 * self.height, 0.6 * self.width))
+
+        self.bind(pos=lambda instance, value: setattr(icon, 'center', instance.center))
+        self.bind(size=lambda instance, value: setattr(icon, 'center', instance.center))
+        self.add_widget(icon)
+
+    def on_press(self, *args):
+        self.parent.add(self.parent.ids.option_label.text)
+
+
+class RemoveButton(Button):
+    def __init__(self, **kwargs):
+        super(RemoveButton, self).__init__(**kwargs)
+        self.size_hint = (None, None)
+        self.size = (dp(25), dp(25))
+        self.pos_hint = {'center_y': 0.5}
+        self.background_color = (0, 0, 0, 0)
+        self.bind(on_release=self.on_press)
+
+        icon = Image(source='../other/images/decline_icon.png', center=self.center,
+                     size=(0.6 * self.height, 0.6 * self.width))
+
+        self.bind(pos=lambda instance, value: setattr(icon, 'center', instance.center))
+        self.bind(size=lambda instance, value: setattr(icon, 'center', instance.center))
+        self.add_widget(icon)
+
+    def on_press(self, *args):
+        self.parent.remove(self.parent.ids.option_label.text)
