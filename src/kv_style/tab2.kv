@@ -1,6 +1,7 @@
 <Tab2>:
     FloatLayout:
         BoxLayout:
+            id: volume_box
             size_hint: (None, None)
             size: (dp(100), dp(80))
             pos_hint: {'center_x': 0.5, 'center_y': 0.7}
@@ -18,17 +19,6 @@
                 text: 'Volume'
                 color: [0,0,0,1]
 
-            Slider:
-                id: volume_slider
-                min: 0
-                max: 100
-                step: 1
-                value: 50
-                on_value: root.volume(volume_slider.value)
-
-            Label:
-                text: f'Volume: {int(volume_slider.value)}%'
-                color: [0,0,0,1]
         FloatLayout:
             id: player_window
             size_hint: None, None
