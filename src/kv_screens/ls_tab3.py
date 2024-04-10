@@ -38,9 +38,10 @@ class LS_Tab3(Screen):
     def on_pre_enter(self, *args):
         LS_Tab3.user = self.manager.ids.username
         LS_Tab3.session_name = self.manager.ids.session_name
+        LS_Tab3.user_list = self.manager.parent.parent.user_list
 
     def on_enter(self, *args):
-        LS_Tab3.user_list = self.manager.parent.parent.user_list
+        # LS_Tab3.user_list = self.manager.parent.parent.user_list
         user_str = ""
         print(LS_Tab3.user_list)
         for i in LS_Tab3.user_list:

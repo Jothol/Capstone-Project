@@ -93,6 +93,7 @@ class ListeningSessionScreen(Screen):
         sess = self.manager.ids.session_name
         ListeningSessionScreen.user = self.manager.ids.username
         ListeningSessionScreen.session_name = self.manager.ids.session_name
+        ListeningSessionScreen.user_list = sess.name.get().to_dict()
         if sess and sess.name:
             self.ids.session_label.text = 'Server: {}.'.format(sess.name.id)
         else:
