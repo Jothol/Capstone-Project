@@ -1,7 +1,7 @@
 from firebase_admin import firestore
 from src.database import account
 
-from datetime import date
+from datetime import datetime
 
 # Session gets added into the Google Firebase 'sessions' collection
 # session_name: title of session (String type)
@@ -137,26 +137,17 @@ class Session:
     def set_uri(self, new_uri):
         self.current_song.update({'URI': new_uri})
 
-    # used to update the user's collection of session histories (if it ever gets reached :(()
+    # used to update the user's collection of session histories
     def update_user_history(self, user):
-        # session_history = self.name.collection('saved songs').stream()
-        collections = self.db.collection('sessions').document(self.get_name()).collections()
-        print(collections)
-        print("update_user_history before loop")
-        for e in collections:
-            print("update_user_history loop nest 1")
-            for doc in e.stream():
-                print("update_user_history loop nest 2")
-                print(f"{doc.id} => {doc.to_dict()}")
-        print("update_user_history after loop")
-        # could add current time as well to remove any confusion w/ duplicate names
-        session_name = self.get_name() + str(date.today())
-        # print(session_history)
-        print(session_name)
-        print(user.previous_sessions)
-
-        # user.previous_sessions.collection("session_history").set(session_history)
-        # print("update_user_history: got to the end")
+        sesh = get_session(self.name.id)
+        tracks = sesh.name.collection("saved songs").list_documents()
+        ps = user.get_previous_sessions()
+        session_name = self.get_name() + " - " + str(datetime.now())
+        sesh_hist_doc = ps.document(session_name)
+        for track in tracks:
+            uri = track.get().get("URI")
+            name = track.get().get("song_name")
+            sesh_hist_doc.collection("track_history").document(track.get().id).set({"URI": uri, "song_name": name})
         
     # Updates the saved songs field in the database
     # name and album are optional fields
@@ -192,9 +183,8 @@ class Session:
     def remove_host(self):
         self.host.account.update({'in_session': False})
         self.host.in_session = False
-        update_collection_from_remove(self.name, self.host)
-        # TODO: this (commenting out the calls to update user history in case this merges into your branch) (sorry)
         self.update_user_history(user=self.host)
+        update_collection_from_remove(self.name, self.host)
         self.host = None
 
         if self.name.get().exists is True:
