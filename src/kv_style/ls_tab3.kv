@@ -78,7 +78,7 @@
                     size_hint: None, None
                     size: self.texture_size
             AnchorLayout:
-                anchor_x: 'left'  # Aligns children to the left
+                anchor_x: 'left'
                 anchor_y: 'top'
                 size_hint: None, None
                 size: self.parent.width - dp(60), dp(150)
@@ -95,6 +95,7 @@
                         width: dp(1)
                         rectangle: self.x, self.y, self.width, self.height
                 ScrollView:
+                    id: scroll_id
                     size_hint_y: None
                     height: dp(135) # 35
                     scroll_wheel_distance: dp(2)
@@ -112,13 +113,13 @@
                             width: 1
                     Label:
                         id: song_info
-                        # height: dp(100)
+                        height: dp(130)
                         size_hint: None, None
                         size: self.parent.width, dp(135)
-                        text_size: self.width, None
+                        text_size: self.width, self.height
                         text: "<loading>"
                         valign: 'top'
-                        # halign: 'left'
+                        halign: 'left'
                         canvas.before:
                             Color:
                                 rgba: 1, 0, 0, 1
