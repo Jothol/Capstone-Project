@@ -95,15 +95,29 @@
                         width: dp(1)
                         rectangle: self.x, self.y, self.width, self.height
                 ScrollView:
+                    height: dp(150)
                     do_scroll_x: False
                     do_scroll_y: True
+                    bar_margin: dp(25)
+                    bar_width: dp(20)
                     scroll_y: 10
+                    scroll_wheel_distance: dp(20)
+                    # size_hint_y: None
+                    canvas.before:
+                        Color:
+                            rgba: 0, 1, 0, 1  # Red color for the border
+                        Line:
+                            rectangle: self.x, self.y, self.width, self.height
+                            width: 1
                     Label:
                         id: song_info
                         size_hint: None, None
                         size: self.parent.width - dp(50), dp(50)
                         text_size: self.width, None
                         text: "<loading>"
+                        canvas.before:
+                            Color:
+                                rgba: 0, 0, 1, 1
             AnchorLayout:
                 anchor_x: 'center'  # Aligns children to the left
                 anchor_y: 'top'
