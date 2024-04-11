@@ -27,6 +27,8 @@ class LS_Tab2(Screen):
     song_list = ""
     likes = 0
     dislikes = 0
+    likes_pressed = False
+    dislikes_pressed = False
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -154,10 +156,26 @@ class LS_Tab2(Screen):
         pass
 
     def like(self):
-        self.ids.session_name.increment_likes()
+        if LS_Tab2.likes_pressed is False:
+            self.ids.session_name.increment_likes()
+            LS_Tab2.likes_pressed = True
+            if LS_Tab2.dislikes_pressed is True:
+                self.ids.session_name.decrement_dislikes()
+                LS_Tab2.dislikes_pressed = False
+        else:
+            self.ids.session_name.decrement_likes()
+            LS_Tab2.likes_pressed = False
 
     def dislike(self):
-        self.ids.session_name.increment_dislikes()
+        if LS_Tab2.dislikes_pressed is False:
+            self.ids.session_name.increment_dislikes()
+            LS_Tab2.dislikes_pressed = True
+            if LS_Tab2.likes_pressed is True:
+                self.ids.session_name.decrement_likes()
+                LS_Tab2.likes_pressed = False
+        else:
+            self.ids.session_name.decrement_dislikes()
+            LS_Tab2.dislikes_pressed = False
 
     def animate_player(self):
         player_window = self.ids.player_window
