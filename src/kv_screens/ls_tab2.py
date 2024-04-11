@@ -25,6 +25,8 @@ def volume(slider):
 class LS_Tab2(Screen):
     index = 2
     song_list = ""
+    likes = 0
+    dislikes = 0
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -61,8 +63,10 @@ class LS_Tab2(Screen):
             song_name = current["item"]["name"]
             artist_names = self.ids.session_name.get_artists()
             song_entry = song_name + ":" + artist_names
+
             index = LS_Tab2.song_list.find(song_entry)
             if index == -1:  # checks if song name is not already included
+                # adding new played song into list
                 if LS_Tab2.song_list == "":
                     LS_Tab2.song_list = song_entry
                 else:
@@ -85,6 +89,39 @@ class LS_Tab2(Screen):
                     LS_Tab2.song_list += "     " + song_entry
                 # self.ids.song_info.text = LS_Tab2.song_list
                 self.ids.session_name.saved_song.update({'songs_played': LS_Tab2.song_list})
+        elif self.ids.session_name.get_uri() == current["item"]["uri"]:
+            # purpose is to check the amount of likes and dislikes and if color text needs to be updated
+            LS_Tab2.likes = self.ids.session_name.get_likes()
+            LS_Tab2.dislikes = self.ids.session_name.get_dislikes()
+            song_entry = self.ids.session_name.get_current_song() + ":" + self.ids.session_name.get_artists()
+            index = LS_Tab2.song_list.find(song_entry)  # locates first letter for song_entry
+            if LS_Tab2.song_list[index-7:index-1] == "00ff00":  # currently green text favoring likes
+                if LS_Tab2.likes < LS_Tab2.dislikes:  # text changes from green to red
+                    print("change from green to red")
+                    LS_Tab2.song_list = LS_Tab2.song_list[:index-7]+"ff0000"+LS_Tab2.song_list[index-1:]
+                    self.ids.session_name.saved_song.update({'songs_played': LS_Tab2.song_list})
+                elif LS_Tab2.likes == LS_Tab2.dislikes:  # change text color back to normal
+                    print("change back to normal color")
+                    LS_Tab2.song_list = LS_Tab2.song_list[:index - 14] + LS_Tab2.song_list[index:]
+                    self.ids.session_name.saved_song.update({'songs_played': LS_Tab2.song_list})
+            elif LS_Tab2.song_list[index-7:index-1] == "ff0000":  # current red text favoring dislikes
+                if LS_Tab2.likes > LS_Tab2.dislikes:  # text changes from red to green
+                    print("change from red to green")
+                    LS_Tab2.song_list = LS_Tab2.song_list[:index - 7] + "00ff00" + LS_Tab2.song_list[index - 1:]
+                    self.ids.session_name.saved_song.update({'songs_played': LS_Tab2.song_list})
+                elif LS_Tab2.likes == LS_Tab2.dislikes:  # change text color back to normal
+                    print("change back to normal color", LS_Tab2.song_list[:index-14])
+                    print(LS_Tab2.song_list[:index-13])
+                    LS_Tab2.song_list = LS_Tab2.song_list[:index - 14]+LS_Tab2.song_list[index:]
+                    self.ids.session_name.saved_song.update({'songs_played': LS_Tab2.song_list})
+            else:  # text color is normal favoring neither likes or dislikes
+                if LS_Tab2.likes < LS_Tab2.dislikes:  # change text from normal to red
+                    LS_Tab2.song_list = LS_Tab2.song_list[:0]+"[color=ff0000]"+LS_Tab2.song_list
+                    self.ids.session_name.saved_song.update({'songs_played': LS_Tab2.song_list})
+                elif LS_Tab2.likes > LS_Tab2.dislikes:  # change text from normal to green
+                    LS_Tab2.song_list = LS_Tab2.song_list[:0] + "[color=00ff00]" + LS_Tab2.song_list
+                    self.ids.session_name.saved_song.update({'songs_played': LS_Tab2.song_list})
+
 
     def on_leave(self, *args):
         Clock.unschedule(self.ids.check)

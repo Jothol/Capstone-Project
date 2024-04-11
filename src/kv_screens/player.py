@@ -127,6 +127,7 @@ def next_song(sp, session=None):
                 session.set_current_song(recommendation["tracks"][0]["name"])
                 session.set_album(recommendation["tracks"][0]["album"]["name"])
                 session.set_artists(recommendation["tracks"][0]["artists"])
+                session.reset_likes_and_dislikes()
             elif session.get_uri() != sp.currently_playing()["item"]["uri"]:
                 queue_song(sp, session.get_uri())
             # go to the next song in queue

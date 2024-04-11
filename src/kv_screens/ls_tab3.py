@@ -43,6 +43,22 @@ class LS_Tab3(Screen):
 
     def on_enter(self, *args):
         # LS_Tab3.user_list = self.manager.parent.parent.user_list
+        # user_str = ""
+        # print(LS_Tab3.user_list)
+        # for i in LS_Tab3.user_list:
+        #     if user_str == "":
+        #         user_str = i
+        #     else:
+        #         user_str += ", " + i
+        # print("user_array", user_str)
+        # self.ids.accs_list.text = user_str
+        Clock.schedule_interval(self.refresh_settings, 1.5)
+
+    def on_leave(self, *args):
+        Clock.unschedule(self.refresh_settings)
+        pass
+
+    def refresh_settings(self, instance):
         user_str = ""
         print(LS_Tab3.user_list)
         for i in LS_Tab3.user_list:
@@ -52,13 +68,6 @@ class LS_Tab3(Screen):
                 user_str += ", " + i
         print("user_array", user_str)
         self.ids.accs_list.text = user_str
-        Clock.schedule_interval(self.refresh_settings, 1.5)
-
-    def on_leave(self, *args):
-        Clock.unschedule(self.refresh_settings)
-        pass
-
-    def refresh_settings(self, instance):
         self.ids.song_info.text = LS_Tab3.session_name.saved_song.get().get('songs_played')
         # print("IT WORKS")
         # current = sp.currently_playing()
