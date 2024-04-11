@@ -10,6 +10,7 @@ from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen, ScreenManager
 
 from src.kv_screens import player, volume_slider
+from src.kv_screens import ls_tab3
 
 kivy.require('2.3.0')
 
@@ -23,6 +24,7 @@ def volume(slider):
 
 class LS_Tab2(Screen):
     index = 2
+    song_list = ""
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -52,10 +54,37 @@ class LS_Tab2(Screen):
         current = sp.currently_playing()
         if self.ids.session_name.get_uri() == "" and current is not None:
             self.ids.session_name.set_uri(current["item"]["uri"])
+            # Below is added part for song history to save
+            self.ids.session_name.set_album(current["item"]["album"]["name"])
+            self.ids.session_name.set_artists(current["item"]["artists"])
+            self.ids.session_name.set_current_song(current["item"]["name"])
+            song_name = current["item"]["name"]
+            artist_names = self.ids.session_name.get_artists()
+            song_entry = song_name + ":" + artist_names
+            index = LS_Tab2.song_list.find(song_entry)
+            if index == -1:  # checks if song name is not already included
+                if LS_Tab2.song_list == "":
+                    LS_Tab2.song_list = song_entry
+                else:
+                    LS_Tab2.song_list += "     " + song_entry
+                self.ids.session_name.saved_song.update({'songs_played': LS_Tab2.song_list})
         elif self.ids.session_name.get_uri() != "" and self.ids.session_name.get_uri() != \
                 current["item"]["uri"]:
             player.queue_song(sp, self.ids.session_name.get_uri())
             sp.next_track()
+            # Below is added part for song history to save
+            current = sp.currently_playing()
+            song_name = current["item"]["name"]
+            artist_names = self.ids.session_name.get_artists()
+            song_entry = song_name + ":" + artist_names
+            index = LS_Tab2.song_list.find(song_entry)
+            if index == -1:  # checks if song name is not already included
+                if LS_Tab2.song_list == "":
+                    LS_Tab2.song_list = song_entry
+                else:
+                    LS_Tab2.song_list += "     " + song_entry
+                # self.ids.song_info.text = LS_Tab2.song_list
+                self.ids.session_name.saved_song.update({'songs_played': LS_Tab2.song_list})
 
     def on_leave(self, *args):
         Clock.unschedule(self.ids.check)
@@ -107,5 +136,3 @@ class LS_Tab2(Screen):
 
         animation_window.start(player_window)
         animation_controls.start(control_buttons)
-
-

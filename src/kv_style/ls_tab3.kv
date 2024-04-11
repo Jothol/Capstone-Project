@@ -34,8 +34,17 @@
                 Label:
                     id: accs_list
                     size_hint: None, None
-                    size: self.texture_size
-                    text: "<loading>"
+                    size: self.parent.width, self.parent.height
+                    text_size: self.width, self.height
+                    text: ""
+                    valign: 'top'
+                    halign: 'left'
+                    canvas.before:
+                        Color:
+                            rgba: 0, 0, 0, 1
+                        Line:
+                            rectangle: self.parent.x, self.parent.y, self.width, self.height
+                            width: 1
             AnchorLayout:
                 anchor_x: 'center'  # Aligns children to the left
                 anchor_y: 'top'
@@ -103,11 +112,11 @@
                     bar_width: dp(10)
                     do_scroll_x: False
                     do_scroll_y: True
-                    scroll_y: dp(20)
+                    scroll_y: dp(10)
                     scroll_type: ['bars']
                     canvas.before:
                         Color:
-                            rgba: 0, 1, 0, 1  # Red color for the border
+                            rgba: 0, 0, 0, 1  # Red color for the border
                         Line:
                             rectangle: self.x, self.y, self.width, self.height
                             width: 1
@@ -117,12 +126,12 @@
                         size_hint: None, None
                         size: self.parent.width, dp(135)
                         text_size: self.width, self.height
-                        text: "<loading>"
+                        text: ""
                         valign: 'top'
                         halign: 'left'
                         canvas.before:
                             Color:
-                                rgba: 1, 0, 0, 1
+                                rgba: 0, 0, 0, 1
                             Line:
                                 rectangle: self.x, self.y, self.width, self.height
                                 width: 1

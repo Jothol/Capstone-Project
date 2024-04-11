@@ -26,6 +26,7 @@ class LS_Tab3(Screen):
     remove_button_layout = None
     user_list = None
     song_list = ""
+    current_song = None
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -55,26 +56,40 @@ class LS_Tab3(Screen):
 
     def on_leave(self, *args):
         Clock.unschedule(self.refresh_settings)
+        pass
 
     def refresh_settings(self, instance):
-        current = sp.currently_playing()
-        if current["is_playing"] is True:
-            album_name = current["item"]["album"]["name"]  # album name retrieval
-            song_name = current["item"]["name"]  # song name retrieval
-            artist_names = ""
-            for i in current["item"]["artists"]:  # artist(s) name retrieval
-                if artist_names == "":
-                    artist_names = i["name"]
-                else:
-                    artist_names += ", " + i["name"]
-            song = song_name + ": " + artist_names
-            index = LS_Tab3.song_list.find(song)
-            if index == -1:  # checks if song name is not already included
-                if LS_Tab3.song_list == "":
-                    LS_Tab3.song_list = song
-                else:
-                    LS_Tab3.song_list += "     " + song
-                self.ids.song_info.text = LS_Tab3.song_list
+        self.ids.song_info.text = LS_Tab3.session_name.saved_song.get().get('songs_played')
+        # print("IT WORKS")
+        # current = sp.currently_playing()
+        # print(current)
+        # if current is not None:
+        #     print("current", current["item"]["name"])
+        #     print("sess", LS_Tab3.session_name.get_current_song())
+        #     if current["item"]["name"] == LS_Tab3.session_name.get_current_song():  # just added if
+        #         album_name = current["item"]["album"]["name"]  # album name retrieval
+        #         song_name = LS_Tab3.session_name.get_current_song()
+        #         artist_names = LS_Tab3.session_name.get_artists()
+        #         # song_name = current["item"]["name"]  # song name retrieval
+        #         # artist_names = ""
+        #         # for i in current["item"]["artists"]:  # artist(s) name retrieval
+        #         #     if artist_names == "":
+        #         #         artist_names = i["name"]
+        #         #     else:
+        #         #         artist_names += ", " + i["name"]
+        #         # LS_Tab3.session_name.set_current_song(song_name)
+        #         # LS_Tab3.session_name.set_album(album_name)
+        #         # LS_Tab3.session_name.set_artists(artist_names)
+        #         # LS_Tab3.session_name.set_uri(current["item"]["uri"])
+        #         song_entry = song_name + ": " + artist_names
+        #         index = LS_Tab3.song_list.find(song_entry)
+        #         if index == -1:  # checks if song name is not already included
+        #             if LS_Tab3.song_list == "":
+        #                 LS_Tab3.song_list = song_entry
+        #             else:
+        #                 LS_Tab3.song_list += "     " + song_entry
+        #             self.ids.song_info.text = LS_Tab3.song_list
+        #             LS_Tab3.session_name.saved_song.update({'songs_played': LS_Tab3.song_list})
 
     def submit(self):
         sess = self.manager.ids.session_name

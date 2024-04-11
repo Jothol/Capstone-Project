@@ -122,6 +122,11 @@ def next_song(sp, session=None):
             if session.get_uri() == "" or session.get_uri() == sp.currently_playing()["item"]["uri"]:
                 queue_song(sp, uri)
                 session.set_uri(uri)
+
+                # riley implemented rest of 'session's for firebase current_song testing
+                session.set_current_song(recommendation["tracks"][0]["name"])
+                session.set_album(recommendation["tracks"][0]["album"]["name"])
+                session.set_artists(recommendation["tracks"][0]["artists"])
             elif session.get_uri() != sp.currently_playing()["item"]["uri"]:
                 queue_song(sp, session.get_uri())
             # go to the next song in queue
