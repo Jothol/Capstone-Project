@@ -41,7 +41,7 @@ class Tab2(Screen):
         di = player.get_device_id()
         currently_playing = sp.currently_playing()
         if di != "unselected":
-            player.play_button_functionality(sp=sp, di=di)
+            player.play_button_functionality(sp_client=sp, listening_device=di)
             if currently_playing is None:
                 print("Nothing is playing or queued to play. Do nothing for play button.")
             elif currently_playing["is_playing"] is False:

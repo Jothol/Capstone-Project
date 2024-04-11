@@ -46,7 +46,7 @@ class Tab1(Screen):
         # self.children[0] is currently the ScreenManager for them
         print(self.children)
         self.children[1].ids.username = self.manager.ids.username
-        self.manager.ids.session_name = self.children[1].ids.session_name
+        self.manager.ids.session_name = None
         self.ids.welcome_label.text = 'Welcome, {}!'.format(self.manager.ids.username.username)
 
         if len(self.manager.ids.username.session_invites) != 0:

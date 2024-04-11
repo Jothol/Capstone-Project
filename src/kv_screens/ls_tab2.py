@@ -30,6 +30,9 @@ class LS_Tab2(Screen):
         sm.ids.username = None
         sm.ids.session_name = None
         sm.ids.check = None
+        sm.ids.like_pushed = False
+        sm.ids.dislike_pushed = False
+        sm.ids.song_length = None
         self.add_widget(sm)
         starting_volume = player.get_device_volume()
         volume_slider_instance = volume_slider.VolumeSlider(value=starting_volume)
@@ -41,6 +44,9 @@ class LS_Tab2(Screen):
         self.ids.volume_box.add_widget(volume_percentage_label)
 
     def on_enter(self, *args):
+        self.ids.like_pushed = False
+        self.ids.dislike_pushed = False
+        self.ids.song_length = None
         self.ids.session_name = self.manager.parent.parent.parent.ids.session_name
         self.ids.check = Clock.schedule_interval(self.get_current_song, 5)
 
@@ -67,7 +73,7 @@ class LS_Tab2(Screen):
         global di
         currently_playing = sp.currently_playing()
         if di != "unselected":
-            player.play_button_functionality(sp=sp, di=di, session=self.ids.session_name)
+            player.play_button_functionality(sp_client=sp, listening_device=di, session=self.ids.session_name)
             if currently_playing["is_playing"] is False:
                 self.ids.play_icon.source = '../other/images/pause_icon.png'
             else:
@@ -79,7 +85,14 @@ class LS_Tab2(Screen):
                 player.play_button_functionality(sp, di, self.ids.session_name)
 
     def skip(self):
+        if self.ids.song_length is not None:
+            self.ids.song_length.cancel()
         player.next_song(sp, session=self.ids.session_name)
+        song_length = (float(sp.currently_playing()["item"]["duration_ms"]) - 1)/1000.0
+        self.ids.song_length = Clock.schedule_once(self.skip, song_length)
+        self.ids.session_name.reset_likes_and_dislikes()
+        self.ids.like_pushed = False
+        self.ids.dislike_pushed = False
 
     def update_slider_label(self, slider, value):
         self.ids.volume_box.children[0].text = f"Volume: {int(value)}%"
@@ -88,10 +101,26 @@ class LS_Tab2(Screen):
         pass
 
     def like(self):
-        self.ids.session_name.increment_likes()
+        if self.ids.dislike_pushed:
+            self.ids.session_name.increment_likes()
+            self.ids.session_name.decrement_dislikes()
+            self.ids.dislike_pushed = False
+            self.ids.like_pushed = True
+        elif not self.ids.like_pushed:
+            self.ids.session_name.increment_likes()
+            self.ids.like_pushed = True
+            self.ids.dislike_pushed = False
 
     def dislike(self):
-        self.ids.session_name.increment_dislikes()
+        if self.ids.like_pushed:
+            self.ids.session_name.decrement_likes()
+            self.ids.session_name.increment_dislikes()
+            self.ids.like_pushed = False
+            self.ids.dislike_pushed = True
+        elif not self.ids.dislike_pushed:
+            self.ids.session_name.increment_dislikes()
+            self.ids.dislike_pushed = True
+            self.ids.like_pushed = False
 
     def animate_player(self):
         player_window = self.ids.player_window
