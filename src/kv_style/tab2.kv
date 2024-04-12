@@ -1,6 +1,25 @@
 <Tab2>:
     FloatLayout:
         BoxLayout:
+            id: search_box
+            size_hint: (None, None)
+            size: (dp(300), dp(40))
+            pos_hint: {'center_x': 0.5, 'center_y': 0.85}
+
+            orientation: 'horizontal'
+
+            TextInput:
+                id: search_input
+                size_hint_x: 0.7
+                hint_text: 'Search...'
+                multiline: False
+
+            Button:
+                text: 'Search'
+                size_hint_x: 0.3
+                on_release: root.spotify_search()
+
+        BoxLayout:
             id: volume_box
             size_hint: (None, None)
             size: (dp(100), dp(80))

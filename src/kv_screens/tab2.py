@@ -1,4 +1,5 @@
 import kivy
+from spotipy import SpotifyException
 from kivy.animation import Animation
 from kivy.graphics import RoundedRectangle, Color
 from kivy.metrics import dp
@@ -59,10 +60,24 @@ class Tab2(Screen):
     def update_play_button(self, current=None):
         if current is None:
             current = sp.currently_playing()
+            if current is None:
+                self.ids.play_icon.source = '../other/images/play_icon.png'
         if current["is_playing"] is True:
             self.ids.play_icon.source = '../other/images/pause_icon.png'
         else:
             self.ids.play_icon.source = '../other/images/play_icon.png'
+
+    def spotify_search(self):
+        search_text = self.ids.search_input.text
+        try:
+            results = sp.search(q=search_text, type="track", limit=5)
+            print("Results of search", results)
+            i = 0
+            for track in results["tracks"]["items"]:
+                i += 1
+                print("Track " + str(i) + ":", track["name"] + ", by", track["artists"][0]["name"])
+        except SpotifyException as err:
+            print("Error in spotify_search:", err)
 
     def shuffle(self):
         pass
