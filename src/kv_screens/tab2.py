@@ -61,7 +61,6 @@ class Tab2(Screen):
             current = sp.currently_playing()
         if current["is_playing"] is True:
             self.ids.play_icon.source = '../other/images/pause_icon.png'
-            # logically this check should be True, but that makes the icons wrong. I don't know why.
         else:
             self.ids.play_icon.source = '../other/images/play_icon.png'
 
