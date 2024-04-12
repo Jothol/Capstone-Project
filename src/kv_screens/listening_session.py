@@ -61,22 +61,23 @@ class ListeningSessionScreen(Screen):
         bl.add_widget(sm)
         bl.add_widget(TabBar2(self, sm))
         self.add_widget(bl)
+        print("width", self.width)
+        print("height", self.height)
 
         # host box layout
-        bl2 = BoxLayout(orientation='horizontal', size_hint=(.6, .1), size=(dp(200), dp(20)),
-                        pos_hint={'center_x': .4, 'center_y': 1})
+        bl2 = BoxLayout(orientation='horizontal', pos=(dp(self.width/5), dp(400)))
         bl2.ids = self.parent.ids
         bl2.canvas.before.add(Color(0.1, 0.8, 0.1, 1))
-        bl2.canvas.before.add(Rectangle(size=(1200, 50), pos=(dp(0), dp(850)), size_hint=(None, None)))
+        bl2.canvas.before.add(Rectangle(size=(1200, 50), pos=(0, 850), size_hint=(None, None)))
         bl2.add_widget(Button(text='Invite User', background_color=[0, 1, 0, 1], size_hint=(None, None),
-                              pos=(600, 850), size=(dp(130), dp(30)), on_press=self.open_add_user))
+                              pos=(dp(600), dp(850)), size=(dp(130), dp(30)), on_press=self.open_add_user))
         bl2.add_widget(Button(text='Remove User', background_color=[0, 1, 0, 1], size_hint=(None, None),
-                              pos=(600, 850), size=(dp(130), dp(30)), on_press=self.open_remove_user))
+                              pos=(dp(600), dp(850)), size=(dp(130), dp(30)), on_press=self.open_remove_user))
         bl2.add_widget(Button(text='New Host', background_color=[0, 1, 0, 1], size_hint=(None, None),
-                              pos=(600, 850), size=(dp(130), dp(30)), on_press=self.open_new_host))
+                              pos=(dp(600), dp(850)), size=(dp(130), dp(30)), on_press=self.open_new_host))
         bl2.add_widget(Button(text='End Session', background_color=[0, 1, 0, 1], size_hint=(None, None),
-                              pos=(600, 850), size=(dp(130), dp(30)), on_press=self.open_end_session))
-        bl2.add_widget(BoxLayout())
+                              pos=(dp(600), dp(850)), size=(dp(130), dp(30)), on_press=self.open_end_session))
+        # bl2.add_widget(BoxLayout())
         bl2.add_widget(Button(text='Private', background_color=[1, 0, 0.4, 1], size_hint=(None, None),
                               size=(dp(130), dp(30)), on_press=self.change_status))
         # Add a bl2.bind() method

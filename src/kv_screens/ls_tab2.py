@@ -64,7 +64,7 @@ class LS_Tab2(Screen):
             self.ids.session_name.set_current_song(current["item"]["name"])
             song_name = current["item"]["name"]
             artist_names = self.ids.session_name.get_artists()
-            song_entry = song_name + ":" + artist_names
+            song_entry = song_name + ": " + artist_names
 
             index = LS_Tab2.song_list.find(song_entry)
             if index == -1:  # checks if song name is not already included
@@ -82,7 +82,8 @@ class LS_Tab2(Screen):
             current = sp.currently_playing()
             song_name = current["item"]["name"]
             artist_names = self.ids.session_name.get_artists()
-            song_entry = song_name + ":" + artist_names
+            print(artist_names)
+            song_entry = song_name + ": " + artist_names
             index = LS_Tab2.song_list.find(song_entry)
             if index == -1:  # checks if song name is not already included
                 if LS_Tab2.song_list == "":
