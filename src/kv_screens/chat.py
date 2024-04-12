@@ -5,9 +5,11 @@ from kivy.clock import Clock
 from kivy.core.window import Window, Keyboard
 from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
+from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.label import Label
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.textinput import TextInput
+from kivy.graphics import Color, Rectangle
 
 from src.database import socket_client
 
@@ -21,42 +23,68 @@ class ScrollableLabel(ScrollView):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.layout = GridLayout(cols=1, size_hint_y=None)
+        self.layout.bind(minimum_height=self.layout.setter('height'))
+
+        self.border = (0, 0, 0, 0)
+        with self.layout.canvas.before:
+            Color(1, 1, 1, 1)
+            self.chat_border = Rectangle(size=self.size, pos=self.size)
+            Color(0, 0, 0, 1)
+            self.chat_background = Rectangle(size=self.size, pos=self.pos)
         self.add_widget(self.layout)
 
-        self.chat_history = Label(size_hint_y=None, markup=True)
-        self.scroll_to_point = Label()
+        self.chat_history = Label(size_hint_y=None, markup=True, pos=self.chat_background.pos, \
+                                  size = self.size)
+        #self.scroll_to_point = Label()
 
         self.layout.add_widget(self.chat_history)
-        self.layout.add_widget(self.scroll_to_point)
+        #self.layout.add_widget(self.scroll_to_point)
 
     def update_chat_history(self, message):
         self.chat_history.text += '\n' + message
-
         self.layout.height = self.chat_history.texture_size[1] + 15
-        self.chat_history.height = self.chat_history.texture_size[1]
+        self.chat_history.height = self.layout.height
         self.chat_history.text_size = (self.chat_history.width * 0.98, None)
 
 
     def update_chat_history_layout(self, _=None):
-        self.layout.height = self.chat_history.texture_size[1] + 15
-        self.chat_history.height = self.chat_history.texture_size[1]
-        self.chat_history.text_size = (self.chat_history.width * 0.98, None)
+        #self.layout.height = self.chat_history.texture_size[1] + 15
+        #self.chat_history.height = self.chat_history.texture_size[1]
+        #self.chat_history.text_size = (self.chat_history.width * 0.98, None)
+        self.layout.height = self.layout.minimum_height
+
+    def update_chat_background(self, instance, value):
+        self.chat_background.pos = instance.pos
+        self.chat_background.size = instance.size
 
 
 class ChatScreen(GridLayout):
 
     def __init__(self, session_name, username, **kwargs):
         super().__init__(**kwargs)
+        # Define the characteristics of the gridlayout
         self.cols = 1
-        self.rows = 2
+        self.rows = 3
         self.session_name = session_name
         self.username = username
+        self.pos=(0, 50)
+        self.height = Window.size[1]
 
-        self.history = ScrollableLabel(height=Window.size[1] * 0.8, size_hint_y=None)
+        # Create the float layout in order for ls_tab1 to place the color option button and leave chat option
+        self.chat_options = FloatLayout(height=30, width=Window.width, )
+        # Add to ls_tab1 when chat is engaged
+        # self.color_options = Button(text="Color", size=(100, 30), pos_hint={'left': 0.1})
+        # self.leave_chat = Button(text="Leave Chat", size=(100, 30), pos_hint={'right': 0.9})
+        self.add_widget(self.chat_options)
+
+        # Add the scrollable history label to the grid
+        self.history = ScrollableLabel(height=Window.size[1] * 0.7, size=(Window.size[0], Window.size[1] - 50))
         self.add_widget(self.history)
 
-        self.new_message = TextInput(width=Window.size[0] * 0.8, size_hint_x=None, multiline=False)
-        self.send = Button(text="Send")
+        # Add the send and text input to the grid
+        self.new_message = TextInput(width=Window.size[0] * 0.8, size_hint_x=None, multiline=False, \
+                                     height=Window.size[1] * 0.1, size_hint_y=None)
+        self.send = Button(text="Send", size_hint_x=None, size_hint_y=None, height=Window.size[1] * 0.1)
         self.send.bind(on_press=self.send_message)
 
         bottom_line = GridLayout(cols=2)
@@ -64,8 +92,10 @@ class ChatScreen(GridLayout):
         bottom_line.add_widget(self.send)
         self.add_widget(bottom_line)
 
+        # Bind send message to enter key
         Window.bind(on_key_down=self.on_key_down)
         self.bind(size=self.adjust_fields)
+
 
         Clock.schedule_once(self.focus_text_input, 1)
         socket_client.start_listening(self.incoming_message, show_error, self.session_name)
