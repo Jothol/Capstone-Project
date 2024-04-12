@@ -125,3 +125,16 @@
                     pos: self.pos
                     size: self.size
                     source: self.source
+
+#bl2 = BoxLayout(orientation='horizontal', pos=(dp(self.width / 5), dp(400)))
+<HostBar>:
+    BoxLayout:
+        orientation: 'vertical'
+        BoxLayout:
+            id: host_bar
+            orientation: 'horizontal'
+            size_hint: None, None
+            size: self.parent.parent.width, dp(50)
+            ...
+        BoxLayout:
+            id: blank_space

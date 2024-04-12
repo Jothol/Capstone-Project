@@ -65,10 +65,10 @@ class ListeningSessionScreen(Screen):
         print("height", self.height)
 
         # host box layout
-        bl2 = BoxLayout(orientation='horizontal', pos=(dp(self.width/5), dp(400)))
+        bl2 = BoxLayout(orientation='horizontal', pos=(dp(self.width / 5), dp(400)))
         bl2.ids = self.parent.ids
         bl2.canvas.before.add(Color(0.1, 0.8, 0.1, 1))
-        bl2.canvas.before.add(Rectangle(size=(1200, 50), pos=(0, 850), size_hint=(None, None)))
+        bl2.canvas.before.add(Rectangle(size=(1200, 50), pos=(0, dp(850)), size_hint=(None, None)))
         bl2.add_widget(Button(text='Invite User', background_color=[0, 1, 0, 1], size_hint=(None, None),
                               pos=(dp(600), dp(850)), size=(dp(130), dp(30)), on_press=self.open_add_user))
         bl2.add_widget(Button(text='Remove User', background_color=[0, 1, 0, 1], size_hint=(None, None),
@@ -434,3 +434,8 @@ class TabBar2(FloatLayout):
         # Set the transition and switch to the desired screen
         self.screen_manager.transition = SlideTransition(direction=direction)
         self.screen_manager.current = screen_to_switch.name
+
+
+class HostBar(BoxLayout):
+    def __init__(self, **kwargs):
+        super(HostBar, self).__init__(**kwargs)
