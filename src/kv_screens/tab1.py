@@ -44,6 +44,7 @@ class Tab1(Screen):
         self.create_device_dropdown()
         self.dropdown_button = Button(text='Devices', size_hint=(None, None), size=(110, 50))
         self.dropdown_button.bind(on_release=self.open_dropdown)
+        self.dropdown_button.opacity = 0
 
         self.add_widget(self.dropdown_button)
 
@@ -201,7 +202,6 @@ class Option(BoxLayout):
         self.add_widget(RemoveButton())
         self.ids.option_label.opacity = 1
         self.ids.option_label.font_size = self.ids.option_label.font_size + dp(1)
-        print(tab1.create_session_friends)
 
     def remove(self, username):
         tab1 = self.parent.parent.parent.parent.parent
@@ -210,7 +210,6 @@ class Option(BoxLayout):
         self.add_widget(AddButton())
         self.ids.option_label.opacity = 0.4
         self.ids.option_label.font_size = self.ids.option_label.font_size - dp(1)
-        print(tab1.create_session_friends)
 
 
 class AddButton(Button):
