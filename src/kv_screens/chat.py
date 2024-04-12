@@ -23,7 +23,7 @@ class ScrollableLabel(ScrollView):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.layout = GridLayout(cols=1, size_hint_y=None)
-        self.layout.bind(minimum_height=self.layout.setter('height'))
+        #self.layout.bind(minimum_height=self.layout.setter('height'))
 
         '''self.border = (0, 0, 0, 0)
         with self.layout.canvas.before:
@@ -69,7 +69,7 @@ class ChatScreen(GridLayout):
         self.rows = 3
         self.session_name = session_name
         self.username = username
-        self.pos_hint = {'bottom': 0.9}
+        self.pos_hint = {'bottom': 1}
         self.height = Window.size[1]
         with self.canvas.before:
             self.background_color = (0, 0, 0, 1)
@@ -78,9 +78,10 @@ class ChatScreen(GridLayout):
         # Create the float layout in order for ls_tab1 to place the color option button and leave chat option
         self.chat_options = FloatLayout(size=(Window.width, 30), pos_hint={'top': 1}, size_hint=(None, None))
         # Add to ls_tab1 when chat is engaged
-        self.color_options = Button(text="Color", size_hint=(None, None), size=(100, 30), pos_hint={'left': 1, 'top': 1})
+        self.color_options = Button(text="Color", size_hint=(None, None), size=(100, 30),
+                                    pos_hint={'left': 1, 'top': 1}, background_color=(0, 1, 0, 1))
         self.leave_chat = Button(text="Leave Chat", size_hint=(None, None), size=(100, 30),
-                                 pos_hint={'right': 1, 'top': 1})
+                                 pos_hint={'right': 1, 'top': 1}, background_color=(0, 1, 0, 1))
         self.chat_options.add_widget(self.color_options)
         self.chat_options.add_widget(self.leave_chat)
         self.add_widget(self.chat_options)
