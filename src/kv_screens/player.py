@@ -59,7 +59,6 @@ def make_playlist_from_history(sp):
 def play_button_functionality(sp, di, session=None):
     try:
         currently_playing = sp.currently_playing()
-        print(currently_playing)
         if session is not None and session.get_uri() != "" and session.get_uri() != currently_playing["item"]["uri"]:
             queue_song(sp, session.get_uri())
             sp.next_track()

@@ -39,6 +39,8 @@ class LS_Tab2(Screen):
         volume_percentage_label.id = 'volume_label'
         self.ids.volume_box.add_widget(volume_slider_instance)
         self.ids.volume_box.add_widget(volume_percentage_label)
+        init_currently_playing = sp.currently_playing()
+        self.update_play_button(init_currently_playing)
 
     def on_enter(self, *args):
         self.ids.session_name = self.manager.parent.parent.parent.ids.session_name
@@ -50,6 +52,7 @@ class LS_Tab2(Screen):
             return
 
         current = sp.currently_playing()
+        self.update_play_button(current=current)
         if self.ids.session_name.get_uri() == "" and current is not None:
             self.ids.session_name.set_uri(current["item"]["uri"])
         elif self.ids.session_name.get_uri() != "" and self.ids.session_name.get_uri() != \
@@ -68,13 +71,10 @@ class LS_Tab2(Screen):
         currently_playing = sp.currently_playing()
         if di != "unselected":
             player.play_button_functionality(sp=sp, di=di, session=self.ids.session_name)
-            if currently_playing["is_playing"] is False:
-                self.ids.play_icon.source = '../other/images/pause_icon.png'
-            else:
-                self.ids.play_icon.source = '../other/images/play_icon.png'
+            self.update_play_button()
         else:
             if currently_playing is not None:
-                self.ids.play_icon.source = '../other/images/pause_icon.png'
+                self.update_play_button()
                 di = sp.devices()['devices'][0]['id']
                 player.play_button_functionality(sp, di, self.ids.session_name)
 
@@ -83,6 +83,15 @@ class LS_Tab2(Screen):
 
     def update_slider_label(self, slider, value):
         self.ids.volume_box.children[0].text = f"Volume: {int(value)}%"
+
+    def update_play_button(self, current=None):
+        if current is None:
+            current = sp.currently_playing()
+        if current["is_playing"] is True:
+            self.ids.play_icon.source = '../other/images/pause_icon.png'
+            # logically this check should be True, but that makes the icons wrong. I don't know why.
+        else:
+            self.ids.play_icon.source = '../other/images/play_icon.png'
 
     def shuffle(self):
         pass
