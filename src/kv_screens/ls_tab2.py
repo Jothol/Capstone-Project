@@ -42,6 +42,10 @@ class LS_Tab2(Screen):
         self.ids.volume_box.add_widget(volume_percentage_label)
 
     def on_enter(self, *args):
+        if sp.currently_playing()["is_playing"]:
+            self.ids.play_icon.source = '../other/images/play_icon.png'
+        else:
+            self.ids.play_icon.source = '../other/images/pause_icon.png'
         self.ids.like_pushed = False
         self.ids.dislike_pushed = False
         self.ids.song_length = None
@@ -72,11 +76,17 @@ class LS_Tab2(Screen):
     def play(self):
         global di
         currently_playing = sp.currently_playing()
-        if di != "unselected":
+        if di != "unselected":  # Device has been selected
             player.play_button_functionality(sp_client=sp, listening_device=di, session=self.ids.session_name)
-            if currently_playing["is_playing"] is False:
+            if currently_playing["is_playing"] is False:  # Song is playing
+                length_s = float(currently_playing["item"]["duration_ms"]) / 1000.0
+                progress_s = float(currently_playing["progress_ms"]) / 1000.0
+                print(f"{(length_s - progress_s)} time left")
+                self.ids.song_length = Clock.schedule_once(self.skip, timeout=(length_s - progress_s))
                 self.ids.play_icon.source = '../other/images/pause_icon.png'
-            else:
+            else:  # Song is paused
+                if self.ids.song_length is not None:
+                    self.ids.song_length.cancel()
                 self.ids.play_icon.source = '../other/images/play_icon.png'
         else:
             if currently_playing is not None:
@@ -86,7 +96,7 @@ class LS_Tab2(Screen):
 
     def skip(self, td=None):
         # print(self.ids.session_name)
-        print("Skip button")
+        # print("Skip button")
         if self.ids.song_length is not None:
             self.ids.song_length.cancel()
         player.next_song(sp, session=self.ids.session_name)
@@ -96,14 +106,11 @@ class LS_Tab2(Screen):
         time.sleep(3)  # Sleeps to ensure that the current song is the new song
         milli_sec = float(sp.currently_playing()["item"]["duration_ms"])
         song_length = (milli_sec / 1000.0)
-        print(f"Song length => {int(song_length / 60)}:{int(song_length % 60)}")
+        # print(f"Song length => {int(song_length / 60)}:{int(song_length % 60)}")
         self.ids.song_length = Clock.schedule_once(self.skip, timeout=song_length)
 
     def update_slider_label(self, slider, value):
         self.ids.volume_box.children[0].text = f"Volume: {int(value)}%"
-
-    def shuffle(self):
-        pass
 
     def like(self):
         if self.ids.dislike_pushed:
