@@ -1,8 +1,4 @@
-import sys
-
 import kivy
-from kivy.app import App
-from kivy.clock import Clock
 from kivy.animation import Animation
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout

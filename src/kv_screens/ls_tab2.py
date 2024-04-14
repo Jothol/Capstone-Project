@@ -84,12 +84,16 @@ class LS_Tab2(Screen):
                 di = sp.devices()['devices'][0]['id']
                 player.play_button_functionality(sp, di, self.ids.session_name)
 
-    def skip(self):
+    def skip(self, td=None):
+        if self.parent.current != "ls_tab2":
+            self.ids.song_length.cancel()
+            return
         if self.ids.song_length is not None:
             self.ids.song_length.cancel()
         player.next_song(sp, session=self.ids.session_name)
-        song_length = (float(sp.currently_playing()["item"]["duration_ms"]) - 1)/1000.0
-        self.ids.song_length = Clock.schedule_once(self.skip, song_length)
+        song_length = (float(sp.currently_playing()["item"]["duration_ms"])/1000.0) -1
+        print(song_length)
+        self.ids.song_length = Clock.schedule_once(self.skip, 30)
         self.ids.session_name.reset_likes_and_dislikes()
         self.ids.like_pushed = False
         self.ids.dislike_pushed = False

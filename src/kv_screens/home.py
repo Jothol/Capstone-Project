@@ -20,11 +20,6 @@ from src.kv_screens.tab3 import Tab3
 kivy.require('2.3.0')
 
 
-def show_error(message):
-    print(message)
-    Clock.schedule_once(sys.exit, 10)
-
-
 def set_opacity(image: Image, opacity):
     # Find the Color instruction in canvas.after
     for instruction in image.canvas.after.children:
@@ -35,24 +30,12 @@ def set_opacity(image: Image, opacity):
 
 
 class HomeScreen(Screen):
-    chat_screen_exists = False
-    accessed = False
-
-    def connect(self):
-        ip = "spotivibe.net"
-        port = 5000
-        if not self.chat_screen_exists:
-            if not socket_client.connect(ip, port, self.parent.ids.username, show_error):
-                return
-            self.chat_page = ChatScreen()
-            screen = Screen(name="chat_page")
-            screen.add_widget(self.chat_page)
-            self.parent.add_widget(screen)
-            self.chat_screen_exists = True
-        self.parent.current = 'chat_page'
-
     # self is home screen
     # self.parent is main.py
+    def __init__(self, **kw):
+        super().__init__(kw)
+        self.accessed = None
+
     def on_enter(self):
         if not self.accessed:
             bl = BoxLayout(orientation='vertical')
@@ -121,7 +104,6 @@ class TabBar(FloatLayout):
         elif self.screen_manager.current == 'tab1' and int(screen_name) != 1:
             Animation(size=(self.ids.home_button.width * 0.6, self.ids.home_button.height * 0.6),
                       center=self.ids.home_button.center, duration=0.1).start(self.ids.home_image)
-
 
         self.screen_manager.ids = self.screen_manager.parent.ids
 
