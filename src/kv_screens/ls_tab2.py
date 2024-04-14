@@ -39,12 +39,11 @@ class LS_Tab2(Screen):
         volume_percentage_label.id = 'volume_label'
         self.ids.volume_box.add_widget(volume_slider_instance)
         self.ids.volume_box.add_widget(volume_percentage_label)
-        init_currently_playing = sp.currently_playing()
-        self.update_play_button(init_currently_playing)
 
     def on_enter(self, *args):
         self.ids.session_name = self.manager.parent.parent.parent.ids.session_name
         self.ids.check = Clock.schedule_interval(self.get_current_song, 5)
+        self.update_play_button()
 
     def get_current_song(self, dt):
         # print("Testing")
@@ -87,6 +86,8 @@ class LS_Tab2(Screen):
     def update_play_button(self, current=None):
         if current is None:
             current = sp.currently_playing()
+            if current is None:
+                self.ids.play_icon.source = '../other/images/play_icon.png'
         if current["is_playing"] is True:
             self.ids.play_icon.source = '../other/images/pause_icon.png'
         else:
