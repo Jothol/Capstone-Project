@@ -9,7 +9,7 @@ class HoverableButton(Button):
 
     def on_mouseover(self, window, pos):
         if self.collide_point(*pos):
-            self.background_color = (0, 0, 1, 1)
+            self.background_color = (0, 0.5, 0, 1)
         else:
             self.background_color = (0, 1, 0, 1)
 
