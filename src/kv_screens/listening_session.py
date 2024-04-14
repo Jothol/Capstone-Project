@@ -113,6 +113,8 @@ class ListeningSessionScreen(Screen):
 
     # Method process of User leaving session and back to home screen
     def submit(self):
+        if self.children[1].children[1].current is "ls_tab2":
+            self.children[0].children[1].current = "ls_tab1"
         sess = self.manager.ids.session_name
         user = self.manager.ids.username
         # Clock.unschedule(self.host_replacement)
@@ -122,8 +124,6 @@ class ListeningSessionScreen(Screen):
             ListeningSessionScreen.host_bar = None
         else:
             sess.remove_user(user)
-        if self.children[0].children[1].current is "ls_tab2":
-            self.children[0].children[1].current = "ls_tab1"
         self.parent.ids.session_name = None
         self.parent.ids.username.in_session = False
         self.manager.current = "home_page"

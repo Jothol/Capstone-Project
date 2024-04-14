@@ -58,8 +58,6 @@ class Spotivibe(App):
         sm.add_widget(CreateAccount(name='create_account_page'))
         sm.add_widget(AddAccountInfo(name='add_account_info_page'))
         sm.add_widget(HomeScreen(name='home_page'))
-        sm.add_widget(RecommendationScreen(name='recommendation_page'))
-        sm.add_widget(RecommendationInputScreen(name='recommendation_input_page'))
         sm.add_widget(ListeningSessionScreen(name='listening_session_page'))
         sm.add_widget(ChangePassword(name='change_password_page'))
 

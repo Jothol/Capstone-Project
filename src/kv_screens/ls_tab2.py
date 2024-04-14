@@ -1,10 +1,8 @@
-import threading
 import time
 
 import kivy
 from kivy.animation import Animation
 from kivy.clock import Clock
-from kivy.graphics import RoundedRectangle, Color
 from kivy.metrics import dp
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen, ScreenManager
@@ -52,19 +50,21 @@ class LS_Tab2(Screen):
 
     def get_current_song(self, dt):
         # print("Testing")
-        if self.ids.session_name.name is None:
-            return
-
         current = sp.currently_playing()
-        if self.ids.session_name.get_uri() == "" and current is not None:
-            self.ids.session_name.set_uri(current["item"]["uri"])
-        elif self.ids.session_name.get_uri() != "" and self.ids.session_name.get_uri() != \
-                current["item"]["uri"]:
-            player.queue_song(sp, self.ids.session_name.get_uri())
-            sp.next_track()
+        try:
+            if self.ids.session_name.get_uri() == "" and current is not None:
+                self.ids.session_name.set_uri(current["item"]["uri"])
+            elif self.ids.session_name.get_uri() != "" and self.ids.session_name.get_uri() != \
+                    current["item"]["uri"]:
+                player.queue_song(sp, self.ids.session_name.get_uri())
+                sp.next_track()
+        except Exception as e:
+            self.on_leave()
 
     def on_leave(self, *args):
         Clock.unschedule(self.ids.check)
+        if self.ids.song_length is not None:
+            self.ids.song_length.cancel()
 
     def restart(self):
         pass
@@ -85,18 +85,18 @@ class LS_Tab2(Screen):
                 player.play_button_functionality(sp, di, self.ids.session_name)
 
     def skip(self, td=None):
-        if self.parent.current != "ls_tab2":
-            self.ids.song_length.cancel()
-            return
+        # print(self.ids.session_name)
         if self.ids.song_length is not None:
             self.ids.song_length.cancel()
         player.next_song(sp, session=self.ids.session_name)
-        song_length = (float(sp.currently_playing()["item"]["duration_ms"])/1000.0) -1
-        print(song_length)
-        self.ids.song_length = Clock.schedule_once(self.skip, 30)
         self.ids.session_name.reset_likes_and_dislikes()
         self.ids.like_pushed = False
         self.ids.dislike_pushed = False
+        time.sleep(1)  # Sleeps to ensure that the current song is the new song
+        milli_sec = float(sp.currently_playing()["item"]["duration_ms"])
+        song_length = (milli_sec / 1000.0)
+        print(f"Song length => {int(song_length / 60)}:{int(song_length % 60)}")
+        self.ids.song_length = Clock.schedule_once(self.skip, 30)
 
     def update_slider_label(self, slider, value):
         self.ids.volume_box.children[0].text = f"Volume: {int(value)}%"
@@ -140,5 +140,3 @@ class LS_Tab2(Screen):
 
         animation_window.start(player_window)
         animation_controls.start(control_buttons)
-
-

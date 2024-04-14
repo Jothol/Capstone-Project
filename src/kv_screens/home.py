@@ -30,12 +30,9 @@ def set_opacity(image: Image, opacity):
 
 
 class HomeScreen(Screen):
+    accessed = None
     # self is home screen
     # self.parent is main.py
-    def __init__(self, **kw):
-        super().__init__(kw)
-        self.accessed = None
-
     def on_enter(self):
         if not self.accessed:
             bl = BoxLayout(orientation='vertical')
