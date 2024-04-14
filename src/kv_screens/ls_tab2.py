@@ -46,7 +46,7 @@ class LS_Tab2(Screen):
         self.ids.dislike_pushed = False
         self.ids.song_length = None
         self.ids.session_name = self.manager.parent.parent.parent.ids.session_name
-        self.ids.check = Clock.schedule_interval(self.get_current_song, 5)
+        self.ids.check = Clock.schedule_interval(self.get_current_song, 10)
 
     def get_current_song(self, dt):
         # print("Testing")
@@ -86,17 +86,18 @@ class LS_Tab2(Screen):
 
     def skip(self, td=None):
         # print(self.ids.session_name)
+        print("Skip button")
         if self.ids.song_length is not None:
             self.ids.song_length.cancel()
         player.next_song(sp, session=self.ids.session_name)
         self.ids.session_name.reset_likes_and_dislikes()
         self.ids.like_pushed = False
         self.ids.dislike_pushed = False
-        time.sleep(1)  # Sleeps to ensure that the current song is the new song
+        time.sleep(3)  # Sleeps to ensure that the current song is the new song
         milli_sec = float(sp.currently_playing()["item"]["duration_ms"])
         song_length = (milli_sec / 1000.0)
         print(f"Song length => {int(song_length / 60)}:{int(song_length % 60)}")
-        self.ids.song_length = Clock.schedule_once(self.skip, 30)
+        self.ids.song_length = Clock.schedule_once(self.skip, timeout=song_length)
 
     def update_slider_label(self, slider, value):
         self.ids.volume_box.children[0].text = f"Volume: {int(value)}%"

@@ -217,6 +217,7 @@ def get_device_volume():
 
 
 def balance_values(features, likes, dislikes):
+    print(f"Likes: {likes}, Dislikes: {dislikes}")
     new_features = {"danceability": features["danceability"], "energy": features["energy"],
                     "valence": features["valence"]}
     if likes > dislikes:  # if likes is greater than dislikes do not adjust anything
@@ -225,8 +226,12 @@ def balance_values(features, likes, dislikes):
         adjust_values = 0.1
         if random() > 0.5:
             adjust_values = -adjust_values
+    elif dislikes > likes + 2:
+        adjust_values = 0.2
+        if random() > 0.5:
+            adjust_values = -adjust_values
     else:  # Dislikes is larger than likes more dramatic shift
-        adjust_values = 0.3
+        adjust_values = 0.4
         if random() > 0.5:
             adjust_values = -adjust_values
     new_features["danceability"] = max(1, min(0, round(features["danceability"] + adjust_values, 3)))
