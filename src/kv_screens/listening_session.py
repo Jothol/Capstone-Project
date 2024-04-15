@@ -46,6 +46,8 @@ class ListeningSessionScreen(Screen):
     end_session_button_layout = None  # layout for ending session
     screen_manager = None  # helper created for removing hostbar on ls_tab3
     user_list = None
+    status = "Private"
+    the_host_bar = None
 
     def on_enter(self, *args):
         ListeningSessionScreen.session_name.name = (
@@ -61,30 +63,38 @@ class ListeningSessionScreen(Screen):
         bl.add_widget(sm)
         bl.add_widget(TabBar2(self, sm))
         self.add_widget(bl)
-        print("width", self.width)
-        print("height", self.height)
+        ListeningSessionScreen.the_host_bar = HostBar(self, sm)
+        # if self.parent.ids.session_name.host.username == self.parent.ids.username.username:
+        #     self.add_widget(ListeningSessionScreen.the_host_bar)
+
+        print(self.height)
+        print(self.width)
+
+        if ListeningSessionScreen.user.username == self.manager.ids.session_name.host.username:
+            self.add_widget(ListeningSessionScreen.the_host_bar)
+            ListeningSessionScreen.host_bar = ListeningSessionScreen.the_host_bar
 
         # host box layout
-        bl2 = BoxLayout(orientation='horizontal', pos=(dp(self.width / 5), dp(400)))
-        bl2.ids = self.parent.ids
-        bl2.canvas.before.add(Color(0.1, 0.8, 0.1, 1))
-        bl2.canvas.before.add(Rectangle(size=(1200, 50), pos=(0, dp(850)), size_hint=(None, None)))
-        bl2.add_widget(Button(text='Invite User', background_color=[0, 1, 0, 1], size_hint=(None, None),
-                              pos=(dp(600), dp(850)), size=(dp(130), dp(30)), on_press=self.open_add_user))
-        bl2.add_widget(Button(text='Remove User', background_color=[0, 1, 0, 1], size_hint=(None, None),
-                              pos=(dp(600), dp(850)), size=(dp(130), dp(30)), on_press=self.open_remove_user))
-        bl2.add_widget(Button(text='New Host', background_color=[0, 1, 0, 1], size_hint=(None, None),
-                              pos=(dp(600), dp(850)), size=(dp(130), dp(30)), on_press=self.open_new_host))
-        bl2.add_widget(Button(text='End Session', background_color=[0, 1, 0, 1], size_hint=(None, None),
-                              pos=(dp(600), dp(850)), size=(dp(130), dp(30)), on_press=self.open_end_session))
-        # bl2.add_widget(BoxLayout())
-        bl2.add_widget(Button(text='Private', background_color=[1, 0, 0.4, 1], size_hint=(None, None),
-                              size=(dp(130), dp(30)), on_press=self.change_status))
+        # bl2 = BoxLayout(orientation='horizontal', pos=(dp(self.width / 5), dp(400)))
+        # bl2.ids = self.parent.ids
+        # bl2.canvas.before.add(Color(0.1, 0.8, 0.1, 1))
+        # bl2.canvas.before.add(Rectangle(size=(1200, 50), pos=(0, dp(850)), size_hint=(None, None)))
+        # bl2.add_widget(Button(text='Invite User', background_color=[0, 1, 0, 1], size_hint=(None, None),
+        #                       pos=(dp(600), dp(850)), size=(dp(130), dp(30)), on_press=self.open_add_user))
+        # bl2.add_widget(Button(text='Remove User', background_color=[0, 1, 0, 1], size_hint=(None, None),
+        #                       pos=(dp(600), dp(850)), size=(dp(130), dp(30)), on_press=self.open_remove_user))
+        # bl2.add_widget(Button(text='New Host', background_color=[0, 1, 0, 1], size_hint=(None, None),
+        #                       pos=(dp(600), dp(850)), size=(dp(130), dp(30)), on_press=self.open_new_host))
+        # bl2.add_widget(Button(text='End Session', background_color=[0, 1, 0, 1], size_hint=(None, None),
+        #                       pos=(dp(600), dp(850)), size=(dp(130), dp(30)), on_press=self.open_end_session))
+        # # bl2.add_widget(BoxLayout())
+        # bl2.add_widget(Button(text='Private', background_color=[1, 0, 0.4, 1], size_hint=(None, None),
+        #                       size=(dp(130), dp(30)), on_press=self.change_status))
         # Add a bl2.bind() method
-        ListeningSessionScreen.host_box_layout = bl2
-        if ListeningSessionScreen.user.username == self.manager.ids.session_name.host.username:
-            self.add_widget(ListeningSessionScreen.host_box_layout)
-            ListeningSessionScreen.host_bar = ListeningSessionScreen.host_box_layout
+        # ListeningSessionScreen.host_box_layout = bl2
+        # if ListeningSessionScreen.user.username == self.manager.ids.session_name.host.username:
+        #     self.add_widget(ListeningSessionScreen.host_box_layout)
+        #     ListeningSessionScreen.host_bar = ListeningSessionScreen.host_box_layout
 
         # new variables for clock testing end session button and host replacement
         # Clock.schedule_interval(self.host_replacement, 1.3)
@@ -127,16 +137,6 @@ class ListeningSessionScreen(Screen):
         self.parent.ids.username.in_session = False
         self.manager.current = "home_page"
 
-    def change_status(self, instance):
-        if instance.text == "Private":
-            instance.text = "Public"
-            instance.background_color = [0, 1, 0.6, 1]
-            self.parent.ids.session_name.session_status.update({'status': 'public'})
-        else:
-            instance.text = "Private"
-            instance.background_color = [1, 0, 0.4, 1]
-            self.parent.ids.session_name.session_status.update({'status': 'private'})
-
     # BEGINNING OF CLOCK METHOD
     def session_refresher(self, instance):
         sess = ListeningSessionScreen.session_name
@@ -154,7 +154,7 @@ class ListeningSessionScreen(Screen):
             if ListeningSessionScreen.host_bar is None:
                 sess.host = acc  # update in case acc just became new host
                 if ListeningSessionScreen.screen_manager.current != "ls_tab3":
-                    ListeningSessionScreen.host_bar = ListeningSessionScreen.host_box_layout
+                    ListeningSessionScreen.host_bar = ListeningSessionScreen.the_host_bar
                     self.add_widget(ListeningSessionScreen.host_bar)
                     self.ids.user_label.text = 'Hosted by: {}.'.format(sess.host.username)
             else:
@@ -437,5 +437,50 @@ class TabBar2(FloatLayout):
 
 
 class HostBar(BoxLayout):
-    def __init__(self, **kwargs):
+    on_open = False
+    drop_down = None
+    input_text = ""
+    def __init__(self, ls_screen: ListeningSessionScreen, screen_manager: ScreenManager, **kwargs):
         super(HostBar, self).__init__(**kwargs)
+        self.screen_manager = screen_manager
+        self.screen_manager.ids = ls_screen.parent.ids
+        self.screen_manager.ls_screen = ls_screen
+
+    def change_status(self):
+        if self.ids.status.text == "Private":
+            self.ids.status.text = "Public"
+            self.ids.status.background_color = [0, 1, 0.6, 1]
+            # self.parent.ids.session_name.session_status.update({'status': 'public'})
+            print(self.screen_manager.ls_screen.ids)
+            print(self.screen_manager.ls_screen.parent.ids)
+            print(self.screen_manager.parent.ids)
+            print(self.screen_manager.ids.session_name)
+            self.screen_manager.ids.session_name.session_status.update({'status': 'public'})
+        else:
+            self.ids.status.text = "Private"
+            self.ids.status.background_color = [1, 0, 0.4, 1]
+            # self.parent.ids.session_name.session_status.update({'status': 'private'})
+            self.screen_manager.ids.session_name.session_status.update({'status': 'private'})
+
+    def open_bar(self, input_text):
+        print("Hi")
+        if HostBar.on_open is False:
+            HostBar.drop_down = HostDropBar(self.screen_manager.ls_screen, self.screen_manager)
+            self.screen_manager.ls_screen.add_widget(HostBar.drop_down)
+            HostBar.on_open = True
+            HostBar.input_text = input_text
+        else:
+            print(HostBar.input_text)
+            self.screen_manager.ls_screen.remove_widget(HostBar.drop_down)
+            HostBar.on_open = False
+            HostBar.drop_down = None
+        pass
+
+
+class HostDropBar(BoxLayout):
+
+    def __init__(self, ls_screen: ListeningSessionScreen, screen_manager: ScreenManager, **kwargs):
+        super(HostDropBar, self).__init__(**kwargs)
+        self.screen_manager = screen_manager
+        self.screen_manager.ids = ls_screen.parent.ids
+        self.screen_manager.ls_screen = ls_screen

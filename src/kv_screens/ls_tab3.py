@@ -121,7 +121,7 @@ class LS_Tab3(Screen):
         if acc is None:
             self.animate_error_window('User not found in session.', (1, 0, 0, 1))
             return False
-        elif user_name in self.friends:
+        elif user_name in LS_Tab3.user.friends:
             self.animate_error_window('Already friends with ' + user_name + '.', (1, 0, 0, 1))
             return False
         self.animate_error_window('Friend request sent to ' + user_name + '.', (0, 0.5, 0, 1))

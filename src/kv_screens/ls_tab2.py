@@ -29,6 +29,7 @@ class LS_Tab2(Screen):
     dislikes = 0
     likes_pressed = False
     dislikes_pressed = False
+    already_added = False
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -82,7 +83,6 @@ class LS_Tab2(Screen):
             current = sp.currently_playing()
             song_name = current["item"]["name"]
             artist_names = self.ids.session_name.get_artists()
-            print(artist_names)
             song_entry = song_name + ": " + artist_names
             index = LS_Tab2.song_list.find(song_entry)
             if index == -1:  # checks if song name is not already included
@@ -96,8 +96,10 @@ class LS_Tab2(Screen):
             # purpose is to check the amount of likes and dislikes and if color text needs to be updated
             LS_Tab2.likes = self.ids.session_name.get_likes()
             LS_Tab2.dislikes = self.ids.session_name.get_dislikes()
-            song_entry = self.ids.session_name.get_current_song() + ":" + self.ids.session_name.get_artists()
+            song_entry = self.ids.session_name.get_current_song() + ": " + self.ids.session_name.get_artists()
             index = LS_Tab2.song_list.find(song_entry)  # locates first letter for song_entry
+            print(index)
+            print(LS_Tab2.song_list)
             if LS_Tab2.song_list[index-7:index-1] == "00ff00":  # currently green text favoring likes
                 if LS_Tab2.likes < LS_Tab2.dislikes:  # text changes from green to red
                     print("change from green to red")
@@ -105,7 +107,7 @@ class LS_Tab2(Screen):
                     self.ids.session_name.saved_song.update({'songs_played': LS_Tab2.song_list})
                 elif LS_Tab2.likes == LS_Tab2.dislikes:  # change text color back to normal
                     print("change back to normal color")
-                    LS_Tab2.song_list = LS_Tab2.song_list[:index - 14] + LS_Tab2.song_list[index:]
+                    LS_Tab2.song_list = LS_Tab2.song_list[:index - 14] + LS_Tab2.song_list[index:len(LS_Tab2.song_list)-8]
                     self.ids.session_name.saved_song.update({'songs_played': LS_Tab2.song_list})
             elif LS_Tab2.song_list[index-7:index-1] == "ff0000":  # current red text favoring dislikes
                 if LS_Tab2.likes > LS_Tab2.dislikes:  # text changes from red to green
@@ -114,15 +116,20 @@ class LS_Tab2(Screen):
                     self.ids.session_name.saved_song.update({'songs_played': LS_Tab2.song_list})
                 elif LS_Tab2.likes == LS_Tab2.dislikes:  # change text color back to normal
                     print("change back to normal color", LS_Tab2.song_list[:index-14])
-                    print(LS_Tab2.song_list[:index-13])
-                    LS_Tab2.song_list = LS_Tab2.song_list[:index - 14]+LS_Tab2.song_list[index:]
+                    # print(LS_Tab2.song_list[index:len(LS_Tab2.song_list)-8])
+                    LS_Tab2.song_list = LS_Tab2.song_list[:index - 14]+LS_Tab2.song_list[index:len(LS_Tab2.song_list)-8]
+
                     self.ids.session_name.saved_song.update({'songs_played': LS_Tab2.song_list})
             else:  # text color is normal favoring neither likes or dislikes
                 if LS_Tab2.likes < LS_Tab2.dislikes:  # change text from normal to red
-                    LS_Tab2.song_list = LS_Tab2.song_list[:0]+"[color=ff0000]"+LS_Tab2.song_list
+                    print("NO IN HERE")
+                    print("boy", LS_Tab2.song_list[:index])
+                    LS_Tab2.song_list = LS_Tab2.song_list[:index] + "[color=ff0000]" + song_entry + "[/color]"
+                    print("after", LS_Tab2.song_list)
                     self.ids.session_name.saved_song.update({'songs_played': LS_Tab2.song_list})
                 elif LS_Tab2.likes > LS_Tab2.dislikes:  # change text from normal to green
-                    LS_Tab2.song_list = LS_Tab2.song_list[:0] + "[color=00ff00]" + LS_Tab2.song_list
+                    print("IT IS IN HERE")
+                    LS_Tab2.song_list = LS_Tab2.song_list[:index] + "[color=00ff00]" + song_entry + "[/color]"
                     self.ids.session_name.saved_song.update({'songs_played': LS_Tab2.song_list})
 
 
@@ -149,6 +156,8 @@ class LS_Tab2(Screen):
 
     def skip(self):
         player.next_song(sp, session=self.ids.session_name)
+        LS_Tab2.likes_pressed = False
+        LS_Tab2.dislikes_pressed = False
 
     def update_slider_label(self, slider, value):
         self.ids.volume_box.children[0].text = f"Volume: {int(value)}%"

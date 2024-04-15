@@ -153,7 +153,7 @@ class Session:
 
     # Increases likes when user presses like button
     def increment_likes(self):
-        self.likes += 1
+        self.likes = self.get_likes() + 1
         self.current_song.update({'likes': self.likes})
 
     # Decrease likes when user unpresses like button
@@ -170,7 +170,7 @@ class Session:
 
     # Increase dislikes when user presses dislike button
     def increment_dislikes(self):
-        self.dislikes += 1
+        self.dislikes = self.get_dislikes() + 1
         self.current_song.update({'dislikes': self.dislikes})
 
     # Decrease dislikes when user unpresses dislike button

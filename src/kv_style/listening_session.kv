@@ -135,6 +135,84 @@
             orientation: 'horizontal'
             size_hint: None, None
             size: self.parent.parent.width, dp(50)
-            ...
+            canvas.before:
+                Color:
+                    rgba: 0.1, 0.1, 0.1, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            # ...
+            Button:
+                text: 'Invite User'
+                size_hint: None, None
+                size: dp(130), dp(30)
+                background_color: [0, 1, 0, 1]
+                on_press:
+                    root.open_bar('Invite User')
+            Button:
+                text: 'Remove User'
+                size_hint: None, None
+                size: dp(130), dp(30)
+                background_color: [0, 1, 0, 1]
+                on_press:
+                    root.open_bar('Remove User')
+            Button:
+                text: 'New Host'
+                size_hint: None, None
+                size: dp(130), dp(30)
+                background_color: [0, 1, 0, 1]
+                on_press:
+                    root.open_bar('New Host')
+            Button:
+                text: 'End Session'
+                size_hint: None, None
+                size: dp(130), dp(30)
+                background_color: [0, 1, 0, 1]
+            Button:
+                text: 'Private'
+                id: status
+                size_hint: None, None
+                size: dp(130), dp(30)
+                background_color: [1, 0, 0.4, 1]
+                on_press:
+                    root.change_status()
         BoxLayout:
             id: blank_space
+
+<HostDropBar>:
+    BoxLayout:
+        orientation: 'vertical'
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: None, None
+            size: dp(400), dp(30)
+            canvas.before:
+                Color:
+                    rgba: 1, .2, 1, 1
+                Line:
+                    width: dp(1)
+                    rectangle: self.x, self.y, self.width, self.height
+                Color:
+                    rgba: 0.2, 0.2, 0.2, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            Label:
+                id: input_label
+                text: ''
+                color: [0,0.4,0,1]
+                font_size: 20
+                bold: True
+                pos: dp(self.width/2), dp(700)
+            TextInput:
+                multiline: False
+                hint_text: '(User Name)'
+            Button:
+                id: button_input
+                size_hint: (None, None)
+                size: (130, 30)
+                text: 'Enter'
+                background_color:[0,1,0,1]
+        BoxLayout:
+            id: blank_space
+            size_hint: None, None
