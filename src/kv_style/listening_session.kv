@@ -130,6 +130,7 @@
 <HostBar>:
     BoxLayout:
         orientation: 'vertical'
+        pos_hint: {'center_x': .5}
         BoxLayout:
             id: host_bar
             orientation: 'horizontal'
@@ -180,39 +181,34 @@
             id: blank_space
 
 <HostDropBar>:
-    BoxLayout:
-        orientation: 'vertical'
-        BoxLayout:
-            orientation: 'horizontal'
-            size_hint: None, None
-            size: dp(400), dp(30)
-            canvas.before:
-                Color:
-                    rgba: 1, .2, 1, 1
-                Line:
-                    width: dp(1)
-                    rectangle: self.x, self.y, self.width, self.height
-                Color:
-                    rgba: 0.2, 0.2, 0.2, 1
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
-            Label:
-                id: input_label
-                text: ''
-                color: [0,0.4,0,1]
-                font_size: 20
-                bold: True
-                pos: dp(self.width/2), dp(700)
-            TextInput:
-                multiline: False
-                hint_text: '(User Name)'
-            Button:
-                id: button_input
-                size_hint: (None, None)
-                size: (130, 30)
-                text: 'Enter'
-                background_color:[0,1,0,1]
-        BoxLayout:
-            id: blank_space
-            size_hint: None, None
+    size_hint: None, None
+    size: dp(400), dp(30)
+    pos_hint: {'center_x': .5, 'center_y': .9}
+    canvas.before:
+        Color:
+            rgba: 1, .2, 1, 1
+        Line:
+            width: dp(1)
+            rectangle: self.x, self.y, self.width, self.height
+        Color:
+            rgba: 0.2, 0.2, 0.2, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    Label:
+        id: input_label
+        text: ''
+        color: [0,0.4,0,1]
+        font_size: 20
+        bold: True
+        pos: dp(self.width/2), dp(700)
+    TextInput:
+        multiline: False
+        hint_text: '(User Name)'
+    Button:
+        id: button_input
+        size_hint: (None, None)
+        size: (130, 30)
+        pos_hint: {'center_y': .5}
+        text: 'Enter'
+        background_color:[0,1,0,1]
