@@ -1,3 +1,5 @@
+#:import HoverableButton src.kv_screens.hoverablebutton
+
 <Tab1>
     RelativeLayout:
         Label:
@@ -41,7 +43,7 @@
                             multiline: False
                             hint_text: '(Session)'
 
-                    Button:
+                    HoverableButton:
                         size_hint: (None, None)
                         size: (130, 30)
                         text: 'Join'
@@ -51,7 +53,7 @@
                             root.manager.transition.direction = 'down'
                             root.submit(session_input.text, 'Join')
 
-                    Button:
+                    HoverableButton:
                         size_hint: (None, None)
                         size: (130, 30)
                         text: 'Create'
