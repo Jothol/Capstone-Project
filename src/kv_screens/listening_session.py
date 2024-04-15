@@ -64,40 +64,10 @@ class ListeningSessionScreen(Screen):
         bl.add_widget(TabBar2(self, sm))
         self.add_widget(bl)
         ListeningSessionScreen.the_host_bar = HostBar(self, sm)
-        # if self.parent.ids.session_name.host.username == self.parent.ids.username.username:
-        #     self.add_widget(ListeningSessionScreen.the_host_bar)
-
-        print(self.height)
-        print(self.width)
-
         if ListeningSessionScreen.user.username == self.manager.ids.session_name.host.username:
             self.add_widget(ListeningSessionScreen.the_host_bar)
             ListeningSessionScreen.host_bar = ListeningSessionScreen.the_host_bar
 
-        # host box layout
-        # bl2 = BoxLayout(orientation='horizontal', pos=(dp(self.width / 5), dp(400)))
-        # bl2.ids = self.parent.ids
-        # bl2.canvas.before.add(Color(0.1, 0.8, 0.1, 1))
-        # bl2.canvas.before.add(Rectangle(size=(1200, 50), pos=(0, dp(850)), size_hint=(None, None)))
-        # bl2.add_widget(Button(text='Invite User', background_color=[0, 1, 0, 1], size_hint=(None, None),
-        #                       pos=(dp(600), dp(850)), size=(dp(130), dp(30)), on_press=self.open_add_user))
-        # bl2.add_widget(Button(text='Remove User', background_color=[0, 1, 0, 1], size_hint=(None, None),
-        #                       pos=(dp(600), dp(850)), size=(dp(130), dp(30)), on_press=self.open_remove_user))
-        # bl2.add_widget(Button(text='New Host', background_color=[0, 1, 0, 1], size_hint=(None, None),
-        #                       pos=(dp(600), dp(850)), size=(dp(130), dp(30)), on_press=self.open_new_host))
-        # bl2.add_widget(Button(text='End Session', background_color=[0, 1, 0, 1], size_hint=(None, None),
-        #                       pos=(dp(600), dp(850)), size=(dp(130), dp(30)), on_press=self.open_end_session))
-        # # bl2.add_widget(BoxLayout())
-        # bl2.add_widget(Button(text='Private', background_color=[1, 0, 0.4, 1], size_hint=(None, None),
-        #                       size=(dp(130), dp(30)), on_press=self.change_status))
-        # Add a bl2.bind() method
-        # ListeningSessionScreen.host_box_layout = bl2
-        # if ListeningSessionScreen.user.username == self.manager.ids.session_name.host.username:
-        #     self.add_widget(ListeningSessionScreen.host_box_layout)
-        #     ListeningSessionScreen.host_bar = ListeningSessionScreen.host_box_layout
-
-        # new variables for clock testing end session button and host replacement
-        # Clock.schedule_interval(self.host_replacement, 1.3)
         Clock.schedule_interval(self.session_refresher, 1.3)
 
     def on_pre_enter(self, *args):
@@ -117,7 +87,6 @@ class ListeningSessionScreen(Screen):
         pass
 
     def on_leave(self, *args):
-        # Clock.unschedule(self.host_replacement)
         Clock.unschedule(self.session_refresher)
 
     # Method process of User leaving session and back to home screen
@@ -165,153 +134,6 @@ class ListeningSessionScreen(Screen):
     # END OF CLOCK METHOD
 
     # BEGINNING OF HOST BUTTON METHODS
-    # BEGINNING OF INVITE USER BUTTON
-    def add_acc(self, instance):
-        user_name = ListeningSessionScreen.add_button_layout.children[1].text
-        user = account.get_account(user_name)
-        sess = ListeningSessionScreen.session_name
-        if user is None:
-            print("User not found")
-        else:
-            try:
-                index = user.friends.index(sess.host.username)
-                user.session_invites.append(self.parent.ids.session_name.name.id)
-                user.account.update({'session_invites': user.session_invites})
-            except ValueError:
-                print("You are not friends with the user")
-                return
-            print("user found!")
-            # ListeningSessionScreen.session_name.add_user(user)
-
-    def open_add_user(self, instance):
-        sess = ListeningSessionScreen.session_name
-        user = ListeningSessionScreen.user
-        if sess.host.username != user.username:
-            print("Only host can add users")
-            return
-        if ListeningSessionScreen.add_button_layout is not None:
-            self.remove_widget(ListeningSessionScreen.add_button_layout)
-            ListeningSessionScreen.add_button_layout = None
-            return
-        if ListeningSessionScreen.remove_button_layout is not None:
-            self.remove_widget(ListeningSessionScreen.remove_button_layout)
-            ListeningSessionScreen.remove_button_layout = None
-        if ListeningSessionScreen.new_host_button_layout is not None:
-            self.remove_widget(ListeningSessionScreen.new_host_button_layout)
-            ListeningSessionScreen.new_host_button_layout = None
-        if ListeningSessionScreen.end_session_button_layout is not None:
-            self.remove_widget(ListeningSessionScreen.end_session_button_layout)
-            ListeningSessionScreen.end_session_button_layout = None
-
-        bl = BoxLayout(orientation="horizontal", size_hint=(.4, .070), size=(100, 60),
-                       pos=(350, 795))
-        bl.padding = 10
-        bl.canvas.before.add(Color(0.2, 0.2, 0.2, 1))
-        bl.canvas.before.add(Rectangle(size=(500, 50), pos=(350, 800)))
-        bl.add_widget(Label(text='Insert name:', color=[1, 1, 1, 1], bold=True, size_hint=(.35, 1)))
-        bl.add_widget(TextInput(multiline=False, hint_text='Invite User', size_hint=(.50, 1)))
-        bl.add_widget(Button(text='Enter', background_color=[0, 1, 0, 1], size_hint=(.15, 1), pos_hint={'center_x': .5},
-                             on_press=self.add_acc))
-        ListeningSessionScreen.add_button_layout = bl
-        self.add_widget(bl)
-
-    # END OF INVITE USER BUTTON
-
-    # BEGINNING OF REMOVE USER BUTTON
-    def remove_acc(self, instance):
-        user_name = ListeningSessionScreen.remove_button_layout.children[1].text
-        user = account.get_account(user_name)
-        if session.get_user(ListeningSessionScreen.session_name.name, user_name) is None:
-            print("User not found")
-        else:
-            print("user found!")
-            ListeningSessionScreen.session_name.remove_user(user)
-
-    def open_remove_user(self, instance):
-        sess = ListeningSessionScreen.session_name
-        user = ListeningSessionScreen.user
-        if sess.host.username != user.username:
-            print("Only host can add users")
-            return
-        if ListeningSessionScreen.remove_button_layout is not None:
-            self.remove_widget(ListeningSessionScreen.remove_button_layout)
-            ListeningSessionScreen.remove_button_layout = None
-            return
-        if ListeningSessionScreen.add_button_layout is not None:
-            self.remove_widget(ListeningSessionScreen.add_button_layout)
-            ListeningSessionScreen.add_button_layout = None
-        if ListeningSessionScreen.new_host_button_layout is not None:
-            self.remove_widget(ListeningSessionScreen.new_host_button_layout)
-            ListeningSessionScreen.new_host_button_layout = None
-        if ListeningSessionScreen.end_session_button_layout is not None:
-            self.remove_widget(ListeningSessionScreen.end_session_button_layout)
-            ListeningSessionScreen.end_session_button_layout = None
-
-        bl = BoxLayout(orientation="horizontal", size_hint=(.4, .070), size=(100, 60),
-                       pos=(350, 795))
-        bl.padding = 10
-        bl.canvas.before.add(Color(0.2, 0.2, 0.2, 1))
-        bl.canvas.before.add(Rectangle(size=(500, 50), pos=(350, 800)))
-        bl.add_widget(Label(text='Insert name:', color=[1, 1, 1, 1], bold=True, size_hint=(.35, 1)))
-        bl.add_widget(TextInput(multiline=False, hint_text='Remove User', size_hint=(.50, 1)))
-        bl.add_widget(Button(text='Enter', background_color=[0, 1, 0, 1], size_hint=(.15, 1), pos_hint={'center_x': .5},
-                             on_press=self.remove_acc))
-        ListeningSessionScreen.remove_button_layout = bl
-        self.add_widget(bl)
-
-    # END OF REMOVE USER BUTTON
-
-    # BEGINNING OF NEW HOST BUTTON
-    def new_host(self, instance):
-        user_name = ListeningSessionScreen.new_host_button_layout.children[1].text
-        user = account.get_account(user_name)
-        if session.get_user(ListeningSessionScreen.session_name.name, user_name) is None:
-            print("User not found")
-            return
-        print("user found!")
-        ListeningSessionScreen.session_name.name.update({ListeningSessionScreen.user.username: 'user'})
-        ListeningSessionScreen.session_name.name.update({user_name: 'host'})
-        ListeningSessionScreen.session_name.host = user
-        self.remove_widget(ListeningSessionScreen.host_bar)
-        self.remove_widget(ListeningSessionScreen.new_host_button_layout)
-        ListeningSessionScreen.host_bar = None
-        ListeningSessionScreen.new_host_button_layout = None
-        self.ids.user_label.text = 'Hosted by: {}.'.format(ListeningSessionScreen.session_name.host.username)
-
-    def open_new_host(self, instance):
-        sess = ListeningSessionScreen.session_name
-        user = ListeningSessionScreen.user
-        if sess.host.username != user.username:
-            print("Only host can add users")
-            return
-        if ListeningSessionScreen.new_host_button_layout is not None:
-            self.remove_widget(ListeningSessionScreen.new_host_button_layout)
-            ListeningSessionScreen.new_host_button_layout = None
-            return
-        if ListeningSessionScreen.add_button_layout is not None:
-            self.remove_widget(ListeningSessionScreen.add_button_layout)
-            ListeningSessionScreen.add_button_layout = None
-        if ListeningSessionScreen.remove_button_layout is not None:
-            self.remove_widget(ListeningSessionScreen.remove_button_layout)
-            ListeningSessionScreen.remove_button_layout = None
-        if ListeningSessionScreen.end_session_button_layout is not None:
-            self.remove_widget(ListeningSessionScreen.end_session_button_layout)
-            ListeningSessionScreen.end_session_button_layout = None
-
-        bl = BoxLayout(orientation="horizontal", size_hint=(.4, .070), size=(100, 60),
-                       pos=(350, 795))
-        bl.padding = 10
-        bl.canvas.before.add(Color(0.2, 0.2, 0.2, 1))
-        bl.canvas.before.add(Rectangle(size=(500, 50), pos=(350, 800)))
-        bl.add_widget(Label(text='Insert name:', color=[1, 1, 1, 1], bold=True, size_hint=(.35, 1)))
-        bl.add_widget(TextInput(multiline=False, hint_text='New Host', size_hint=(.50, 1)))
-        bl.add_widget(Button(text='Enter', background_color=[0, 1, 0, 1], size_hint=(.15, 1), pos_hint={'center_x': .5},
-                             on_press=self.new_host))
-        ListeningSessionScreen.new_host_button_layout = bl
-        self.add_widget(bl)
-
-    # END OF NEW HOST BUTTON
-
     # BEGINNING OF END SESSION BUTTON
     def end_session(self, instance):
         Clock.unschedule(self.session_refresher)
@@ -431,6 +253,18 @@ class TabBar2(FloatLayout):
         else:
             direction = 'right'
 
+        if int(screen_name) == 3:
+            if ListeningSessionScreen.host_bar is not None:
+                self.screen_manager.ls_screen.remove_widget(ListeningSessionScreen.host_bar)
+                ListeningSessionScreen.host_bar = None
+
+        acc_username = self.screen_manager.ls_screen.user.username
+        host_username = self.screen_manager.ls_screen.session_name.host.username
+        if self.screen_manager.current_screen.name == "ls_tab3":
+            if host_username == acc_username:
+                ListeningSessionScreen.host_bar = ListeningSessionScreen.the_host_bar
+                self.screen_manager.ls_screen.add_widget(ListeningSessionScreen.host_bar)
+
         # Set the transition and switch to the desired screen
         self.screen_manager.transition = SlideTransition(direction=direction)
         self.screen_manager.current = screen_to_switch.name
@@ -463,18 +297,30 @@ class HostBar(BoxLayout):
             self.screen_manager.ids.session_name.session_status.update({'status': 'private'})
 
     def open_bar(self, input_text):
-        print("Hi")
         if HostBar.on_open is False:
             HostBar.drop_down = HostDropBar(self.screen_manager.ls_screen, self.screen_manager)
             self.screen_manager.ls_screen.add_widget(HostBar.drop_down)
             HostBar.on_open = True
             HostBar.input_text = input_text
+            if input_text == "Invite User":
+                HostBar.drop_down.ids.input_label.text = "Enter invited user:"
+            elif input_text == "Remove User":
+                HostBar.drop_down.ids.input_label.text = "Enter removed user:"
+            elif input_text == "New Host":
+                HostBar.drop_down.ids.input_label.text = "Enter new host:"
         else:
-            print(HostBar.input_text)
-            self.screen_manager.ls_screen.remove_widget(HostBar.drop_down)
-            HostBar.on_open = False
-            HostBar.drop_down = None
-        pass
+            if HostBar.input_text == input_text:
+                self.screen_manager.ls_screen.remove_widget(HostBar.drop_down)
+                HostBar.on_open = False
+                HostBar.drop_down = None
+            else:
+                HostBar.input_text = input_text
+                if input_text == "Invite User":
+                    HostBar.drop_down.ids.input_label.text = "Enter invited user:"
+                elif input_text == "Remove User":
+                    HostBar.drop_down.ids.input_label.text = "Enter removed user:"
+                elif input_text == "New Host":
+                    HostBar.drop_down.ids.input_label.text = "Enter new host:"
 
 
 class HostDropBar(BoxLayout):
@@ -484,3 +330,46 @@ class HostDropBar(BoxLayout):
         self.screen_manager = screen_manager
         self.screen_manager.ids = ls_screen.parent.ids
         self.screen_manager.ls_screen = ls_screen
+
+    def submit(self, user_name):
+        if user_name == "":
+            print("Must enter valid name")
+            return
+
+        user = account.get_account(user_name)
+        sess = ListeningSessionScreen.session_name
+        print("username", user_name)
+        if self.ids.input_label.text == "Enter invited user:":
+            if user is None:
+                print("User not found")
+            else:
+                try:
+                    index = user.friends.index(sess.host.username)
+                    if sess.name.id in user.session_invites:
+                        print("User already received pended invite")
+                    else:
+                        user.session_invites.append(sess.name.id)
+                        user.account.update({'session_invites': user.session_invites})
+                except ValueError:
+                    print("You are not friends with the user")
+                    return
+        elif self.ids.input_label.text == "Enter removed user:":
+            if session.get_user(sess.name, user_name) is None:
+                print("User not found")
+            else:
+                print("user found!")
+                sess.remove_user(user)
+        elif self.ids.input_label.text == "Enter new host:":
+            if session.get_user(sess.name, user_name) is None:
+                print("User not found")
+                return
+            sess.name.update({ListeningSessionScreen.user.username: 'user'})
+            sess.name.update({user_name: 'host'})
+            sess.host = user
+            self.screen_manager.ls_screen.remove_widget(ListeningSessionScreen.host_bar)
+            ListeningSessionScreen.host_bar = None
+            self.screen_manager.ls_screen.ids.user_label.text = 'Hosted by: {}.'.format(sess.host.username)
+        self.screen_manager.ls_screen.remove_widget(HostBar.drop_down)
+        HostBar.drop_down = None
+        HostBar.on_open = False
+

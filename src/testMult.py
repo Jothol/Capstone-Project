@@ -1,8 +1,11 @@
 import subprocess
 
+# scripts = ["./main.py",
+#            "./main.py",
+#            "./main.py",
+#            "./main.py"]
+
 scripts = ["./main.py",
-           "./main.py",
-           "./main.py",
            "./main.py"]
 
 processes = []

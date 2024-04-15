@@ -10,7 +10,7 @@
         size_hint: (None, None)
         size: (600, 40)
         font_size: 20
-        pos_hint: {'x': 0.65, 'y': 0.12}
+        pos_hint: {'center_x': 0.85, 'y': 0.12}
         bold: True
 
     Label:
@@ -18,18 +18,8 @@
         size_hint: (None, None)
         size: (600, 40)
         font_size: 20
-        pos_hint: {'x': 0.65, 'y': 0.09}
+        pos_hint: {'center_x': 0.85, 'y': 0.09}
         bold: True
-
-    # Button:
-        # size_hint: (None, None)
-        # size: (130, 30)
-        # text: 'Leave'
-        # pos_hint: {'x': 0.01, 'y': 0.09}
-        # background_color:[0,1,0,1]
-        # on_press:
-            # root.manager.transition.direction = 'up'
-            # root.submit()
 
     Label:
         id: error_message
@@ -128,68 +118,71 @@
 
 #bl2 = BoxLayout(orientation='horizontal', pos=(dp(self.width / 5), dp(400)))
 <HostBar>:
-    BoxLayout:
-        orientation: 'vertical'
-        pos_hint: {'center_x': .5}
-        BoxLayout:
-            id: host_bar
-            orientation: 'horizontal'
-            size_hint: None, None
-            size: self.parent.parent.width, dp(50)
-            canvas.before:
-                Color:
-                    rgba: 0.1, 0.1, 0.1, 1
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
-            # ...
-            Button:
-                text: 'Invite User'
-                size_hint: None, None
-                size: dp(130), dp(30)
-                background_color: [0, 1, 0, 1]
-                on_press:
-                    root.open_bar('Invite User')
-            Button:
-                text: 'Remove User'
-                size_hint: None, None
-                size: dp(130), dp(30)
-                background_color: [0, 1, 0, 1]
-                on_press:
-                    root.open_bar('Remove User')
-            Button:
-                text: 'New Host'
-                size_hint: None, None
-                size: dp(130), dp(30)
-                background_color: [0, 1, 0, 1]
-                on_press:
-                    root.open_bar('New Host')
-            Button:
-                text: 'End Session'
-                size_hint: None, None
-                size: dp(130), dp(30)
-                background_color: [0, 1, 0, 1]
-            Button:
-                text: 'Private'
-                id: status
-                size_hint: None, None
-                size: dp(130), dp(30)
-                background_color: [1, 0, 0.4, 1]
-                on_press:
-                    root.change_status()
-        BoxLayout:
-            id: blank_space
+    size_hint_y: None
+    # id: host_bar
+    size: self.width, dp(50)
+    pos_hint: {'top': 1}
+    canvas.before:
+        Color:
+            rgba: 0.1, 0.1, 0.1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    Button:
+        id: invite_button
+        text: 'Invite User'
+        size_hint: None, None
+        size: dp(130), dp(30)
+        background_color: [0, 1, 0, 1]
+        pos: (root.width / 2 - (5 * self.width / 2), self.y)
+        on_press:
+            root.open_bar('Invite User')
+    Button:
+        id: remove_button
+        text: 'Remove User'
+        size_hint: None, None
+        size: dp(130), dp(30)
+        background_color: [0, 1, 0, 1]
+        pos: (root.width / 2 - (3 * self.width / 2), self.y)
+        on_press:
+            root.open_bar('Remove User')
+    Button:
+        id: new_host_button
+        text: 'New Host'
+        size_hint: None, None
+        size: dp(130), dp(30)
+        background_color: [0, 1, 0, 1]
+        pos: (root.width / 2 - self.width / 2, self.y)
+        on_press:
+            root.open_bar('New Host')
+    Button:
+        id: end_session_button
+        text: 'End Session'
+        size_hint: None, None
+        size: dp(130), dp(30)
+        background_color: [0, 1, 0, 1]
+        pos: (root.width / 2 + self.width / 2, self.y)
+    Button:
+        id: status
+        text: 'Private'
+        size_hint: None, None
+        size: dp(130), dp(30)
+        background_color: [1, 0, 0.4, 1]
+        pos: (root.width / 2 + (3 * self.width / 2), self.y)
+        on_press:
+            root.change_status()
 
 <HostDropBar>:
     size_hint: None, None
     size: dp(400), dp(30)
-    pos_hint: {'center_x': .5, 'center_y': .9}
+    pos_hint: {'center_x': .5, 'top': .9175}
     canvas.before:
-        Color:
-            rgba: 1, .2, 1, 1
-        Line:
-            width: dp(1)
-            rectangle: self.x, self.y, self.width, self.height
+        # Color:
+        #     rgba: 1, 1, 1, 1
+        # Line:
+        #     width: dp(1)
+        #     rectangle: self.x, self.y, self.width, self.height
         Color:
             rgba: 0.2, 0.2, 0.2, 1
         Rectangle:
@@ -198,17 +191,17 @@
     Label:
         id: input_label
         text: ''
-        color: [0,0.4,0,1]
+        color: [1,1,1,1]
         font_size: 20
         bold: True
-        pos: dp(self.width/2), dp(700)
     TextInput:
+        id: entry
         multiline: False
         hint_text: '(User Name)'
     Button:
         id: button_input
-        size_hint: (None, None)
-        size: (130, 30)
         pos_hint: {'center_y': .5}
         text: 'Enter'
         background_color:[0,1,0,1]
+        on_press:
+            root.submit(entry.text)
