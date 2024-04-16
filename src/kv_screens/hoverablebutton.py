@@ -21,13 +21,17 @@ class HoverableButton(Button):
             # If mouse is on button change the color
             if self.transition_color == "green":
                 self.background_color = (0, 0.5, 0, 1)
-            else:
+            elif self.transition_color == "darkgrey":
                 self.background_color = (0.3, 0.3, 0.3, 1)
+            else:
+                self.background_color = (0.5, 0.5, 0.5, 1)
         else:
             # When mouse is off button return to default color
             if self.transition_color == "green":
                 self.background_color = (0, 1, 0, 1)
-            else:
+            elif self.transition_color == "darkgrey":
                 self.background_color = (0.1, 0.1, 0.1, 1)
+            else:
+                self.background_color = (0.8, 0.8, 0.8, 1)
 
 
