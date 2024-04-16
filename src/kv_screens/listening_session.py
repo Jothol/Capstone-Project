@@ -39,20 +39,13 @@ class ListeningSessionScreen(Screen):
     # self.manager is from main.py
     user = None  # Account object of current user
     session_name = None  # Session object of listening session
-    host_box_layout = None  # the boxlayout of host permissions created in on_enter
     host_bar = None  # Used to show or hide the host_bar depending on the user
-    add_button_layout = None  # layout for inviting user
-    remove_button_layout = None  # layout for removing user
-    new_host_button_layout = None  # layout for replacing host
-    end_session_button_layout = None  # layout for ending session
     screen_manager = None  # helper created for removing hostbar on ls_tab3
-    user_list = None
-    status = "Private"
-    the_host_bar = None
-    accessed = False
+    user_list = None  # list of users pulled from firebase
+    the_host_bar = None  # The creation of HostBar
+    error_window_open = False  # Used for pop-up messages for Host Permissions
 
     def on_enter(self, *args):
-        # if not self.accessed:
         ListeningSessionScreen.session_name.name = (
             self.parent.ids.session_name.db.collection('sessions').document(self.parent.ids.session_name.name.id))
         bl = BoxLayout(orientation='vertical')
@@ -66,13 +59,10 @@ class ListeningSessionScreen(Screen):
         bl.add_widget(sm)
         bl.add_widget(TabBar2(self, sm))
         self.add_widget(bl)
-        # self.accessed = True
         ListeningSessionScreen.the_host_bar = HostBar(self, sm)
         if ListeningSessionScreen.user.username == self.manager.ids.session_name.host.username:
             self.add_widget(ListeningSessionScreen.the_host_bar)
             ListeningSessionScreen.host_bar = ListeningSessionScreen.the_host_bar
-
-        # self.children[1].children[1].current = self.children[1].children[1].screen_names[0]
 
         Clock.schedule_interval(self.session_refresher, 1.3)
 
@@ -91,17 +81,17 @@ class ListeningSessionScreen(Screen):
         else:
             self.ids.user_label.text = 'Hosted by: Unknown.'
 
-        pass
-
     def on_leave(self, *args):
+        self.remove_widget(self.children[0])
         self.manager.ids.session_name = None
+        bg_anim = Animation(padding=(0, 0, 0, 0))
+        bg_anim.start(self.ids.background_image_container)
         Clock.unschedule(self.session_refresher)
 
     # Method process of User leaving session and back to home screen
     def submit(self):
         sess = self.manager.ids.session_name
         user = self.manager.ids.username
-        # Clock.unschedule(self.host_replacement)
         if sess.host.username == user.username:
             sess.remove_host()
             self.remove_widget(ListeningSessionScreen.host_bar)
@@ -145,47 +135,7 @@ class ListeningSessionScreen(Screen):
 
     # END OF CLOCK METHOD
 
-    # BEGINNING OF HOST BUTTON METHODS
-    # BEGINNING OF END SESSION BUTTON
-    def cancel_end_session_request(self, instance):
-        self.remove_widget(ListeningSessionScreen.end_session_button_layout)
-        ListeningSessionScreen.end_session_button_layout = None
-
-    def open_end_session(self, instance):
-        sess = ListeningSessionScreen.session_name
-        user = ListeningSessionScreen.user
-        if sess.host.username != user.username:
-            print("Only host can add users")
-            return
-        if ListeningSessionScreen.end_session_button_layout is not None:
-            self.remove_widget(ListeningSessionScreen.end_session_button_layout)
-            ListeningSessionScreen.end_session_button_layout = None
-            return
-        if ListeningSessionScreen.add_button_layout is not None:
-            self.remove_widget(ListeningSessionScreen.add_button_layout)
-            ListeningSessionScreen.add_button_layout = None
-        if ListeningSessionScreen.remove_button_layout is not None:
-            self.remove_widget(ListeningSessionScreen.remove_button_layout)
-            ListeningSessionScreen.remove_button_layout = None
-        if ListeningSessionScreen.new_host_button_layout is not None:
-            self.remove_widget(ListeningSessionScreen.new_host_button_layout)
-            ListeningSessionScreen.new_host_button_layout = None
-
-        bl = BoxLayout(orientation="horizontal", size_hint=(.25, .070), size=(100, 60),
-                       pos=(450, 795))
-        bl.padding = 10
-        bl.canvas.before.add(Color(0.2, 0.2, 0.2, 1))
-        bl.canvas.before.add(Rectangle(size=(285, 50), pos=(465, 800)))
-        bl.add_widget(Label(text='Are you sure?', color=[1, 1, 1, 1], bold=True, size_hint=(.60, 1)))
-        bl.add_widget(Button(text='Yes', background_color=[0, 1, 0, 1], size_hint=(.2, .8),
-                             pos_hint={'center_x': .5, 'center_y': .5}, on_press=self.end_session))
-        bl.add_widget(Button(text='No', background_color=[0, 1, 0, 1], size_hint=(.2, .8),
-                             pos_hint={'center_x': .5, 'center_y': .5}, on_press=self.cancel_end_session_request))
-        ListeningSessionScreen.end_session_button_layout = bl
-        self.add_widget(bl)
-
-    # END OF END SESSION BUTTON
-    # END OF HOST BUTTON METHODS
+    # BEGINNING OF POP-UP METHOD FOR HOST PERMISSIONS
     def animate_error_window(self, message: str, color):
         error_window = self.ids.error_window
         message_label = self.ids.window_message
@@ -206,6 +156,8 @@ class ListeningSessionScreen(Screen):
             animation_window.start(error_window)
             animation_window.bind(on_complete=lambda *args: setattr(error_window, 'opacity', 0))
             animation_window.bind(on_complete=lambda *args: setattr(message_label, 'text', ''))
+
+    # END OF POP-UP METHOD FOR HOST PERMISSIONS
 
 
 class TabBar2(FloatLayout):
@@ -237,6 +189,8 @@ class TabBar2(FloatLayout):
             Animation(size=(self.ids.music_button.width * 0.7, self.ids.music_button.height * 0.7),
                       center=self.ids.music_button.center, duration=0.1).start(self.ids.music_image)
         else:
+            bg_anim = Animation(padding=(dp(200), dp(200), dp(200), dp(200)), duration=0.35)
+            bg_anim.start(self.parent.parent.ids.background_image_container)
             set_opacity(self.ids.settings_image, 0.5)
             Animation(size=(self.ids.setting_button.width * 0.7, self.ids.setting_button.height * 0.7),
                       center=self.ids.setting_button.center, duration=0.1).start(self.ids.settings_image)
@@ -247,6 +201,8 @@ class TabBar2(FloatLayout):
                 break
 
         if self.screen_manager.current == 'ls_tab3' and int(screen_name) != 3:
+            bg_anim = Animation(padding=(0, 0, 0, 0), duration=0.35)
+            bg_anim.start(self.parent.parent.ids.background_image_container)
             Animation(size=(self.ids.setting_button.width * 0.5, self.ids.setting_button.height * 0.5),
                       center=self.ids.setting_button.center, duration=0.1).start(self.ids.settings_image)
         elif self.screen_manager.current == 'ls_tab2' and int(screen_name) != 2:
@@ -347,8 +303,6 @@ class HostBar(BoxLayout):
 
 
 class HostDropBar(BoxLayout):
-    error_window_open = False
-
     def __init__(self, ls_screen: ListeningSessionScreen, screen_manager: ScreenManager, **kwargs):
         super(HostDropBar, self).__init__(**kwargs)
         self.screen_manager = screen_manager
@@ -410,6 +364,7 @@ class HostDropBar(BoxLayout):
         HostBar.drop_down = None
         HostBar.on_open = False
 
+
 class DarkenScreen2(FloatLayout):
 
     def __init__(self, ls_screen: ListeningSessionScreen, **kwargs):
@@ -457,9 +412,7 @@ class DarkenScreen2(FloatLayout):
         self.ls.remove_widget(ListeningSessionScreen.host_bar)
         ListeningSessionScreen.host_bar = None
 
-
     def cancel(self):
-        print('accessed')
         self.parent.remove_widget(self)
 
     def darken(self):

@@ -45,6 +45,9 @@ class LS_Tab3(Screen):
         LS_Tab3.user_list = self.manager.parent.parent.user_list
         user_str = ""
         for i in LS_Tab3.user_list:
+            if i == LS_Tab3.user.username:
+                i = "[color=00ff00]" + i + "[/color]"
+
             if user_str == "":
                 user_str = i
             else:
@@ -63,15 +66,16 @@ class LS_Tab3(Screen):
         pass
 
     def refresh_settings(self, instance):
-        print("Testing: ", self.ids.session_name.host)
         user_str = ""
         LS_Tab3.user_list = self.manager.parent.parent.user_list
         for i in LS_Tab3.user_list:
+            if i == self.ids.username.username:
+                i = "[color=00ff00]" + i + "[/color]"
+
             if user_str == "":
                 user_str = i
             else:
                 user_str += ", " + i
-        print("user_array", user_str)
         self.ids.accs_list.text = user_str
         self.ids.song_info.text = LS_Tab3.session_name.saved_song.get().get('songs_played')
 

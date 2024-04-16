@@ -47,7 +47,7 @@ class Tab1(Screen):
         # self.children[0] is currently the ScreenManager for them
         self.children[1].ids.username = self.manager.ids.username
         print(self.children[1].ids)
-        self.manager.ids.session_name = self.children[1].ids.session_name
+        # self.manager.ids.session_name = self.children[1].ids.session_name
         self.ids.welcome_label.text = 'Welcome, {}!'.format(self.manager.ids.username.username)
         self.invite_dropdown = DropDown()
 

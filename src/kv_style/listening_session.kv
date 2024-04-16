@@ -1,9 +1,13 @@
 #:kivy 2.3.0
 
 <ListeningSessionScreen>:
-    Image:
-        source: '../other/images/temp_logo.png'
-        fit_mode: 'scale-down'
+    BoxLayout:
+        id: background_image_container
+        orientation: 'vertical'
+
+        Image:
+            source: '../other/images/temp_logo.png'
+            fit_mode: 'scale-down'
 
     Label:
         id: session_label
