@@ -78,9 +78,11 @@ class ChatScreen(GridLayout):
         self.chat_options = FloatLayout(size=(Window.width, 30), pos_hint={'top': 1}, size_hint=(None, None))
         # Add to ls_tab1 when chat is engaged
         self.color_options = HoverableButton(text="Color", size_hint=(None, None), size=(100, 30),
-                                    pos_hint={'left': 1, 'top': 1}, background_color=(0, 1, 0, 1))
+                                             pos_hint={'left': 1, 'top': 1}, background_color=(0, 1, 0, 1),
+                                             offset=(0, -50))
         self.leave_chat = HoverableButton(text="Leave Chat", size_hint=(None, None), size=(100, 30),
-                                 pos_hint={'right': 1, 'top': 1}, background_color=(0, 1, 0, 1))
+                                          pos_hint={'right': 1, 'top': 1}, background_color=(0, 1, 0, 1),
+                                          offset=(0, -50))
         self.chat_options.add_widget(self.color_options)
         self.chat_options.add_widget(self.leave_chat)
         self.add_widget(self.chat_options)
@@ -93,7 +95,7 @@ class ChatScreen(GridLayout):
         self.new_message = TextInput(width=Window.size[0] * 0.8, size_hint_x=None, multiline=False,
                                      height=Window.size[1] * 0.1, size_hint_y=None)
         self.send = HoverableButton(text="Send", size_hint_x=None, size_hint_y=None, height=Window.size[1] * 0.1,
-                           width=Window.size[0] * 0.2)
+                                    width=Window.size[0] * 0.2, offset=(0, -50))
         self.send.bind(on_press=self.send_message)
 
         bottom_line = GridLayout(cols=2)

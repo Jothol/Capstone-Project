@@ -60,12 +60,14 @@
                             text: 'Send Friend Request'
                             size_hint: None, None
                             size: dp(150), dp(30)
+                            offset: 0, -50
                             background_color:[0,1,0,1]
                             on_press: root.invite_friend(friend_input.text)
                         HoverableButton:
                             text: 'Remove Friend'
                             size_hint: None, None
                             size: dp(150), dp(30)
+                            offset: 0, -50
                             background_color:[0,1,0,1]
                             on_press: root.remove_friend(friend_input.text)
                         BoxLayout:
@@ -86,7 +88,7 @@
                             orientation: 'vertical'
                             size_hint: None, None
                             size: self.minimum_size
-                            HoverableButton:
+                            Button:
                                 text: 'Pending Invites'
                                 size_hint: None, None
                                 size: dp(150), dp(50)
@@ -144,6 +146,7 @@
                         text: 'Edit Account Info'
                         size_hint: None, None
                         size: dp(150), dp(30)
+                        offset: 0, -50
                         background_color:[0,1,0,1]
                         on_press:
                             root.parent.parent.parent.parent.transition.direction = 'up'
@@ -152,6 +155,7 @@
                         text: 'Change Password'
                         size_hint: None, None
                         size: dp(150), dp(30)
+                        offset: 0, -50
                         background_color:[0,1,0,1]
                         on_press:
                             root.parent.parent.parent.parent.transition.direction = 'up'
@@ -172,6 +176,7 @@
                 text: 'Logout'
                 size_hint: None, None
                 size: dp(120), dp(30)
+                offset: 0, -50
                 background_color:[0,1,0,1]
                 on_press:
                     root.logout()
@@ -179,6 +184,7 @@
                 id: delete_account
                 text: 'Delete Account'
                 size_hint: None, None
+                offset: 0, -50
                 size: dp(120), dp(30)
                 background_color:[0,1,0,1]
                 on_press:
