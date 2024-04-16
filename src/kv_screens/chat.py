@@ -10,6 +10,7 @@ from kivy.uix.label import Label
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.textinput import TextInput
 from kivy.graphics import Color, Rectangle
+from kivy.metrics import dp
 
 from src.database import socket_client
 from src.kv_screens.hoverablebutton import HoverableButton
@@ -61,6 +62,10 @@ class ScrollableLabel(ScrollView):
 
 
 class ChatScreen(GridLayout):
+    # color drop used to define is color dropdown is open or not
+    dropdown_open = False
+    # chatter_color used to define chatter's chosen color
+    chatter_color = "20dd20"
 
     def __init__(self, session_name, username, **kwargs):
         super().__init__(**kwargs)
@@ -70,6 +75,7 @@ class ChatScreen(GridLayout):
         self.session_name = session_name
         self.username = username
         self.height = Window.size[1]
+
         with self.canvas.before:
             self.background_color = (0, 0, 0, 1)
             self.background_fill_color = (0, 0, 0, 1)
@@ -77,10 +83,11 @@ class ChatScreen(GridLayout):
         # Create the float layout in order for ls_tab1 to place the color option button and leave chat option
         self.chat_options = FloatLayout(size=(Window.width, 30), pos_hint={'top': 1}, size_hint=(None, None))
         # Add to ls_tab1 when chat is engaged
-        self.color_options = HoverableButton(text="Color", size_hint=(None, None), size=(100, 30),
+        self.color_options = HoverableButton(text="Color", size_hint=(None, None), size=(dp(100), dp(30)),
                                              pos_hint={'left': 1, 'top': 1}, background_color=(0, 1, 0, 1),
                                              offset=(0, -50))
-        self.leave_chat = HoverableButton(text="Leave Chat", size_hint=(None, None), size=(100, 30),
+        self.color_options.bind(on_press=lambda instance: self.toggle_dropdown())
+        self.leave_chat = HoverableButton(text="Leave Chat", size_hint=(None, None), size=(dp(100), dp(30)),
                                           pos_hint={'right': 1, 'top': 1}, background_color=(0, 1, 0, 1),
                                           offset=(0, -50))
         self.chat_options.add_widget(self.color_options)
@@ -156,3 +163,63 @@ class ChatScreen(GridLayout):
             self.history.update_chat_history(f"[color=dd2020]{username}[/color] >  {message}")
         else:
             self.history.update_chat_history(f"[color=20dd20]{username}[/color] >  {message}")
+
+    def toggle_dropdown(self):
+        if self.dropdown_open:
+            # Define the different colors available to select for the chat
+            red_button = HoverableButton(text="Red", background_color=(0, 1, 0, 1), offset=(0, -50),
+                                         size_hint=(None, None), size=(dp(100), dp(30)),
+                                         pos_hint={'left': 1, 'top': 1})
+            green_button = HoverableButton(text="Green", background_color=(0, 1, 0, 1), offset=(0, -50),
+                                         size_hint=(None, None), size=(dp(100), dp(30)))
+            yellow_button = HoverableButton(text="Yellow", background_color=(0, 1, 0, 1), offset=(0, -50),
+                                         size_hint=(None, None), size=(dp(100), dp(30)))
+            blue_button = HoverableButton(text="Blue", background_color=(0, 1, 0, 1), offset=(0, -50),
+                                         size_hint=(None, None), size=(dp(100), dp(30)))
+            purple_button = HoverableButton(text="Purple", background_color=(0, 1, 0, 1), offset=(0, -50),
+                                         size_hint=(None, None), size=(dp(100), dp(30)))
+            pink_button = HoverableButton(text="Pink", background_color=(0, 1, 0, 1), offset=(0, -50),
+                                         size_hint=(None, None), size=(dp(100), dp(30)))
+            orange_button = HoverableButton(text="Orange", background_color=(0, 1, 0, 1), offset=(0, -50),
+                                         size_hint=(None, None), size=(dp(100), dp(30)))
+            red_button.bind(on_press=lambda instance: self.toggle_dropdown(),
+                            on_release=lambda instance: self.new_color("red"))
+            green_button.bind(on_press=lambda instance: self.toggle_dropdown(),
+                              on_release=lambda instance: self.new_color("green"))
+            yellow_button.bind(on_press=lambda instance: self.toggle_dropdown(),
+                               on_release=lambda instance: self.new_color("yellow"))
+            blue_button.bind(on_press=lambda instance: self.toggle_dropdown(),
+                             on_release=lambda instance: self.new_color("blue"))
+            purple_button.bind(on_press=lambda instance: self.toggle_dropdown(),
+                               on_release=lambda instance: self.new_color("purple"))
+            pink_button.bind(on_press=lambda instance: self.toggle_dropdown(),
+                             on_release=lambda instance: self.new_color("pink"))
+            orange_button.bind(on_press=lambda instance: self.toggle_dropdown(),
+                               on_release=lambda instance: self.new_color("orange"))
+            self.chat_options.add_widget(red_button)
+            self.chat_options.add_widget(green_button)
+            self.chat_options.add_widget(yellow_button)
+            self.chat_options.add_widget(blue_button)
+            self.chat_options.add_widget(purple_button)
+            self.chat_options.add_widget(pink_button)
+            self.chat_options.add_widget(orange_button)
+            self.dropdown_open = False
+        else:
+            self.dropdown_open = True
+
+    def new_color(self, color):
+        # Change the chatter color based on what was pressed in the dropdown menu
+        if color == "red":
+            self.chatter_color = "20dd20"
+        elif color == "green":
+            self.chatter_color = "20dd20"
+        elif color == "yellow":
+            self.chatter_color = "20dd20"
+        elif color == "blue":
+            self.chatter_color = "20dd20"
+        elif color == "purple":
+            self.chatter_color = "20dd20"
+        elif color == "pink":
+            self.chatter_color = "20dd20"
+        elif color == "orange":
+            self.chatter_color = "20dd20"
