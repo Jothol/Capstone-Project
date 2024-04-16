@@ -88,10 +88,12 @@
                             orientation: 'vertical'
                             size_hint: None, None
                             size: self.minimum_size
-                            Button:
+                            HoverableButton:
                                 text: 'Pending Invites'
                                 size_hint: None, None
                                 size: dp(150), dp(50)
+                                offset: 0, -50
+                                transition_color: "grey"
                                 background_color: (0.1, 0.1, 0.1, 1)
                                 on_press:
                                     root.toggle_dropdown()
