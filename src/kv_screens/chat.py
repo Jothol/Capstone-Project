@@ -3,6 +3,7 @@ import threading
 
 from kivy.clock import Clock
 from kivy.core.window import Window, Keyboard
+from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.floatlayout import FloatLayout
@@ -167,9 +168,11 @@ class ChatScreen(GridLayout):
     def toggle_dropdown(self):
         if self.dropdown_open:
             # Define the different colors available to select for the chat
+            dropdown_box = BoxLayout(orientation='vertical', size_hint=(None, None), size=(dp(100), dp(210)),
+                                     pos_hint={'left': 1, 'top': 1})
+            self.chat_options.add_widget(dropdown_box)
             red_button = HoverableButton(text="Red", background_color=(0, 1, 0, 1), offset=(0, -50),
-                                         size_hint=(None, None), size=(dp(100), dp(30)),
-                                         pos_hint={'left': 1, 'top': 1})
+                                         size_hint=(None, None), size=(dp(100), dp(30)))
             green_button = HoverableButton(text="Green", background_color=(0, 1, 0, 1), offset=(0, -50),
                                          size_hint=(None, None), size=(dp(100), dp(30)))
             yellow_button = HoverableButton(text="Yellow", background_color=(0, 1, 0, 1), offset=(0, -50),
@@ -196,13 +199,13 @@ class ChatScreen(GridLayout):
                              on_release=lambda instance: self.new_color("pink"))
             orange_button.bind(on_press=lambda instance: self.toggle_dropdown(),
                                on_release=lambda instance: self.new_color("orange"))
-            self.chat_options.add_widget(red_button)
-            self.chat_options.add_widget(green_button)
-            self.chat_options.add_widget(yellow_button)
-            self.chat_options.add_widget(blue_button)
-            self.chat_options.add_widget(purple_button)
-            self.chat_options.add_widget(pink_button)
-            self.chat_options.add_widget(orange_button)
+            dropdown_box.add_widget(red_button)
+            dropdown_box.add_widget(green_button)
+            dropdown_box.add_widget(yellow_button)
+            dropdown_box.add_widget(blue_button)
+            dropdown_box.add_widget(purple_button)
+            dropdown_box.add_widget(pink_button)
+            dropdown_box.add_widget(orange_button)
             self.dropdown_open = False
         else:
             self.dropdown_open = True
