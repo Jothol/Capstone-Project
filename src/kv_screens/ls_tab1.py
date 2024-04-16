@@ -1,6 +1,7 @@
 import kivy
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen, ScreenManager
+from kivy.clock import Clock
 
 from src.database import socket_client
 from src.kv_screens.chat import ChatScreen, show_error
@@ -11,6 +12,7 @@ kivy.require('2.3.0')
 class LS_Tab1(Screen):
     index = 1
     chat_screen_exists = False
+    close = False
 
     # self is tab1 screen
     # self.manager is ScreenManager for tab1 screen
@@ -29,8 +31,18 @@ class LS_Tab1(Screen):
         # self.children[0] is currently the ScreenManager for them
         self.ids.session_name = self.manager.ids.session_name
         self.ids.username = self.manager.ids.username
+        if LS_Tab1.close is False:
+            self.ids.welcome_label.text = "Welcome to " + self.ids.session_name.name.id + ", {}!".format(
+                self.ids.username.username)
+
+        Clock.schedule_interval(self.welcome, 3)
 
         pass
+
+    def welcome(self, instance):
+        self.ids.welcome_label.text = ""
+        LS_Tab1.close = True
+        Clock.unschedule(self.welcome)
 
     def open_dropdown(self, instance):
         dropdown = self.ids.dropdown
@@ -44,7 +56,8 @@ class LS_Tab1(Screen):
         port = 5000
         self.remove_widget(self.ids.add_button)
         if not self.chat_screen_exists:
-            if not socket_client.connect(ip, port, self.ids.username.get_username(), show_error, self.ids.session_name.get_name()):
+            if not socket_client.connect(ip, port, self.ids.username.get_username(), show_error,
+                                         self.ids.session_name.get_name()):
                 return
             self.chat_page = ChatScreen(self.ids.session_name.get_name(), self.ids.username.get_username())
             self.screen = Screen(name="chat_page")

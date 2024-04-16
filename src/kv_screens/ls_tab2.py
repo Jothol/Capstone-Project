@@ -98,8 +98,6 @@ class LS_Tab2(Screen):
             LS_Tab2.dislikes = self.ids.session_name.get_dislikes()
             song_entry = self.ids.session_name.get_current_song() + ": " + self.ids.session_name.get_artists()
             index = LS_Tab2.song_list.find(song_entry)  # locates first letter for song_entry
-            print(index)
-            print(LS_Tab2.song_list)
             if LS_Tab2.song_list[index-7:index-1] == "00ff00":  # currently green text favoring likes
                 if LS_Tab2.likes < LS_Tab2.dislikes:  # text changes from green to red
                     print("change from green to red")

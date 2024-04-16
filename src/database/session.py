@@ -237,7 +237,6 @@ class Session:
         self.host = None
 
         if self.name.get().exists is True:
-            print("grass")
             self.find_new_host()
 
         return

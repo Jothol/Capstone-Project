@@ -43,18 +43,19 @@ class LS_Tab3(Screen):
         LS_Tab3.user = self.manager.ids.username
         LS_Tab3.session_name = self.manager.ids.session_name
         LS_Tab3.user_list = self.manager.parent.parent.user_list
+        user_str = ""
+        for i in LS_Tab3.user_list:
+            if user_str == "":
+                user_str = i
+            else:
+                user_str += ", " + i
+        self.ids.accs_list.text = user_str
+        self.ids.song_info.text = LS_Tab3.session_name.saved_song.get().get('songs_played')
 
     def on_enter(self, *args):
-        # LS_Tab3.user_list = self.manager.parent.parent.user_list
-        # user_str = ""
-        # print(LS_Tab3.user_list)
-        # for i in LS_Tab3.user_list:
-        #     if user_str == "":
-        #         user_str = i
-        #     else:
-        #         user_str += ", " + i
-        # print("user_array", user_str)
-        # self.ids.accs_list.text = user_str
+        self.ids.session_name = self.manager.ids.session_name
+        self.ids.username = self.manager.ids.username
+
         Clock.schedule_interval(self.refresh_settings, 1.5)
 
     def on_leave(self, *args):
@@ -62,6 +63,7 @@ class LS_Tab3(Screen):
         pass
 
     def refresh_settings(self, instance):
+        print("Testing: ", self.ids.session_name.host)
         user_str = ""
         LS_Tab3.user_list = self.manager.parent.parent.user_list
         for i in LS_Tab3.user_list:
@@ -72,47 +74,22 @@ class LS_Tab3(Screen):
         print("user_array", user_str)
         self.ids.accs_list.text = user_str
         self.ids.song_info.text = LS_Tab3.session_name.saved_song.get().get('songs_played')
-        # print("IT WORKS")
-        # current = sp.currently_playing()
-        # print(current)
-        # if current is not None:
-        #     print("current", current["item"]["name"])
-        #     print("sess", LS_Tab3.session_name.get_current_song())
-        #     if current["item"]["name"] == LS_Tab3.session_name.get_current_song():  # just added if
-        #         album_name = current["item"]["album"]["name"]  # album name retrieval
-        #         song_name = LS_Tab3.session_name.get_current_song()
-        #         artist_names = LS_Tab3.session_name.get_artists()
-        #         # song_name = current["item"]["name"]  # song name retrieval
-        #         # artist_names = ""
-        #         # for i in current["item"]["artists"]:  # artist(s) name retrieval
-        #         #     if artist_names == "":
-        #         #         artist_names = i["name"]
-        #         #     else:
-        #         #         artist_names += ", " + i["name"]
-        #         # LS_Tab3.session_name.set_current_song(song_name)
-        #         # LS_Tab3.session_name.set_album(album_name)
-        #         # LS_Tab3.session_name.set_artists(artist_names)
-        #         # LS_Tab3.session_name.set_uri(current["item"]["uri"])
-        #         song_entry = song_name + ": " + artist_names
-        #         index = LS_Tab3.song_list.find(song_entry)
-        #         if index == -1:  # checks if song name is not already included
-        #             if LS_Tab3.song_list == "":
-        #                 LS_Tab3.song_list = song_entry
-        #             else:
-        #                 LS_Tab3.song_list += "     " + song_entry
-        #             self.ids.song_info.text = LS_Tab3.song_list
-        #             LS_Tab3.session_name.saved_song.update({'songs_played': LS_Tab3.song_list})
 
     def submit(self):
-        sess = self.manager.ids.session_name
+        sess = LS_Tab3.session_name
+        print("sess", sess)
+        print("host", sess.host)
         user = self.manager.ids.username
-        # Clock.unschedule(self.host_replacement)
+        print(self.manager.screen_names)
         if sess.host.username == user.username:
             sess.remove_host()
             # self.remove_widget(LS_Tab3.host_bar)
             # cLS_Tab3.host_bar = None
         else:
             sess.remove_user(user)
+
+        self.manager.ls_screen.manager.current = "home_page"
+        Clock.unschedule(self.refresh_settings)
 
     def send_friend_request(self, user_name):
         acc = session.get_user(LS_Tab3.session_name.name, user_name)
@@ -124,8 +101,15 @@ class LS_Tab3(Screen):
         elif user_name in LS_Tab3.user.friends:
             self.animate_error_window('Already friends with ' + user_name + '.', (1, 0, 0, 1))
             return False
+        elif LS_Tab3.user.username in acc.friends:
+            self.animate_error_window('Already sent a request to ' + user_name + '.', (1, 0, 0, 1))
         self.animate_error_window('Friend request sent to ' + user_name + '.', (0, 0.5, 0, 1))
         LS_Tab3.user.send_invite(user_name)
+        if acc.username in LS_Tab3.user.get_invites():
+            LS_Tab3.user.add_friend(acc.username)
+            acc.add_friend(LS_Tab3.user.username)
+            LS_Tab3.user.delete_invite(acc.username)
+            acc.delete_invite(LS_Tab3.user.username)
         return True
 
     def animate_error_window(self, message: str, color):

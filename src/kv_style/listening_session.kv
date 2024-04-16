@@ -8,7 +8,7 @@
     Label:
         id: session_label
         size_hint: (None, None)
-        size: (600, 40)
+        size: dp(600), dp(40)
         font_size: 20
         pos_hint: {'center_x': 0.85, 'y': 0.12}
         bold: True
@@ -16,7 +16,7 @@
     Label:
         id: user_label
         size_hint: (None, None)
-        size: (600, 40)
+        size: dp(600), dp(40)
         font_size: 20
         pos_hint: {'center_x': 0.85, 'y': 0.09}
         bold: True
@@ -26,6 +26,27 @@
         text: ''
         color: [1,0,0,0]
 
+    BoxLayout:
+        id: error_window
+        size_hint: None, None
+        size: self.minimum_size[0], dp(40)
+        pos: dp(400), dp(500)
+        opacity: 0
+        padding: dp(10)
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            RoundedRectangle:
+                pos: self.pos
+                size: self.size
+                radius: [5, 5, 5, 5]
+        Label:
+            id: window_message
+            text: ''
+            color: (0, 0, 0, 1)
+            size_hint: None, None
+            size: self.texture_size[0], dp(20)
+            center: self.parent.center
 
 <TabBar2>:
     size_hint_y: None
@@ -119,7 +140,7 @@
 #bl2 = BoxLayout(orientation='horizontal', pos=(dp(self.width / 5), dp(400)))
 <HostBar>:
     size_hint_y: None
-    # id: host_bar
+    id: host_bar
     size: self.width, dp(50)
     pos_hint: {'top': 1}
     canvas.before:
@@ -163,6 +184,8 @@
         size: dp(130), dp(30)
         background_color: [0, 1, 0, 1]
         pos: (root.width / 2 + self.width / 2, self.y)
+        on_press:
+            root.end_session()
     Button:
         id: status
         text: 'Private'
@@ -174,34 +197,37 @@
             root.change_status()
 
 <HostDropBar>:
-    size_hint: None, None
-    size: dp(400), dp(30)
-    pos_hint: {'center_x': .5, 'top': .9175}
-    canvas.before:
-        # Color:
-        #     rgba: 1, 1, 1, 1
-        # Line:
-        #     width: dp(1)
-        #     rectangle: self.x, self.y, self.width, self.height
-        Color:
-            rgba: 0.2, 0.2, 0.2, 1
-        Rectangle:
-            pos: self.pos
-            size: self.size
-    Label:
-        id: input_label
-        text: ''
-        color: [1,1,1,1]
-        font_size: 20
-        bold: True
-    TextInput:
-        id: entry
-        multiline: False
-        hint_text: '(User Name)'
-    Button:
-        id: button_input
-        pos_hint: {'center_y': .5}
-        text: 'Enter'
-        background_color:[0,1,0,1]
-        on_press:
-            root.submit(entry.text)
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint: None, None
+        size: dp(400), dp(30)
+        pos_hint: {'center_x': .5, 'top': .9175}
+        pos: root.width /2 - self.width / 2, self.y
+        canvas.before:
+            # Color:
+            #     rgba: 1, 1, 1, 1
+            # Line:
+            #     width: dp(1)
+            #     rectangle: self.x, self.y, self.width, self.height
+            Color:
+                rgba: 0.2, 0.2, 0.2, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        Label:
+            id: input_label
+            text: ''
+            color: [1,1,1,1]
+            font_size: 20
+            bold: True
+        TextInput:
+            id: entry
+            multiline: False
+            hint_text: '(User Name)'
+        Button:
+            id: button_input
+            pos_hint: {'center_y': .5}
+            text: 'Enter'
+            background_color:[0,1,0,1]
+            on_press:
+                root.submit(entry.text)

@@ -132,7 +132,6 @@ class Tab1(Screen):
                 self.manager.home_screen.manager.ids.session_name = Tab1.session_name
                 self.ids.error_message.text = ''
                 self.manager.home_screen.manager.current = "listening_session_page"
-                self.manager.home_screen.manager.ids.session_name = Tab1.session_name
                 Clock.unschedule(self.build_invite_dropdown)
         else:
             if button_input == "Create":
@@ -154,6 +153,7 @@ class Tab1(Screen):
                 # sess = session.get_session(session_name)
                 Tab1.session_name.add_user(Tab1.user)
                 self.manager.home_screen.manager.ids.session_name = Tab1.session_name
+                self.manager.home_screen.manager.ids.username = Tab1.user
                 self.ids.error_message.text = ''
                 self.manager.home_screen.manager.current = "listening_session_page"
                 self.manager.home_screen.manager.ids.session_name = Tab1.session_name
