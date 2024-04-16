@@ -69,6 +69,7 @@ if __name__ == '__main__':
     Builder.load_file("kv_style/login.kv")
     Builder.load_file("kv_style/create_account.kv")
     Builder.load_file("kv_style/add_account_info.kv")
+    Builder.load_file("kv_style/change_password.kv")
     Builder.load_file("kv_style/home.kv")
     Builder.load_file("kv_style/recommendation.kv")
     Builder.load_file("kv_style/recommendation_input.kv")

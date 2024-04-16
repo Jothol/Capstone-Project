@@ -1,15 +1,7 @@
-import re
-
 import kivy
 from kivy.uix.screenmanager import Screen
 
-from src.database import account as acc
-from src.database.account import Account
-
 kivy.require('2.3.0')
-
-import time
-
 
 class ChangePassword(Screen):
     def submit(self, password, re_password):
