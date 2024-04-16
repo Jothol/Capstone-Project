@@ -47,6 +47,7 @@ class LS_Tab1(Screen):
             if not socket_client.connect(ip, port, self.ids.username.get_username(), show_error, self.ids.session_name.get_name()):
                 return
             self.chat_page = ChatScreen(self.ids.session_name.get_name(), self.ids.username.get_username())
+            self.chat_page.leave_chat.bind(on_press=lambda instance: self.disconnect())
             self.screen = Screen(name="chat_page")
             self.screen.add_widget(self.chat_page)
             self.add_widget(self.screen)
