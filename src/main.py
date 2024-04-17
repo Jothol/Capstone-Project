@@ -1,11 +1,7 @@
-import sys
-
 from kivy.app import App
-from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy.lang import Builder
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.uix.screenmanager import ScreenManager
 
 from src.kv_screens.add_account_info import AddAccountInfo
 from src.kv_screens.change_password import ChangePassword
@@ -71,8 +67,6 @@ if __name__ == '__main__':
     Builder.load_file("kv_style/add_account_info.kv")
     Builder.load_file("kv_style/change_password.kv")
     Builder.load_file("kv_style/home.kv")
-    Builder.load_file("kv_style/recommendation.kv")
-    Builder.load_file("kv_style/recommendation_input.kv")
     Builder.load_file("kv_style/listening_session.kv")
     Builder.load_file("kv_style/tab1.kv")
     Builder.load_file("kv_style/tab2.kv")
