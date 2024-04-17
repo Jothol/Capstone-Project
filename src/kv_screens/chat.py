@@ -27,24 +27,15 @@ class ScrollableLabel(ScrollView):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.layout = GridLayout(cols=1, size_hint_y=None)
-        # self.layout.bind(minimum_height=self.layout.setter('height'))
-        '''
-        self.border = (0, 0, 0, 0)
-        with self.layout.canvas.before:
-            Color(1, 1, 1, 1)
-            self.chat_border = Rectangle(size=self.size, pos=self.size)
-            Color(0, 0, 0, 1)
-            self.chat_background = Rectangle(size=self.size, pos=self.pos)
-        self.bind(size=self.update_chat_background(), pos=self.update_chat_background())
-        '''
+
         self.add_widget(self.layout)
 
         self.chat_history = Label(size_hint_y=None, markup=True, pos=self.pos,
-                                  size=self.size)
-        # self.scroll_to_point = Label()
+                                  size=self.size, height=self.layout.height)
+        self.scroll_to_point = Label()
 
         self.layout.add_widget(self.chat_history)
-        # self.layout.add_widget(self.scroll_to_point)
+        self.layout.add_widget(self.scroll_to_point)
 
     def update_chat_history(self, message):
         self.chat_history.text += '\n' + message
@@ -78,14 +69,14 @@ class ChatScreen(GridLayout):
         self.rows = 2
         self.session_name = session_name
         self.username = username
-        self.height = Window.size[1]
+        self.height = Window.height * 0.8
 
         with self.canvas.before:
             self.background_color = (0, 0, 0, 1)
             self.background_fill_color = (0, 0, 0, 1)
 
         # Create the float layout in order for ls_tab1 to place the color option button and leave chat option
-        self.chat_options = FloatLayout(size=(Window.width, dp(210)), pos_hint={'top': 1}, size_hint=(None, None))
+        self.chat_options = FloatLayout(size=(Window.width, Window.height * 0.7), pos_hint={'top': 1}, size_hint=(None, None))
 
         # Create box layout to enable dropdown menu
         self.dropdown_box = BoxLayout(orientation='vertical', size_hint=(None, None), size=(dp(100), dp(210)),
@@ -101,16 +92,15 @@ class ChatScreen(GridLayout):
                                           offset=(0, -50))
         self.chat_options.add_widget(self.color_options)
         self.chat_options.add_widget(self.leave_chat)
-        self.add_widget(self.chat_options)
 
         # Add the scrollable history label to the grid
-        self.chat_window = BoxLayout(size_hint=(None, None), size=(Window.width, Window.height * 0.65),
-                                     pos_hint={'x': 0.125})
-                                     # , background_color=(0, 0, 0, 1))
-        self.history = ScrollableLabel(size_hint=(None, None), height=Window.height * 0.7, width=Window.width - 100,
+        self.chat_window = GridLayout(size_hint=(None, None), size=(Window.width, Window.height * 0.65),
+                                      pos_hint={'x': 0.125})
+        self.history = ScrollableLabel(size_hint=(None, None), height=Window.height * 0.65, width=Window.width - 100,
                                        pos_hint={'left': 1})
         self.chat_window.add_widget(self.history)
-        self.add_widget(self.chat_window)
+        self.chat_options.add_widget(self.chat_window)
+        self.add_widget(self.chat_options)
 
         # Add the send and text input to the grid
         self.new_message = TextInput(width=(Window.width - 100) * 0.8, size_hint_x=None, multiline=False,
@@ -121,7 +111,7 @@ class ChatScreen(GridLayout):
 
         # Create grid layout for text input and send button
         bottom_line = GridLayout(cols=2, width=Window.width - 100, height=Window.height * 0.1, size_hint=(None, None),
-                                 pos_hint={'x': 0.875, 'bottom': 1})
+                                 pos_hint={'x': 0.875, 'bottom': 0.9})
         bottom_line.add_widget(self.new_message)
         bottom_line.add_widget(self.send)
         self.add_widget(bottom_line)
