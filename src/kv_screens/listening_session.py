@@ -39,20 +39,21 @@ class ListeningSessionScreen(Screen):
     remove_button_layout = None
     new_host_button_layout = None
     end_session_button_layout = None
+    bl = None
 
     def on_enter(self, *args):
         ListeningSessionScreen.session_name.name = (
             self.parent.ids.session_name.db.collection('sessions').document(self.parent.ids.session_name.name.id))
-        bl = BoxLayout(orientation='vertical')
+        self.bl = BoxLayout(orientation='vertical')
         sm = ScreenManager()
         sm.ids = self.parent.ids
         sm.add_widget(LS_Tab1(name='ls_tab1'))
         sm.add_widget(LS_Tab2(name='ls_tab2'))
         sm.add_widget(LS_Tab3(name='ls_tab3'))
-        bl.ids = self.parent.ids
-        bl.add_widget(sm)
-        bl.add_widget(TabBar2(self, sm))
-        self.add_widget(bl)
+        self.bl.ids = self.parent.ids
+        self.bl.add_widget(sm)
+        self.bl.add_widget(TabBar2(self, sm))
+        self.add_widget(self.bl)
 
         # host box layout
         bl2 = BoxLayout(orientation='horizontal', size_hint=(.6, .1), size=(200, 20),
@@ -113,8 +114,13 @@ class ListeningSessionScreen(Screen):
 
     # Method process of User leaving session and back to home screen
     def submit(self):
-        if self.children[1].children[1].current is "ls_tab2":
-            self.children[0].children[1].current = "ls_tab1"
+        for child in self.children:
+            if child.children is not None:
+                for child1 in child.children:
+                    if type(child1) is kivy.uix.screenmanager.ScreenManager:
+                        if child1.current is "ls_tab2":
+                            child1.current = "ls_tab1"
+                            break
         sess = self.manager.ids.session_name
         user = self.manager.ids.username
         # Clock.unschedule(self.host_replacement)
@@ -124,6 +130,9 @@ class ListeningSessionScreen(Screen):
             ListeningSessionScreen.host_bar = None
         else:
             sess.remove_user(user)
+        self.bl.clear_widgets()
+        self.remove_widget(self.bl)
+        self.bl = None
         self.parent.ids.session_name = None
         self.parent.ids.username.in_session = False
         self.manager.current = "home_page"
