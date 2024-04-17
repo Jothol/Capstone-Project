@@ -74,6 +74,7 @@ class LS_Tab2(Screen):
         pass
 
     def play(self):
+        Clock.unschedule(self.ids.song_length)
         global di
         currently_playing = sp.currently_playing()
         if di != "unselected":  # Device has been selected
@@ -81,12 +82,13 @@ class LS_Tab2(Screen):
             if currently_playing["is_playing"] is False:  # Song is playing
                 length_s = float(currently_playing["item"]["duration_ms"]) / 1000.0
                 progress_s = float(currently_playing["progress_ms"]) / 1000.0
-                print(f"{(length_s - progress_s)} time left")
-                self.ids.song_length = Clock.schedule_once(self.skip, timeout=(length_s - progress_s))
+                print(f"{(length_s - progress_s - 2)} time left")
+                self.ids.song_length = Clock.schedule_once(self.skip, timeout=(length_s - progress_s - 2))
+                self.ids.check = Clock.schedule_interval(self.get_current_song, 10)
                 self.ids.play_icon.source = '../other/images/pause_icon.png'
             else:  # Song is paused
-                if self.ids.song_length is not None:
-                    self.ids.song_length.cancel()
+                if self.ids.check is not None:
+                    Clock.unschedule(self.ids.check)
                 self.ids.play_icon.source = '../other/images/play_icon.png'
         else:
             if currently_playing is not None:
@@ -105,7 +107,7 @@ class LS_Tab2(Screen):
         self.ids.dislike_pushed = False
         time.sleep(3)  # Sleeps to ensure that the current song is the new song
         milli_sec = float(sp.currently_playing()["item"]["duration_ms"])
-        song_length = (milli_sec / 1000.0)
+        song_length = (milli_sec / 1000.0) - 2
         # print(f"Song length => {int(song_length / 60)}:{int(song_length % 60)}")
         self.ids.song_length = Clock.schedule_once(self.skip, timeout=song_length)
 
