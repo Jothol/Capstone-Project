@@ -5,6 +5,7 @@ from kivy.uix.screenmanager import Screen, ScreenManager
 from src.database import socket_client
 from src.kv_screens.chat import ChatScreen, show_error
 
+
 kivy.require('2.3.0')
 
 

@@ -17,6 +17,7 @@ from src.database import socket_client
 from src.kv_screens.hoverablebutton import HoverableButton
 # from src.kv_screens.ls_tab1 import LS_Tab1
 
+
 def show_error(message):
     raise Exception(message)
     # Clock.schedule_once(sys.exit, 10)
@@ -26,18 +27,19 @@ class ScrollableLabel(ScrollView):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.layout = GridLayout(cols=1, size_hint_y=None)
-        #self.layout.bind(minimum_height=self.layout.setter('height'))
-
-        '''self.border = (0, 0, 0, 0)
+        # self.layout.bind(minimum_height=self.layout.setter('height'))
+        '''
+        self.border = (0, 0, 0, 0)
         with self.layout.canvas.before:
             Color(1, 1, 1, 1)
             self.chat_border = Rectangle(size=self.size, pos=self.size)
             Color(0, 0, 0, 1)
             self.chat_background = Rectangle(size=self.size, pos=self.pos)
+        self.bind(size=self.update_chat_background(), pos=self.update_chat_background())
         '''
         self.add_widget(self.layout)
 
-        self.chat_history = Label(size_hint_y=None, markup=True, pos=self.pos, \
+        self.chat_history = Label(size_hint_y=None, markup=True, pos=self.pos,
                                   size=self.size)
         # self.scroll_to_point = Label()
 
@@ -51,11 +53,10 @@ class ScrollableLabel(ScrollView):
         self.chat_history.height = self.layout.height
         self.chat_history.text_size = (self.chat_history.width * 0.98, None)
 
-
     def update_chat_history_layout(self, _=None):
-        #self.layout.height = self.chat_history.texture_size[1] + 15
-        #self.chat_history.height = self.chat_history.texture_size[1]
-        #self.chat_history.text_size = (self.chat_history.width * 0.98, None)
+        # self.layout.height = self.chat_history.texture_size[1] + 15
+        # self.chat_history.height = self.chat_history.texture_size[1]
+        # self.chat_history.text_size = (self.chat_history.width * 0.98, None)
         self.layout.height = self.layout.minimum_height
 
     def update_chat_background(self, instance, value):
@@ -74,7 +75,7 @@ class ChatScreen(GridLayout):
         super().__init__(**kwargs)
         # Define the characteristics of the gridlayout
         self.cols = 1
-        self.rows = 3
+        self.rows = 2
         self.session_name = session_name
         self.username = username
         self.height = Window.size[1]
@@ -84,8 +85,9 @@ class ChatScreen(GridLayout):
             self.background_fill_color = (0, 0, 0, 1)
 
         # Create the float layout in order for ls_tab1 to place the color option button and leave chat option
-        self.chat_options = FloatLayout(size=(Window.width, dp(30)), pos_hint={'top': 1}, size_hint=(None, None))
+        self.chat_options = FloatLayout(size=(Window.width, dp(210)), pos_hint={'top': 1}, size_hint=(None, None))
 
+        # Create box layout to enable dropdown menu
         self.dropdown_box = BoxLayout(orientation='vertical', size_hint=(None, None), size=(dp(100), dp(210)),
                                       pos_hint={'left': 1, 'top': 1})
 
@@ -102,17 +104,24 @@ class ChatScreen(GridLayout):
         self.add_widget(self.chat_options)
 
         # Add the scrollable history label to the grid
-        self.history = ScrollableLabel(size_hint=(None, None), height=Window.size[1] * 0.65, width=Window.width)
-        self.add_widget(self.history)
+        self.chat_window = BoxLayout(size_hint=(None, None), size=(Window.width, Window.height * 0.65),
+                                     pos_hint={'x': 0.125})
+                                     # , background_color=(0, 0, 0, 1))
+        self.history = ScrollableLabel(size_hint=(None, None), height=Window.height * 0.7, width=Window.width - 100,
+                                       pos_hint={'left': 1})
+        self.chat_window.add_widget(self.history)
+        self.add_widget(self.chat_window)
 
         # Add the send and text input to the grid
-        self.new_message = TextInput(width=Window.size[0] * 0.8, size_hint_x=None, multiline=False,
-                                     height=Window.size[1] * 0.1, size_hint_y=None)
-        self.send = HoverableButton(text="Send", size_hint_x=None, size_hint_y=None, height=Window.size[1] * 0.1,
-                                    width=Window.size[0] * 0.2, offset=(0, -50))
+        self.new_message = TextInput(width=(Window.width - 100) * 0.8, size_hint_x=None, multiline=False,
+                                     height=Window.height * 0.1, size_hint_y=None)
+        self.send = HoverableButton(text="Send", size_hint_x=None, size_hint_y=None, height=Window.height * 0.1,
+                                    width=(Window.width - 100) * 0.2, offset=(0, -50))
         self.send.bind(on_press=self.send_message)
 
-        bottom_line = GridLayout(cols=2)
+        # Create grid layout for text input and send button
+        bottom_line = GridLayout(cols=2, width=Window.width - 100, height=Window.height * 0.1, size_hint=(None, None),
+                                 pos_hint={'x': 0.875, 'bottom': 1})
         bottom_line.add_widget(self.new_message)
         bottom_line.add_widget(self.send)
         self.add_widget(bottom_line)
@@ -121,12 +130,10 @@ class ChatScreen(GridLayout):
         Window.bind(on_key_down=self.on_key_down)
         self.bind(size=self.adjust_fields)
 
-
         Clock.schedule_once(self.focus_text_input, 1)
         socket_client.start_listening(self.incoming_message, show_error, self.session_name)
 
     def adjust_fields(self, *_):
-
         # Chat history height - 90%, but at least 50px for bottom new message/send button part
         if Window.size[1] * 0.1 < 50:
             new_height = Window.size[1] - 50
@@ -151,7 +158,6 @@ class ChatScreen(GridLayout):
         if keycode == 43 and self.parent is not None:  # Tab key
             self.parent.parent.disconnect()
 
-
     def send_message(self, _):
         message = self.new_message.text
         self.new_message.text = ""
@@ -172,18 +178,8 @@ class ChatScreen(GridLayout):
             self.history.update_chat_history(f"[color={chatter_color}]{username}[/color] >  {message}")
 
     def toggle_dropdown(self):
-        # Define the box layout to orient buttons vertically
-
-
         if self.dropdown_open:
-            # dropdown_box.clear_widgets()
-            # dropdown_box.remove_widget(red_button)
-            # dropdown_box.remove_widget(green_button)
-            # dropdown_box.remove_widget(yellow_button)
-            # dropdown_box.remove_widget(blue_button)
-            # dropdown_box.remove_widget(purple_button)
-            # dropdown_box.remove_widget(pink_button)
-            # dropdown_box.remove_widget(orange_button)
+            # If dropdown is open remove the dropdown
             self.chat_options.remove_widget(self.dropdown_box)
             self.dropdown_open = False
         else:
