@@ -33,7 +33,6 @@ class LS_Tab3(Screen):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.add_widget(Label(text="LS_Tab 3!"))
         sm = ScreenManager()
         sm.ids.username = None
         sm.ids.session_name = None
@@ -81,14 +80,9 @@ class LS_Tab3(Screen):
 
     def submit(self):
         sess = LS_Tab3.session_name
-        print("sess", sess)
-        print("host", sess.host)
         user = self.manager.ids.username
-        print(self.manager.screen_names)
         if sess.host.username == user.username:
             sess.remove_host()
-            # self.remove_widget(LS_Tab3.host_bar)
-            # cLS_Tab3.host_bar = None
         else:
             sess.remove_user(user)
 
@@ -102,18 +96,26 @@ class LS_Tab3(Screen):
         if acc is None:
             self.animate_error_window('User not found in session.', (1, 0, 0, 1))
             return False
+        elif user_name == LS_Tab3.user.username:
+            self.animate_error_window('Cannot add yourself.', (1, 0, 0, 1))
+            return False
         elif user_name in LS_Tab3.user.friends:
             self.animate_error_window('Already friends with ' + user_name + '.', (1, 0, 0, 1))
             return False
         elif LS_Tab3.user.username in acc.friends:
             self.animate_error_window('Already sent a request to ' + user_name + '.', (1, 0, 0, 1))
-        self.animate_error_window('Friend request sent to ' + user_name + '.', (0, 0.5, 0, 1))
+            return False
         LS_Tab3.user.send_invite(user_name)
         if acc.username in LS_Tab3.user.get_invites():
             LS_Tab3.user.add_friend(acc.username)
             acc.add_friend(LS_Tab3.user.username)
             LS_Tab3.user.delete_invite(acc.username)
             acc.delete_invite(LS_Tab3.user.username)
+            self.animate_error_window('You are now friends with ' + user_name + '.', (0, 0.5, 0, 1))
+        else:
+            self.animate_error_window('Friend request sent to ' + user_name + '.', (0, 0.5, 0, 1))
+
+
         return True
 
     def animate_error_window(self, message: str, color):

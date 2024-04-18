@@ -70,7 +70,6 @@ class ListeningSessionScreen(Screen):
         sess = self.manager.ids.session_name
         ListeningSessionScreen.user = self.manager.ids.username
         ListeningSessionScreen.session_name = self.manager.ids.session_name
-        print("LSH", ListeningSessionScreen.session_name.host)
         ListeningSessionScreen.user_list = sess.name.get().to_dict()
         if sess and sess.name:
             self.ids.session_label.text = 'Server: {}.'.format(sess.name.id)
@@ -118,7 +117,6 @@ class ListeningSessionScreen(Screen):
             self.manager.current = "home_page"
             self.parent.ids.username.in_session = False
         elif data.get(acc.username) == "host":  # decides when host sees host bar
-            print(acc.username, ListeningSessionScreen.host_bar)
             if ListeningSessionScreen.host_bar is None:
                 sess.host = acc  # update in case acc just became new host
                 if ListeningSessionScreen.screen_manager.current != "ls_tab3":
