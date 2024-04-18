@@ -24,6 +24,7 @@ class LsTab2(Screen):
     global check
     index = 2
     song_list = ""
+    current_song = ""
     likes = 0
     dislikes = 0
     likes_pressed = False
@@ -50,12 +51,20 @@ class LsTab2(Screen):
 
     def on_enter(self, *args):
         global check
+        self.ids.session_name = self.manager.parent.parent.parent.ids.session_name
+        current = sp.currently_playing()
+        if current is not None:
+            if current["item"]["uri"] != self.ids.session_name.get_uri():
+                LsTab2.likes_pressed = False
+                LsTab2.dislikes_pressed = False
+
         self.ids.like_pushed = LsTab2.likes_pressed
         self.ids.dislike_pushed = LsTab2.dislikes_pressed
         self.song_length = None
-        self.ids.session_name = self.manager.parent.parent.parent.ids.session_name
         check = Clock.schedule_interval(self.get_current_song, 10)
         self.update_play_button()
+        LsTab2.song_list = self.ids.session_name.saved_song.get().get("songs_played")
+        LsTab2.current_song = self.ids.session_name.get_current_song() + ": " + self.ids.session_name.get_artists()
 
     def get_current_song(self, dt):
         # print("Testing")
@@ -71,6 +80,7 @@ class LsTab2(Screen):
                 song_name = current["item"]["name"]
                 artist_names = self.ids.session_name.get_artists()
                 song_entry = song_name + ": " + artist_names
+                LsTab2.current_song = song_entry
 
                 index = LsTab2.song_list.find(song_entry)
                 if index == -1:  # checks if song name is not already included
@@ -89,6 +99,7 @@ class LsTab2(Screen):
                 LsTab2.likes = self.ids.session_name.get_likes()
                 LsTab2.dislikes = self.ids.session_name.get_dislikes()
                 song_entry = self.ids.session_name.get_current_song() + ": " + self.ids.session_name.get_artists()
+                LsTab2.current_song = song_entry
                 index = LsTab2.song_list.find(song_entry)  # locates first letter for song_entry
                 if index == -1:  # check if song_entry has been entered in the session settings songs played
                     # adding new played song into list
@@ -99,39 +110,6 @@ class LsTab2(Screen):
                     self.ids.session_name.saved_song.update({'songs_played': LsTab2.song_list})
                     return
 
-                if LsTab2.song_list[index - 7:index - 1] == "00ff00":  # currently green text favoring likes
-                    if LsTab2.likes < LsTab2.dislikes:  # text changes from green to red
-                        print("change from green to red")
-                        LsTab2.song_list = LsTab2.song_list[:index - 7] + "ff0000" + LsTab2.song_list[index - 1:]
-                        self.ids.session_name.saved_song.update({'songs_played': LsTab2.song_list})
-                    elif LsTab2.likes == LsTab2.dislikes:  # change text color back to normal
-                        print("change back to normal color")
-                        LsTab2.song_list = LsTab2.song_list[:index - 14] + LsTab2.song_list[
-                                                                           index:len(LsTab2.song_list) - 8]
-                        self.ids.session_name.saved_song.update({'songs_played': LsTab2.song_list})
-                elif LsTab2.song_list[index - 7:index - 1] == "ff0000":  # current red text favoring dislikes
-                    if LsTab2.likes > LsTab2.dislikes:  # text changes from red to green
-                        print("change from red to green")
-                        LsTab2.song_list = LsTab2.song_list[:index - 7] + "00ff00" + LsTab2.song_list[index - 1:]
-                        self.ids.session_name.saved_song.update({'songs_played': LsTab2.song_list})
-                    elif LsTab2.likes == LsTab2.dislikes:  # change text color back to normal
-                        print("change back to normal color", LsTab2.song_list[:index - 14])
-                        # print(LS_Tab2.song_list[index:len(LS_Tab2.song_list)-8])
-                        LsTab2.song_list = LsTab2.song_list[:index - 14] + LsTab2.song_list[
-                                                                           index:len(LsTab2.song_list) - 8]
-
-                        self.ids.session_name.saved_song.update({'songs_played': LsTab2.song_list})
-                else:  # text color is normal favoring neither likes or dislikes
-                    if LsTab2.likes < LsTab2.dislikes:  # change text from normal to red
-                        print("NO IN HERE")
-                        print("boy", LsTab2.song_list[:index])
-                        LsTab2.song_list = LsTab2.song_list[:index] + "[color=ff0000]" + song_entry + "[/color]"
-                        print("after", LsTab2.song_list)
-                        self.ids.session_name.saved_song.update({'songs_played': LsTab2.song_list})
-                    elif LsTab2.likes > LsTab2.dislikes:  # change text from normal to green
-                        print("IT IS IN HERE")
-                        LsTab2.song_list = LsTab2.song_list[:index] + "[color=00ff00]" + song_entry + "[/color]"
-                        self.ids.session_name.saved_song.update({'songs_played': LsTab2.song_list})
         except Exception as e:
             print(e)
             self.on_leave()
@@ -171,6 +149,7 @@ class LsTab2(Screen):
         self.ids.session_name.reset_likes_and_dislikes()
         self.ids.like_pushed = False
         self.ids.dislike_pushed = False
+        LsTab2.current_song = self.ids.session_name.get_current_song() + ": " + self.ids.session_name.get_artists()
         time.sleep(3)  # Sleeps to ensure that the current song is the new song
         milli_sec = float(sp.currently_playing()["item"]["duration_ms"])
         song_length = (milli_sec / 1000.0) - 2
@@ -206,6 +185,32 @@ class LsTab2(Screen):
             self.ids.play_icon.source = '../other/images/play_icon.png'
 
     def like(self):
+        # User already liked the song
+        if self.ids.like_pushed:
+            self.ids.session_name.decrement_likes()
+            self.ids.like_pushed = False
+            LsTab2.likes_pressed = False
+            LsTab2.likes = self.ids.session_name.get_likes()
+            LsTab2.dislikes = self.ids.session_name.get_dislikes()
+
+            # Checking the different situations of unpressing the like button
+            index = LsTab2.song_list.find(LsTab2.current_song)
+            # Unpressing the like button does not affect anything since there were already more dislikes
+            if LsTab2.song_list[index - 7:index - 1] == "ff0000":
+                return
+            # Unpressing the like caused 1 more dislikes than likes
+            elif LsTab2.likes < LsTab2.dislikes:
+                LsTab2.song_list = LsTab2.song_list[:index] + "[color=ff0000]" + LsTab2.current_song + "[/color]"
+                self.ids.session_name.saved_song.update({'songs_played': LsTab2.song_list})
+            elif LsTab2.likes == LsTab2.dislikes:
+                LsTab2.song_list = LsTab2.song_list[:index - 14] + LsTab2.song_list[index:len(LsTab2.song_list) - 8]
+                self.ids.session_name.saved_song.update({'songs_played': LsTab2.song_list})
+
+            return
+
+        # Rest are situations where the user did not press the like button
+
+        # Checks the dislike button was already pushed
         if self.ids.dislike_pushed:
             self.ids.session_name.increment_likes()
             self.ids.session_name.decrement_dislikes()
@@ -213,35 +218,97 @@ class LsTab2(Screen):
             self.ids.like_pushed = True
             LsTab2.likes_pressed = True
             LsTab2.dislikes_pressed = False
+        # Checks that the like button was not pushed
         elif not self.ids.like_pushed:
             self.ids.session_name.increment_likes()
             self.ids.like_pushed = True
             self.ids.dislike_pushed = False
             LsTab2.likes_pressed = True
             LsTab2.dislikes_pressed = False
-        elif self.ids.like_pushed:
-            self.ids.session_name.decrement_likes()
-            self.ids.like_pushed = False
-            LsTab2.likes_pressed = False
+
+        LsTab2.likes = self.ids.session_name.get_likes()
+        LsTab2.dislikes = self.ids.session_name.get_dislikes()
+
+        # Pressing like button caused more likes than dislikes
+        index = LsTab2.song_list.find(LsTab2.current_song)
+        # Was previously more dislikes than likes
+        if LsTab2.song_list[index - 7:index - 1] == "ff0000":
+            if LsTab2.likes == LsTab2.dislikes:
+                LsTab2.song_list = LsTab2.song_list[:index - 14] + LsTab2.song_list[index:len(LsTab2.song_list) - 8]
+                self.ids.session_name.saved_song.update({'songs_played': LsTab2.song_list})
+            elif LsTab2.likes > LsTab2.dislikes:
+                LsTab2.song_list = LsTab2.song_list[:index - 7] + "00ff00" + LsTab2.song_list[index - 1:]
+                self.ids.session_name.saved_song.update({'songs_played': LsTab2.song_list})
+        # Already had more likes than dislikes
+        elif LsTab2.song_list[index - 7:index - 1] == "ff0000":
+            return
+        # Was even amount of likes and dislikes before pressed
+        else:
+            LsTab2.song_list = LsTab2.song_list[:index] + "[color=00ff00]" + LsTab2.current_song + "[/color]"
+            self.ids.session_name.saved_song.update({'songs_played': LsTab2.song_list})
+
 
     def dislike(self):
+        if self.ids.dislike_pushed:
+            self.ids.session_name.decrement_dislikes()
+            self.ids.dislike_pushed = False
+            LsTab2.dislikes_pressed = False
+            LsTab2.likes = self.ids.session_name.get_likes()
+            LsTab2.dislikes = self.ids.session_name.get_dislikes()
+
+            # Checking the different situations of unpressing the like button
+            index = LsTab2.song_list.find(LsTab2.current_song)
+            # Unpressing the dislike button does not affect anything since there were already more likes
+            if LsTab2.song_list[index - 7:index - 1] == "00ff00":
+                return
+            # Unpressing the dislike caused 1 more likes than dislikes
+            elif LsTab2.likes > LsTab2.dislikes:
+                LsTab2.song_list = LsTab2.song_list[:index] + "[color=00ff00]" + LsTab2.current_song + "[/color]"
+                self.ids.session_name.saved_song.update({'songs_played': LsTab2.song_list})
+            elif LsTab2.likes == LsTab2.dislikes:
+                LsTab2.song_list = LsTab2.song_list[:index - 14] + LsTab2.song_list[index:len(LsTab2.song_list) - 8]
+                self.ids.session_name.saved_song.update({'songs_played': LsTab2.song_list})
+
+            return
+
+        # Rest are situations where the user did not press the like button
+
+        # Checks the dislike button was already pushed
         if self.ids.like_pushed:
-            self.ids.session_name.decrement_likes()
             self.ids.session_name.increment_dislikes()
+            self.ids.session_name.decrement_likes()
             self.ids.like_pushed = False
             self.ids.dislike_pushed = True
-            LsTab2.likes_pressed = False
             LsTab2.dislikes_pressed = True
+            LsTab2.likes_pressed = False
+        # Checks that the like button was not pushed
         elif not self.ids.dislike_pushed:
             self.ids.session_name.increment_dislikes()
             self.ids.dislike_pushed = True
             self.ids.like_pushed = False
-            LsTab2.likes_pressed = False
             LsTab2.dislikes_pressed = True
-        elif self.ids.dislike_pushed:
-            self.ids.session_name.decrement_dislikes()
-            self.ids.dislike_pushed = False
-            LsTab2.dislikes_pressed = False
+            LsTab2.likes_pressed = False
+
+        LsTab2.likes = self.ids.session_name.get_likes()
+        LsTab2.dislikes = self.ids.session_name.get_dislikes()
+
+        # Pressing like button caused more likes than dislikes
+        index = LsTab2.song_list.find(LsTab2.current_song)
+        # Was previously more likes than dislikes
+        if LsTab2.song_list[index - 7:index - 1] == "00ff00":
+            if LsTab2.likes == LsTab2.dislikes:
+                LsTab2.song_list = LsTab2.song_list[:index - 14] + LsTab2.song_list[index:len(LsTab2.song_list) - 8]
+                self.ids.session_name.saved_song.update({'songs_played': LsTab2.song_list})
+            elif LsTab2.dislikes > LsTab2.likes:
+                LsTab2.song_list = LsTab2.song_list[:index - 7] + "ff0000" + LsTab2.song_list[index - 1:]
+                self.ids.session_name.saved_song.update({'songs_played': LsTab2.song_list})
+        # Already had more dislikes than likes
+        elif LsTab2.song_list[index - 7:index - 1] == "ff0000":
+            return
+        # Was even amount of likes and dislikes before pressed
+        else:
+            LsTab2.song_list = LsTab2.song_list[:index] + "[color=ff0000]" + LsTab2.current_song + "[/color]"
+            self.ids.session_name.saved_song.update({'songs_played': LsTab2.song_list})
 
 
     def animate_player(self):
