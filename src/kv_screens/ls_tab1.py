@@ -1,3 +1,5 @@
+import random
+
 import kivy
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen, ScreenManager
@@ -7,7 +9,6 @@ from kivy.uix.image import Image
 
 from src.database import socket_client
 from src.kv_screens.chat import ChatScreen, show_error
-
 
 kivy.require('2.3.0')
 
@@ -53,10 +54,13 @@ class LS_Tab1(Screen):
         port = 5000
         self.remove_widget(self.ids.add_button)
         self.remove_widget(self.float_image)
+        colors = ["dd2020", "00ff00", "ffff00", "00ffff", "8a2be2", "ff00ff", "ffa500"]
         if not self.chat_screen_exists:
-            if not socket_client.connect(ip, port, self.ids.username.get_username(), show_error, self.ids.session_name.get_name()):
+            color = random.choice(colors)
+            if not socket_client.connect(ip, port, self.ids.username.get_username(), show_error,
+                                         self.ids.session_name.get_name(), color):
                 return
-            self.chat_page = ChatScreen(self.ids.session_name.get_name(), self.ids.username.get_username())
+            self.chat_page = ChatScreen(self.ids.session_name.get_name(), self.ids.username.get_username(), color)
             self.chat_page.leave_chat.bind(on_press=lambda instance: self.disconnect())
             self.screen = Screen(name="chat_page")
             self.screen.add_widget(self.chat_page)
@@ -68,6 +72,6 @@ class LS_Tab1(Screen):
         if self.chat_screen_exists:
             self.add_widget(self.ids.add_button)
             self.add_widget(self.float_image)
-            self.screen.remove_widget(self.chat_page)
+            self.screen.clear_widgets()
             self.remove_widget(self.screen)
             self.chat_screen_exists = False

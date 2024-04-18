@@ -43,12 +43,15 @@ class ScrollableLabel(ScrollView):
             self.layout.height = self.chat_history.texture_size[1] + 15
         self.chat_history.height = self.layout.height
         self.chat_history.text_size = (self.chat_history.width * 0.98, None)
+        self.scroll_to(self.scroll_to_point)
+
 
     def update_chat_history_layout(self, _=None):
-        # self.layout.height = self.chat_history.texture_size[1] + 15
-        # self.chat_history.height = self.chat_history.texture_size[1]
-        # self.chat_history.text_size = (self.chat_history.width * 0.98, None)
+        self.layout.height = self.chat_history.texture_size[1] + 15
+        self.chat_history.height = self.chat_history.texture_size[1]
+        self.chat_history.text_size = (self.chat_history.width * 0.98, None)
         self.layout.height = self.layout.minimum_height
+
 
     def update_chat_background(self, instance, value):
         self.chat_background.pos = instance.pos
@@ -62,21 +65,23 @@ class ChatScreen(GridLayout):
     # chatter_color used to define chatter's chosen color
     chatter_color = "20dd20"
 
-    def __init__(self, session_name, username, **kwargs):
+    def __init__(self, session_name, username, color, **kwargs):
         super().__init__(**kwargs)
         # Define the characteristics of the gridlayout
+        self.users = {}
         self.cols = 1
-        self.rows = 2
+        self.rows = 3
         self.session_name = session_name
         self.username = username
         self.height = Window.height * 0.8
+        self.chatter_color = color
 
         with self.canvas.before:
             self.background_color = (0, 0, 0, 1)
             self.background_fill_color = (0, 0, 0, 1)
 
         # Create the float layout in order for ls_tab1 to place the color option button and leave chat option
-        self.chat_options = FloatLayout(size=(Window.width, Window.height * 0.7), pos_hint={'top': 1}, size_hint=(None, None))
+        self.chat_options = FloatLayout(size=(Window.width, Window.height * 0.05), pos_hint={'top': 1}, size_hint=(None, None))
 
         # Create box layout to enable dropdown menu
         self.dropdown_box = BoxLayout(orientation='vertical', size_hint=(None, None), size=(dp(100), dp(210)),
@@ -94,13 +99,14 @@ class ChatScreen(GridLayout):
         self.chat_options.add_widget(self.leave_chat)
 
         # Add the scrollable history label to the grid
-        self.chat_window = GridLayout(size_hint=(None, None), size=(Window.width, Window.height * 0.65),
-                                      pos_hint={'x': 0.125})
-        self.history = ScrollableLabel(size_hint=(None, None), height=Window.height * 0.65, width=Window.width - 100,
+        #self.chat_window = GridLayout(size_hint=(None, None), size=(Window.width, Window.height * 0.65),
+        #                              pos_hint={'x': 0.125})
+        self.history = ScrollableLabel(size_hint=(None, None), height=Window.height * 0.85, width=Window.width - 100,
                                        pos_hint={'left': 1})
-        self.chat_window.add_widget(self.history)
-        self.chat_options.add_widget(self.chat_window)
+        #self.chat_window.add_widget(self.history)
+        #self.chat_options.add_widget(self.chat_window)
         self.add_widget(self.chat_options)
+        self.add_widget(self.history)
 
         # Add the send and text input to the grid
         self.new_message = TextInput(width=(Window.width - 100) * 0.8, size_hint_x=None, multiline=False,
@@ -161,11 +167,17 @@ class ChatScreen(GridLayout):
     def focus_text_input(self, _):
         self.new_message.focus = True
 
-    def incoming_message(self, username, message, chatter_color):
-        if username == self.username:
-            self.history.update_chat_history(f"[color={chatter_color}]{username}[/color] >  {message}")
+    def incoming_message(self, username, message):
+        other_color = username.split("_")[1]
+        realuser = username.split("_")[0]
+        if realuser == self.username:
+            self.history.update_chat_history(f"[color={self.chatter_color}]{realuser}[/color] >  {message}")
         else:
-            self.history.update_chat_history(f"[color={chatter_color}]{username}[/color] >  {message}")
+            if self.users.get(realuser) is not None:
+                other_color = self.users.get(realuser)
+            else:
+                self.users[realuser] = other_color
+            self.history.update_chat_history(f"[color={other_color}]{realuser}[/color] >  {message}")
 
     def toggle_dropdown(self):
         if self.dropdown_open:
