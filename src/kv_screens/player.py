@@ -96,7 +96,7 @@ def next_song(sp_client, session=None):
             else:
                 features = get_features(sp_client, "Red Rock Riviera")
                 recommendation = spotify_rec_features(sp_client, "Red Rock Riviera", features)
-            uri = recommendation
+            uri = recommendation["uri"]
             # print(recommendation["tracks"][0]["name"])
             # add the generated recommendation to the queue
             queue_song(sp_client, uri)
@@ -113,7 +113,7 @@ def next_song(sp_client, session=None):
                 features = get_features(sp_client, "Red Rock Riviera")
                 features["energy"] = features["energy"] + 0.01
                 recommendation = spotify_rec_features(sp_client, "Red Rock Riviera", features)
-            uri = recommendation
+            uri = recommendation["uri"]
             # print(recommendation["tracks"][0]["name"])
             # add the generated recommendation to the queue
             if session.get_uri() == "" or session.get_uri() == current_song["item"]["uri"]:
@@ -121,9 +121,9 @@ def next_song(sp_client, session=None):
                 session.set_uri(uri)
 
                 # riley implemented rest of 'session's for firebase current_song testing
-                session.set_current_song(recommendation["tracks"][0]["name"])
-                session.set_album(recommendation["tracks"][0]["album"]["name"])
-                session.set_artists(recommendation["tracks"][0]["artists"])
+                session.set_current_song(recommendation["name"])
+                session.set_album(recommendation["album"]["name"])
+                session.set_artists(recommendation["artists"])
                 session.reset_likes_and_dislikes()
             elif session.get_uri() != sp.currently_playing()["item"]["uri"]:
                 queue_song(sp, session.get_uri())
@@ -146,42 +146,19 @@ def get_features(sp_client, track):
     return ret
 
 
-# modified version of Kevin's method, returns info
-# delete when recommendation is available
-def serenity_spotify_rec(sp_client, track):
-    # auth = SpotifyPKCE(client_id=SPOTIPY_CLIENT_ID, redirect_uri=SPOTIPY_REDIRECT_URI, scope=scope)
-    # sp = spotipy.Spotify(auth_manager=auth)
-    # membership = sp.current_user()["product"]
-    # if membership != "premium":
-    #    print("You are not authorized to access this")
-    # else:
-    results = sp_client.search(q="track:" + track, type="track")
-    # print(results)
-    artist_uri = [(results["tracks"]["items"][0]["artists"][0]["uri"]).split(":", 3)[2]]
-    track_uri = [(results["tracks"]["items"][0]["uri"]).split(":", 3)[2]]
-    artistinfo = sp_client.artist(artist_uri[0])
-    genres = artistinfo["genres"]
-    rec = sp_client.recommendations(seed_artists=artist_uri, seed_tracks=track_uri, seed_genres=[genres[0]], limit=1)
-    return rec
-    # image = rec["tracks"][0]["album"]["images"][0]["url"]
-    # artist_name = (rec["tracks"][0]["artists"][0]["name"])
-    # track_name = (rec["tracks"][0]["name"])
-    # return image, artist_name, track_name
-
-
 def spotify_rec_features(sp_client, track, features, likes=0, dislikes=0):
     print("Recommedation running")
     results = sp_client.search(q="track:" + track, type="track")
     artist_uri = [(results["tracks"]["items"][0]["artists"][0]["uri"]).split(":", 3)[2]]
     track_uri = [(results["tracks"]["items"][0]["uri"]).split(":", 3)[2]]
-
+    features = balance_values(features, likes, dislikes)
     rec = sp_client.recommendations(seed_artists=artist_uri, seed_tracks=track_uri, limit=10,
                                     target_danceability=features["danceability"], target_energy=features["energy"],
                                     target_valence=features["valence"])
     current_song_uri = sp_client.currently_playing()["item"]["uri"]
     for each in rec["tracks"]:
         if each["uri"] != current_song_uri:
-            return each["uri"]
+            return each
     return spotify_rec_features(sp_client, track, features)
 
 

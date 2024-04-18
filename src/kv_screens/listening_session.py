@@ -13,14 +13,15 @@ from kivy.metrics import dp
 from kivy.core.window import Window
 
 from src.kv_screens.ls_tab1 import LS_Tab1
-from src.kv_screens.ls_tab2 import LS_Tab2
+from src.kv_screens.lstab2 import LsTab2
 from src.kv_screens.ls_tab3 import LS_Tab3
-
-kivy.require('2.3.0')
 
 from src.database import account
 from src.database import session
 from src.kv_screens.hoverablebutton import HoverableButton
+
+kivy.require('2.3.0')
+
 
 def set_opacity(image: Image, opacity):
     # Find the Color instruction in canvas.after
@@ -53,7 +54,7 @@ class ListeningSessionScreen(Screen):
         sm = ScreenManager()
         sm.ids = self.parent.ids
         sm.add_widget(LS_Tab1(name='ls_tab1'))
-        sm.add_widget(LS_Tab2(name='ls_tab2'))
+        sm.add_widget(LsTab2(name='ls_tab2'))
         sm.add_widget(LS_Tab3(name='ls_tab3'))
         ListeningSessionScreen.screen_manager = sm
         self.bl.ids = self.parent.ids
