@@ -50,8 +50,8 @@ class LsTab2(Screen):
 
     def on_enter(self, *args):
         global check
-        self.ids.like_pushed = False
-        self.ids.dislike_pushed = False
+        self.ids.like_pushed = LsTab2.likes_pressed
+        self.ids.dislike_pushed = LsTab2.dislikes_pressed
         self.song_length = None
         self.ids.session_name = self.manager.parent.parent.parent.ids.session_name
         check = Clock.schedule_interval(self.get_current_song, 10)
@@ -90,6 +90,15 @@ class LsTab2(Screen):
                 LsTab2.dislikes = self.ids.session_name.get_dislikes()
                 song_entry = self.ids.session_name.get_current_song() + ": " + self.ids.session_name.get_artists()
                 index = LsTab2.song_list.find(song_entry)  # locates first letter for song_entry
+                if index == -1:  # check if song_entry has been entered in the session settings songs played
+                    # adding new played song into list
+                    if LsTab2.song_list == "":
+                        LsTab2.song_list = song_entry
+                    else:
+                        LsTab2.song_list += "     " + song_entry
+                    self.ids.session_name.saved_song.update({'songs_played': LsTab2.song_list})
+                    return
+
                 if LsTab2.song_list[index - 7:index - 1] == "00ff00":  # currently green text favoring likes
                     if LsTab2.likes < LsTab2.dislikes:  # text changes from green to red
                         print("change from green to red")
@@ -202,10 +211,18 @@ class LsTab2(Screen):
             self.ids.session_name.decrement_dislikes()
             self.ids.dislike_pushed = False
             self.ids.like_pushed = True
+            LsTab2.likes_pressed = True
+            LsTab2.dislikes_pressed = False
         elif not self.ids.like_pushed:
             self.ids.session_name.increment_likes()
             self.ids.like_pushed = True
             self.ids.dislike_pushed = False
+            LsTab2.likes_pressed = True
+            LsTab2.dislikes_pressed = False
+        elif self.ids.like_pushed:
+            self.ids.session_name.decrement_likes()
+            self.ids.like_pushed = False
+            LsTab2.likes_pressed = False
 
     def dislike(self):
         if self.ids.like_pushed:
@@ -213,10 +230,19 @@ class LsTab2(Screen):
             self.ids.session_name.increment_dislikes()
             self.ids.like_pushed = False
             self.ids.dislike_pushed = True
+            LsTab2.likes_pressed = False
+            LsTab2.dislikes_pressed = True
         elif not self.ids.dislike_pushed:
             self.ids.session_name.increment_dislikes()
             self.ids.dislike_pushed = True
             self.ids.like_pushed = False
+            LsTab2.likes_pressed = False
+            LsTab2.dislikes_pressed = True
+        elif self.ids.dislike_pushed:
+            self.ids.session_name.decrement_dislikes()
+            self.ids.dislike_pushed = False
+            LsTab2.dislikes_pressed = False
+
 
     def animate_player(self):
         player_window = self.ids.player_window
