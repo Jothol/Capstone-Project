@@ -1,16 +1,23 @@
 import kivy
 from kivy.uix.label import Label
+from kivy.animation import Animation
+from kivy.metrics import dp
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
 from kivy.graphics import Color, Rectangle
 from kivy.uix.screenmanager import Screen, ScreenManager
+from kivy.clock import Clock
 
 from src.database import account
 from src.database import session
 
+from src.kv_screens import player
+
 kivy.require('2.3.0')
+
+sp = player.sp
 
 
 class LS_Tab3(Screen):
@@ -19,10 +26,13 @@ class LS_Tab3(Screen):
     session_name = None
     add_button_layout = None
     remove_button_layout = None
+    user_list = None
+    song_list = ""
+    current_song = None
+    error_window_open = False
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.add_widget(Label(text="LS_Tab 3!"))
         sm = ScreenManager()
         sm.ids.username = None
         sm.ids.session_name = None
@@ -31,88 +41,100 @@ class LS_Tab3(Screen):
     def on_pre_enter(self, *args):
         LS_Tab3.user = self.manager.ids.username
         LS_Tab3.session_name = self.manager.ids.session_name
-        # if LS_Tab3.user.username == LS_Tab3.session_name.host.username:
-        #     self.ids.add_button.background_color = [0, 1, 0, 1]
-        #     self.ids.remove_button.background_color = [0, 1, 0, 1]
-        # else:
-        #     self.ids.add_button.background_color = [1, 1, 1, 1]
-        #     self.ids.remove_button.background_color = [1, 1, 1, 1]
+        LS_Tab3.user_list = self.manager.parent.parent.user_list
+        user_str = ""
+        for i in LS_Tab3.user_list:
+            if i == LS_Tab3.user.username:
+                i = "[color=00ff00]" + i + "[/color]"
 
-    # def open_add_account(self):
-    #     sess = self.manager.ids.session_name
-    #     user = self.manager.ids.username
-    #     if sess.host.username != user.username:
-    #         print("Only host can add users")
-    #         return
-    #     if LS_Tab3.add_button_layout is not None:
-    #         self.remove_widget(LS_Tab3.add_button_layout)
-    #         LS_Tab3.add_button_layout = None
-    #         return
-    #     if LS_Tab3.remove_button_layout is not None:
-    #         self.remove_widget(LS_Tab3.remove_button_layout)
-    #         LS_Tab3.remove_button_layout = None
-    #
-    #     bl = BoxLayout(orientation="vertical", size_hint=(.2, .2), size=(200, 200),
-    #                    pos_hint={'center_x': .5, 'center_y': .5})
-    #     bl.padding = 10
-    #     bl.canvas.before.add(Color(1., 1., 1))
-    #     bl.canvas.before.add(Rectangle(size=(800, 200), pos=(475, 300)))
-    #
-    #     bl.add_widget(Label(text='Enter user to add', color=[0, 0.4, 0, 1], bold=True))
-    #     bl.add_widget(TextInput(multiline=False, hint_text='User'))
-    #     bl.add_widget(Button(text='Enter', background_color=[0, 1, 0, 1], size_hint=(.5, 1), pos_hint={'center_x': .5},
-    #                          ))
-    #     LS_Tab3.add_button_layout = bl
-    #
-    #     self.add_widget(bl)
+            if user_str == "":
+                user_str = i
+            else:
+                user_str += ", " + i
+        self.ids.accs_list.text = user_str
+        self.ids.song_info.text = LS_Tab3.session_name.saved_song.get().get('songs_played')
 
-    # def open_remove_account(self):
-    #     sess = self.manager.ids.session_name
-    #     user = self.manager.ids.username
-    #     if sess.host.username != user.username:
-    #         print("Only host can add users")
-    #         return
-    #     if LS_Tab3.remove_button_layout is not None:
-    #         self.remove_widget(LS_Tab3.remove_button_layout)
-    #         LS_Tab3.remove_button_layout = None
-    #         return
-    #     if LS_Tab3.add_button_layout is not None:
-    #         self.remove_widget(LS_Tab3.add_button_layout)
-    #         LS_Tab3.add_button_layout = None
-    #
-    #     bl = BoxLayout(orientation="vertical", size_hint=(.2, .2), size=(200, 200),
-    #                    pos_hint={'center_x': .5, 'center_y': .5})
-    #     bl.padding = 10
-    #     bl.canvas.before.add(Color(1., 1., 1))
-    #     bl.canvas.before.add(Rectangle(size=(250, 200), pos=(475, 300)))
-    #
-    #     bl.add_widget(Label(text='Enter user to remove', color=[0, 0.4, 0, 1], bold=True))
-    #     bl.add_widget(TextInput(multiline=False, hint_text='User'))
-    #     bl.add_widget(Button(text='Enter', background_color=[0, 1, 0, 1], size_hint=(.5, 1), pos_hint={'center_x': .5},
-    #                          on_press=self.remove_account))
-    #     LS_Tab3.remove_button_layout = bl
-    #
-    #     self.add_widget(bl)
+    def on_enter(self, *args):
+        self.ids.session_name = self.manager.ids.session_name
+        self.ids.username = self.manager.ids.username
 
-    # @staticmethod
-    # def add_account(self):
-    #     print("It works")
-    #     user_name = LS_Tab3.add_button_layout.children[1].text
-    #     user = account.get_account(user_name)
-    #     if user is None:
-    #         print("User not found")
-    #     else:
-    #         print("user found!")
-    #         LS_Tab3.session_name.add_user(user)
-    #     pass
+        Clock.schedule_interval(self.refresh_settings, 1.5)
 
-    # @staticmethod
-    # def remove_account(self):
-    #     user_name = LS_Tab3.remove_button_layout[1].text
-    #     user = account.get_account(user_name)
-    #     if user is None:
-    #         print("User not found")
-    #     else:
-    #         print("user found!")
-    #         LS_Tab3.session_name.remove_user(user)
-    #     pass
+    def on_leave(self, *args):
+        Clock.unschedule(self.refresh_settings)
+        pass
+
+    def refresh_settings(self, instance):
+        user_str = ""
+        LS_Tab3.user_list = self.manager.parent.parent.user_list
+        for i in LS_Tab3.user_list:
+            if i == self.ids.username.username:
+                i = "[color=00ff00]" + i + "[/color]"
+
+            if user_str == "":
+                user_str = i
+            else:
+                user_str += ", " + i
+        self.ids.accs_list.text = user_str
+        self.ids.song_info.text = LS_Tab3.session_name.saved_song.get().get('songs_played')
+
+    def submit(self):
+        sess = LS_Tab3.session_name
+        user = self.manager.ids.username
+        if sess.host.username == user.username:
+            sess.remove_host()
+        else:
+            sess.remove_user(user)
+
+        self.manager.ls_screen.manager.current = "home_page"
+        Clock.unschedule(self.refresh_settings)
+
+    def send_friend_request(self, user_name):
+        acc = session.get_user(LS_Tab3.session_name.name, user_name)
+        if self.error_window_open:
+            return False
+        if acc is None:
+            self.animate_error_window('User not found in session.', (1, 0, 0, 1))
+            return False
+        elif user_name == LS_Tab3.user.username:
+            self.animate_error_window('Cannot add yourself.', (1, 0, 0, 1))
+            return False
+        elif user_name in LS_Tab3.user.friends:
+            self.animate_error_window('Already friends with ' + user_name + '.', (1, 0, 0, 1))
+            return False
+        elif LS_Tab3.user.username in acc.friends:
+            self.animate_error_window('Already sent a request to ' + user_name + '.', (1, 0, 0, 1))
+            return False
+        LS_Tab3.user.send_invite(user_name)
+        if acc.username in LS_Tab3.user.get_invites():
+            LS_Tab3.user.add_friend(acc.username)
+            acc.add_friend(LS_Tab3.user.username)
+            LS_Tab3.user.delete_invite(acc.username)
+            acc.delete_invite(LS_Tab3.user.username)
+            self.animate_error_window('You are now friends with ' + user_name + '.', (0, 0.5, 0, 1))
+        else:
+            self.animate_error_window('Friend request sent to ' + user_name + '.', (0, 0.5, 0, 1))
+
+
+        return True
+
+    def animate_error_window(self, message: str, color):
+        error_window = self.ids.error_window
+        message_label = self.ids.window_message
+        if message != '':
+            message_label.text = message
+            error_window.x = dp(-200)
+        if error_window.x <= dp(-7):
+            self.ids.friend_input.text = ''
+            self.error_window_open = True
+            animation_window = Animation(pos=(error_window.x + dp(195), error_window.y), duration=0.1)
+            error_window.opacity = 1
+            message_label.color = color
+            animation_window.start(error_window)
+            Clock.schedule_once(lambda dt: self.animate_error_window('', (0, 0, 0, 0)), 5)
+        else:
+            self.error_window_open = False
+            animation_window = Animation(pos=(error_window.x - dp(195), error_window.y), duration=0.1)
+            animation_window.start(error_window)
+            animation_window.bind(on_complete=lambda *args: setattr(error_window, 'opacity', 0))
+            animation_window.bind(on_complete=lambda *args: setattr(message_label, 'text', ''))

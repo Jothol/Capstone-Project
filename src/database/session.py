@@ -117,13 +117,17 @@ class Session:
         self.host = get_host(self.name)
         self.host.account.update({'in_session': True})
         self.songs_played = 0
-        self.saved_song = self.name.collection('saved songs').document(' ')
-        self.saved_song.set({'URI': '', 'song_name': '', 'album': ''})
+        self.saved_song = self.name.collection('saved songs').document('song_list')
+        if self.saved_song.get().to_dict() is None:
+            self.saved_song.set({'songs_played': ''})
         self.current_song = self.name.collection('session info').document('current song')
         if self.current_song.get().to_dict() is None:
-            self.current_song.set({'URI': '', 'song_name': '', 'album': '', 'likes': 0, 'dislikes': 0})
+            self.current_song.set({'URI': '', 'song_name': '', 'album': '', 'likes': 0, 'dislikes': 0, 'artists': ''})
         self.likes = self.get_likes()
         self.dislikes = self.get_dislikes()
+        self.session_status = self.name.collection('session info').document('session status')
+        if self.session_status.get().to_dict() is None:
+            self.session_status.set({'status': 'private'})
 
 
     def get_name(self):
@@ -135,14 +139,21 @@ class Session:
     def get_uri(self):
         return self.current_song.get().to_dict().get('URI')
 
-        pass
+    def get_current_song(self):
+        return self.current_song.get().get('song_name')
+
+    def get_album(self):
+        return self.current_song.get().get('album')
+
+    def get_artists(self):
+        return self.current_song.get().get('artists')
 
     def get_likes(self):
         return self.current_song.get().get('likes')
 
     # Increases likes when user presses like button
     def increment_likes(self):
-        self.likes += 1
+        self.likes = self.get_likes() + 1
         self.current_song.update({'likes': self.likes})
 
     # Decrease likes when user unpresses like button
@@ -159,7 +170,7 @@ class Session:
 
     # Increase dislikes when user presses dislike button
     def increment_dislikes(self):
-        self.dislikes += 1
+        self.dislikes = self.get_dislikes() + 1
         self.current_song.update({'dislikes': self.dislikes})
 
     # Decrease dislikes when user unpresses dislike button
@@ -181,6 +192,21 @@ class Session:
 
     def set_uri(self, new_uri):
         self.current_song.update({'URI': new_uri})
+
+    def set_current_song(self, new_song):
+        self.current_song.update({'song_name': new_song})
+
+    def set_album(self, new_album):
+        self.current_song.update({'album': new_album})
+
+    def set_artists(self, new_artists):
+        artist_names = ""
+        for i in new_artists:  # artist(s) name retrieval
+            if artist_names == "":
+                artist_names = i["name"]
+            else:
+                artist_names += ", " + i["name"]
+        self.current_song.update({'artists': artist_names})
 
     # Adds new user to the session
     # ! ! user must be an Account type ! !
@@ -211,7 +237,6 @@ class Session:
         self.host = None
 
         if self.name.get().exists is True:
-            print("grass")
             self.find_new_host()
 
         return

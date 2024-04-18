@@ -1,24 +1,197 @@
 <LS_Tab3>
-    Image:
-        id: background_image
-        source: '../other/images/transparent_logo.png'
-        fit_mode: 'scale-down'
-        z: -1
-
-    # Button:
-        # id: add_button
-        # size_hint: (None, None)
-        # size: (130, 30)
-        # text: 'Add User'
-        # pos_hint: {'x': 0.01, 'y': 0.08}
-        # on_press:
-            # root.open_add_account()
-
-    # Button:
-        # id: remove_button
-        # size_hint: (None, None)
-        # size: (130, 30)
-        # text: 'Remove User'
-        # pos_hint: {'x': 0.21, 'y': 0.08}
-        # on_press:
-            # root.open_remove_account()
+    BoxLayout:
+        orientation: 'vertical'
+        BoxLayout:
+            orientation: 'vertical'
+            padding: dp(30)
+            spacing: dp(5)
+            AnchorLayout:
+                anchor_x: 'left'
+                size_hint: None, None
+                size: self.parent.width - dp(60), dp(30)
+                Label:
+                    text: 'Users in Session:'
+                    font_size: dp(30)
+                    size_hint: None, None
+                    size: self.texture_size
+            AnchorLayout:
+                anchor_x: 'left'  # Aligns children to the left
+                anchor_y: 'top'
+                size_hint: None, .5
+                size: self.parent.width - dp(60), dp(150)
+                padding: dp(10)
+                canvas.before:
+                    Color:
+                        rgba: 0.1, 0.1, 0.1, 1
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+                    Color:
+                        rgba: 1, 1, 1, 1
+                    Line:
+                        width: dp(1)
+                        rectangle: self.x, self.y, self.width, self.height
+                Label:
+                    id: accs_list
+                    size_hint: None, None
+                    size: self.parent.width, self.parent.height
+                    text_size: self.width, self.height
+                    text: ""
+                    valign: 'top'
+                    halign: 'left'
+                    markup: True
+                    canvas.before:
+                        Color:
+                            rgba: 0, 0, 0, 1
+                        Line:
+                            rectangle: self.parent.x, self.parent.y, self.width, self.height
+                            width: 1
+            BoxLayout:
+                orientation: 'vertical'
+                # spacing: dp(10)
+                BoxLayout:
+                    orientation: 'horizontal'
+                    spacing: dp(1)
+                    BoxLayout:
+                        id: blank_space
+                        orientation: 'vertical'
+                    TextInput:
+                        id: friend_input
+                        size_hint: None, None
+                        size: dp(150), dp(30)
+                        multiline: False
+                        hint_text: 'Username'
+                    Button:
+                        text: 'Send Friend Request'
+                        size_hint: None, None
+                        size: dp(150), dp(30)
+                        background_color:[0,1,0,1]
+                        on_press: root.send_friend_request(friend_input.text)
+                BoxLayout:
+                    orientation: 'horizontal'
+                    size_hint_x: None
+                    width: self.minimum_size[0]
+                    BoxLayout:
+                        id: blank_space
+                        orientation: 'vertical'
+        BoxLayout:
+            orientation: 'vertical'
+            padding: dp(30)
+            spacing: dp(10)
+            AnchorLayout:
+                anchor_x: 'left'
+                size_hint: None, None
+                size: self.parent.width - dp(60), dp(30)
+                Label:
+                    text: 'Played Songs:'
+                    font_size: dp(30)
+                    size_hint: None, None
+                    size: self.texture_size
+            AnchorLayout:
+                anchor_x: 'left'
+                anchor_y: 'top'
+                size_hint: None, None
+                size: self.parent.width - dp(60), dp(150)
+                padding: dp(5)
+                canvas.before:
+                    Color:
+                        rgba: 0.1, 0.1, 0.1, 1
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+                    Color:
+                        rgba: 1, 1, 1, 1
+                    Line:
+                        width: dp(1)
+                        rectangle: self.x, self.y, self.width, self.height
+                ScrollView:
+                    id: scroll_id
+                    size_hint_y: None
+                    height: dp(135) # 35
+                    scroll_wheel_distance: dp(2)
+                    bar_margin: dp(10)
+                    bar_width: dp(10)
+                    do_scroll_x: False
+                    do_scroll_y: True
+                    scroll_y: dp(10)
+                    scroll_type: ['bars']
+                    canvas.before:
+                        Color:
+                            rgba: 1, 0, 0, 1  # Red color for the border
+                        Line:
+                            rectangle: self.x, self.y, self.width, self.height
+                            width: 1
+                    Label:
+                        id: song_info
+                        height: dp(130)
+                        size_hint: None, None
+                        size: self.parent.width, dp(135)
+                        text_size: self.width, self.height
+                        text: ""
+                        valign: 'top'
+                        halign: 'left'
+                        markup: True
+                        canvas.before:
+                            Color:
+                                rgba: 0, 0, 0, 1
+                            Line:
+                                rectangle: self.x, self.y, self.width, self.height
+                                width: 1
+            AnchorLayout:
+                anchor_x: 'center'  # Aligns children to the left
+                anchor_y: 'top'
+                BoxLayout:
+                    # id: account_management
+                    # orientation: 'vertical'
+                    # size_hint_x: None
+                    # width: self.minimum_size[0]
+                    # spacing: dp(5)
+                    # Button:
+                        # text: 'Edit Account Info'
+                        # size_hint: None, None
+                        # size: dp(150), dp(30)
+                        # background_color:[0,1,0,1]
+                        # on_press:
+                            # root.parent.parent.parent.parent.transition.direction = 'up'
+                            # root.parent.parent.parent.parent.current = 'add_account_info_page'
+                    # Button:
+                        # text: 'Change Password'
+                        # size_hint: None, None
+                        # size: dp(150), dp(30)
+                        # background_color:[0,1,0,1]
+                        # on_press:
+                            # root.parent.parent.parent.parent.transition.direction = 'up'
+                            # root.parent.parent.parent.parent.current = 'change_password_page'
+                    BoxLayout:
+                        id: blank_space
+                        orientation: 'vertical'
+    BoxLayout:
+        id: error_window
+        size_hint: None, None
+        size: self.minimum_size[0], dp(40)
+        pos: -self.minimum_size[0], dp(350)
+        opacity: 0
+        padding: dp(10)
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            RoundedRectangle:
+                pos: self.pos
+                size: self.size
+                radius: [5, 5, 5, 5]
+        Label:
+            id: window_message
+            text: ''
+            color: (0, 0, 0, 1)
+            size_hint: None, None
+            size: self.texture_size[0], dp(20)
+            center: self.parent.center
+    Button:
+        size_hint: (None, None)
+        size: dp(150), dp(30)
+        text: 'Leave Session'
+        pos_hint: {'x': 0.01, 'y': 0.01}
+        background_color:[0,1,0,1]
+        on_press:
+            root.manager.transition.direction = 'up'
+            root.submit()

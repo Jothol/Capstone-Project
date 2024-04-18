@@ -8,6 +8,7 @@ from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen, ScreenManager
 
 from src.kv_screens import player, volume_slider
+from src.kv_screens import ls_tab3
 
 kivy.require('2.3.0')
 
@@ -21,6 +22,12 @@ def volume(slider):
 
 class LS_Tab2(Screen):
     index = 2
+    song_list = ""
+    likes = 0
+    dislikes = 0
+    likes_pressed = False
+    dislikes_pressed = False
+    already_added = False
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -64,6 +71,79 @@ class LS_Tab2(Screen):
                 sp.next_track()
         except Exception as e:
             self.on_leave()
+        if self.ids.session_name.get_uri() == "" and current is not None:
+            self.ids.session_name.set_uri(current["item"]["uri"])
+            # Below is added part for song history to save
+            self.ids.session_name.set_album(current["item"]["album"]["name"])
+            self.ids.session_name.set_artists(current["item"]["artists"])
+            self.ids.session_name.set_current_song(current["item"]["name"])
+            song_name = current["item"]["name"]
+            artist_names = self.ids.session_name.get_artists()
+            song_entry = song_name + ": " + artist_names
+
+            index = LS_Tab2.song_list.find(song_entry)
+            if index == -1:  # checks if song name is not already included
+                # adding new played song into list
+                if LS_Tab2.song_list == "":
+                    LS_Tab2.song_list = song_entry
+                else:
+                    LS_Tab2.song_list += "     " + song_entry
+                self.ids.session_name.saved_song.update({'songs_played': LS_Tab2.song_list})
+        elif self.ids.session_name.get_uri() != "" and self.ids.session_name.get_uri() != \
+                current["item"]["uri"]:
+            player.queue_song(sp, self.ids.session_name.get_uri())
+            sp.next_track()
+            # Below is added part for song history to save
+            current = sp.currently_playing()
+            song_name = current["item"]["name"]
+            artist_names = self.ids.session_name.get_artists()
+            song_entry = song_name + ": " + artist_names
+            index = LS_Tab2.song_list.find(song_entry)
+            if index == -1:  # checks if song name is not already included
+                if LS_Tab2.song_list == "":
+                    LS_Tab2.song_list = song_entry
+                else:
+                    LS_Tab2.song_list += "     " + song_entry
+                # self.ids.song_info.text = LS_Tab2.song_list
+                self.ids.session_name.saved_song.update({'songs_played': LS_Tab2.song_list})
+        elif self.ids.session_name.get_uri() == current["item"]["uri"]:
+            # purpose is to check the amount of likes and dislikes and if color text needs to be updated
+            LS_Tab2.likes = self.ids.session_name.get_likes()
+            LS_Tab2.dislikes = self.ids.session_name.get_dislikes()
+            song_entry = self.ids.session_name.get_current_song() + ": " + self.ids.session_name.get_artists()
+            index = LS_Tab2.song_list.find(song_entry)  # locates first letter for song_entry
+            if LS_Tab2.song_list[index-7:index-1] == "00ff00":  # currently green text favoring likes
+                if LS_Tab2.likes < LS_Tab2.dislikes:  # text changes from green to red
+                    print("change from green to red")
+                    LS_Tab2.song_list = LS_Tab2.song_list[:index-7]+"ff0000"+LS_Tab2.song_list[index-1:]
+                    self.ids.session_name.saved_song.update({'songs_played': LS_Tab2.song_list})
+                elif LS_Tab2.likes == LS_Tab2.dislikes:  # change text color back to normal
+                    print("change back to normal color")
+                    LS_Tab2.song_list = LS_Tab2.song_list[:index - 14] + LS_Tab2.song_list[index:len(LS_Tab2.song_list)-8]
+                    self.ids.session_name.saved_song.update({'songs_played': LS_Tab2.song_list})
+            elif LS_Tab2.song_list[index-7:index-1] == "ff0000":  # current red text favoring dislikes
+                if LS_Tab2.likes > LS_Tab2.dislikes:  # text changes from red to green
+                    print("change from red to green")
+                    LS_Tab2.song_list = LS_Tab2.song_list[:index - 7] + "00ff00" + LS_Tab2.song_list[index - 1:]
+                    self.ids.session_name.saved_song.update({'songs_played': LS_Tab2.song_list})
+                elif LS_Tab2.likes == LS_Tab2.dislikes:  # change text color back to normal
+                    print("change back to normal color", LS_Tab2.song_list[:index-14])
+                    # print(LS_Tab2.song_list[index:len(LS_Tab2.song_list)-8])
+                    LS_Tab2.song_list = LS_Tab2.song_list[:index - 14]+LS_Tab2.song_list[index:len(LS_Tab2.song_list)-8]
+
+                    self.ids.session_name.saved_song.update({'songs_played': LS_Tab2.song_list})
+            else:  # text color is normal favoring neither likes or dislikes
+                if LS_Tab2.likes < LS_Tab2.dislikes:  # change text from normal to red
+                    print("NO IN HERE")
+                    print("boy", LS_Tab2.song_list[:index])
+                    LS_Tab2.song_list = LS_Tab2.song_list[:index] + "[color=ff0000]" + song_entry + "[/color]"
+                    print("after", LS_Tab2.song_list)
+                    self.ids.session_name.saved_song.update({'songs_played': LS_Tab2.song_list})
+                elif LS_Tab2.likes > LS_Tab2.dislikes:  # change text from normal to green
+                    print("IT IS IN HERE")
+                    LS_Tab2.song_list = LS_Tab2.song_list[:index] + "[color=00ff00]" + song_entry + "[/color]"
+                    self.ids.session_name.saved_song.update({'songs_played': LS_Tab2.song_list})
+
 
     def on_leave(self, *args):
         Clock.unschedule(self.ids.check)
@@ -110,6 +190,8 @@ class LS_Tab2(Screen):
         song_length = (milli_sec / 1000.0) - 2
         # print(f"Song length => {int(song_length / 60)}:{int(song_length % 60)}")
         self.ids.song_length = Clock.schedule_once(self.skip, timeout=song_length)
+        LS_Tab2.likes_pressed = False
+        LS_Tab2.dislikes_pressed = False
 
     def update_slider_label(self, slider, value):
         self.ids.volume_box.children[0].text = f"Volume: {int(value)}%"

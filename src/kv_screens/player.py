@@ -56,8 +56,7 @@ def make_playlist_from_history(sp_client):
 
 def play_button_functionality(sp_client, listening_device, session=None):
     try:
-        currently_playing = sp_client.currently_playing()
-        print(currently_playing)
+        currently_playing = sp.currently_playing()
         if session is not None and session.get_uri() != "" and session.get_uri() != currently_playing["item"]["uri"]:
             queue_song(sp_client, session.get_uri())
             sp_client.next_track()
@@ -106,10 +105,10 @@ def next_song(sp_client, session=None):
         else:
             # print("next song has been pressed")
             # use spotify_rec to generate a recommendation, currently based on what song is playing for the user
-            if current_song is not None:
-                features = get_features(sp_client, current_song["item"]["name"])
-                recommendation = spotify_rec_features(sp_client, current_song["item"]["name"], features,
-                                                      session.get_likes(), session.get_dislikes())
+            currently_playing = sp.currently_playing()
+            if currently_playing is not None:
+                features = get_features(sp, currently_playing["item"]["name"])
+                recommendation = spotify_rec_features(sp, currently_playing["item"]["name"], features)
             else:
                 features = get_features(sp_client, "Red Rock Riviera")
                 features["energy"] = features["energy"] + 0.01
@@ -120,8 +119,14 @@ def next_song(sp_client, session=None):
             if session.get_uri() == "" or session.get_uri() == current_song["item"]["uri"]:
                 queue_song(sp_client, uri)
                 session.set_uri(uri)
-            elif session.get_uri() != current_song["item"]["uri"]:
-                queue_song(sp_client, session.get_uri())
+
+                # riley implemented rest of 'session's for firebase current_song testing
+                session.set_current_song(recommendation["tracks"][0]["name"])
+                session.set_album(recommendation["tracks"][0]["album"]["name"])
+                session.set_artists(recommendation["tracks"][0]["artists"])
+                session.reset_likes_and_dislikes()
+            elif session.get_uri() != sp.currently_playing()["item"]["uri"]:
+                queue_song(sp, session.get_uri())
             # go to the next song in queue
             sp_client.next_track()
     except SpotifyException as err:
