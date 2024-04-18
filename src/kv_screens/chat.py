@@ -8,6 +8,7 @@ from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.label import Label
+from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.textinput import TextInput
 from kivy.graphics import Color, Rectangle
@@ -70,7 +71,7 @@ class ChatScreen(GridLayout):
         # Define the characteristics of the gridlayout
         self.users = {}
         self.cols = 1
-        self.rows = 3
+        self.rows = 2
         self.session_name = session_name
         self.username = username
         self.height = Window.height * 0.8
@@ -99,14 +100,14 @@ class ChatScreen(GridLayout):
         self.chat_options.add_widget(self.leave_chat)
 
         # Add the scrollable history label to the grid
-        #self.chat_window = GridLayout(size_hint=(None, None), size=(Window.width, Window.height * 0.65),
-        #                              pos_hint={'x': 0.125})
+        self.chat_window = RelativeLayout(size_hint=(None, None), size=(Window.width, Window.height * 0.8))
         self.history = ScrollableLabel(size_hint=(None, None), height=Window.height * 0.85, width=Window.width - 100,
                                        pos_hint={'left': 1})
-        #self.chat_window.add_widget(self.history)
-        #self.chat_options.add_widget(self.chat_window)
-        self.add_widget(self.chat_options)
-        self.add_widget(self.history)
+        self.chat_window.add_widget(self.chat_options)
+        self.chat_window.add_widget(self.history)
+
+        self.add_widget(self.chat_window)
+        #self.add_widget(self.history)
 
         # Add the send and text input to the grid
         self.new_message = TextInput(width=(Window.width - 100) * 0.8, size_hint_x=None, multiline=False,

@@ -14,6 +14,16 @@ from firebase_admin import credentials
 
 from src.kv_screens.listening_session import ListeningSessionScreen
 
+_fixed_size = (800, 600)  # desired fix size
+
+
+def reSize(*args):
+    Window.size = _fixed_size
+    return True
+
+
+Window.bind(on_resize=reSize)
+
 
 class Spotivibe(App):
     screen_manager = ScreenManager()

@@ -49,10 +49,6 @@ class LS_Tab2(Screen):
         self.ids.volume_box.add_widget(volume_percentage_label)
 
     def on_enter(self, *args):
-        if sp.currently_playing()["is_playing"]:
-            self.ids.play_icon.source = '../other/images/play_icon.png'
-        else:
-            self.ids.play_icon.source = '../other/images/pause_icon.png'
         self.ids.like_pushed = False
         self.ids.dislike_pushed = False
         self.ids.song_length = None
@@ -195,6 +191,7 @@ class LS_Tab2(Screen):
             current = sp.currently_playing()
             if current is None:
                 self.ids.play_icon.source = '../other/images/play_icon.png'
+                return
         if current["is_playing"] is True:
             length_s = float(current["item"]["duration_ms"]) / 1000.0
             progress_s = float(current["progress_ms"]) / 1000.0
