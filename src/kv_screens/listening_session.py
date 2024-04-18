@@ -18,7 +18,7 @@ kivy.require('2.3.0')
 
 from src.database import account
 from src.database import session
-
+from src.kv_screens.hoverablebutton import HoverableButton
 
 def set_opacity(image: Image, opacity):
     # Find the Color instruction in canvas.after
@@ -64,13 +64,13 @@ class ListeningSessionScreen(Screen):
         bl2.bind(height=self.update_height)
         bl2.bind(width=self.update_width)
         # bl2.canvas.before.add(Rectangle(size=(1200, 50), pos_hint={'center_x': .1, 'center_y': 1}))
-        bl2.add_widget(Button(text='Invite User', background_color=[0, 1, 0, 1], size_hint=(.5, .5),
+        bl2.add_widget(HoverableButton(text='Invite User', background_color=[0, 1, 0, 1], size_hint=(.5, .5),
                               pos=(600, 850), size=(130, 30), on_press=self.open_add_user))
-        bl2.add_widget(Button(text='Remove User', background_color=[0, 1, 0, 1], size_hint=(.5, .5),
+        bl2.add_widget(HoverableButton(text='Remove User', background_color=[0, 1, 0, 1], size_hint=(.5, .5),
                               pos=(600, 850), size=(130, 30), on_press=self.open_remove_user))
-        bl2.add_widget(Button(text='New Host', background_color=[0, 1, 0, 1], size_hint=(.5, .5),
+        bl2.add_widget(HoverableButton(text='New Host', background_color=[0, 1, 0, 1], size_hint=(.5, .5),
                               pos=(600, 850), size=(130, 30), on_press=self.open_new_host))
-        bl2.add_widget(Button(text='End Session', background_color=[0, 1, 0, 1], size_hint=(.5, .5),
+        bl2.add_widget(HoverableButton(text='End Session', background_color=[0, 1, 0, 1], size_hint=(.5, .5),
                               pos=(600, 850), size=(130, 30), on_press=self.open_end_session))
         # Add a bl2.bind() method
         ListeningSessionScreen.host_box_layout = bl2

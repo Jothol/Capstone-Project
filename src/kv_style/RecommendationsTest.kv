@@ -1,4 +1,6 @@
 #:import utils kivy.utils
+#:import HoverableButton src.kv_screens.hoverablebutton
+
 <RecommendationsTest>:
 
     canvas.before:
@@ -38,7 +40,7 @@
 
 
         # Rerun Button
-        Button:
+        HoverableButton:
             text: 'Rerun App'
             size_hint: None, None
             size: self.texture_size

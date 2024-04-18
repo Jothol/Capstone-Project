@@ -74,6 +74,7 @@ if __name__ == '__main__':
     Builder.load_file("kv_style/ls_tab1.kv")
     Builder.load_file("kv_style/ls_tab2.kv")
     Builder.load_file("kv_style/ls_tab3.kv")
+    Builder.load_file("kv_style/change_password.kv")
 
     # Spotivibe().run()
 

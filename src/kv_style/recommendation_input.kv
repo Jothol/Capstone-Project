@@ -1,4 +1,5 @@
 #:kivy 2.3.0
+#:import HoverableButton src.kv_screens.hoverablebutton
 
 <RecommendationInputScreen>:
     Image:
@@ -38,7 +39,7 @@
                 anchor_x: 'center'
                 anchor_y: 'center'
 
-                Button:
+                HoverableButton:
                     size_hint: (None, None)
                     size: (130, 30)
                     text: 'Enter'

@@ -20,6 +20,11 @@ from src.kv_screens.tab3 import Tab3
 kivy.require('2.3.0')
 
 
+def show_error(message):
+    print(message)
+    Clock.schedule_once(sys.exit, 10)
+
+
 def set_opacity(image: Image, opacity):
     # Find the Color instruction in canvas.after
     for instruction in image.canvas.after.children:
@@ -30,7 +35,9 @@ def set_opacity(image: Image, opacity):
 
 
 class HomeScreen(Screen):
-    accessed = None
+    chat_screen_exists = False
+    accessed = False
+
     # self is home screen
     # self.parent is main.py
     def on_enter(self):

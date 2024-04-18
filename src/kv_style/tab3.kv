@@ -1,3 +1,5 @@
+#:import HoverableButton src.kv_screens.hoverablebutton
+
 <Tab3>:
     BoxLayout:
         orientation: 'horizontal'
@@ -54,16 +56,18 @@
                         BoxLayout:
                             size_hint: None, None
                             size: dp(150), dp(10)
-                        Button:
+                        HoverableButton:
                             text: 'Send Friend Request'
                             size_hint: None, None
                             size: dp(150), dp(30)
+                            offset: 0, -50
                             background_color:[0,1,0,1]
                             on_press: root.invite_friend(friend_input.text)
-                        Button:
+                        HoverableButton:
                             text: 'Remove Friend'
                             size_hint: None, None
                             size: dp(150), dp(30)
+                            offset: 0, -50
                             background_color:[0,1,0,1]
                             on_press: root.remove_friend(friend_input.text)
                         BoxLayout:
@@ -84,10 +88,12 @@
                             orientation: 'vertical'
                             size_hint: None, None
                             size: self.minimum_size
-                            Button:
+                            HoverableButton:
                                 text: 'Pending Invites'
                                 size_hint: None, None
                                 size: dp(150), dp(50)
+                                offset: 0, -50
+                                transition_color: "darkgrey"
                                 background_color: (0.1, 0.1, 0.1, 1)
                                 on_press:
                                     root.toggle_dropdown()
@@ -138,18 +144,20 @@
                     size_hint_x: None
                     width: self.minimum_size[0]
                     spacing: dp(5)
-                    Button:
+                    HoverableButton:
                         text: 'Edit Account Info'
                         size_hint: None, None
                         size: dp(150), dp(30)
+                        offset: 0, -50
                         background_color:[0,1,0,1]
                         on_press:
                             root.parent.parent.parent.parent.transition.direction = 'up'
                             root.parent.parent.parent.parent.current = 'add_account_info_page'
-                    Button:
+                    HoverableButton:
                         text: 'Change Password'
                         size_hint: None, None
                         size: dp(150), dp(30)
+                        offset: 0, -50
                         background_color:[0,1,0,1]
                         on_press:
                             root.parent.parent.parent.parent.transition.direction = 'up'
@@ -166,17 +174,19 @@
             spacing: dp(5)
             size_hint: None, None
             size: self.minimum_size
-            Button:
+            HoverableButton:
                 text: 'Logout'
                 size_hint: None, None
                 size: dp(120), dp(30)
+                offset: 0, -50
                 background_color:[0,1,0,1]
                 on_press:
                     root.logout()
-            Button:
+            HoverableButton:
                 id: delete_account
                 text: 'Delete Account'
                 size_hint: None, None
+                offset: 0, -50
                 size: dp(120), dp(30)
                 background_color:[0,1,0,1]
                 on_press:

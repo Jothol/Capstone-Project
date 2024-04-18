@@ -9,6 +9,7 @@ from src.database import session
 
 from src.kv_screens.listening_session import ListeningSessionScreen
 from src.kv_screens import player
+from src.kv_screens.hoverablebutton import HoverableButton
 
 kivy.require('2.3.0')
 
@@ -35,7 +36,8 @@ class Tab1(Screen):
         self.add_widget(sm)
         self.device_dropdown = DropDown()
         self.create_device_dropdown()
-        self.dropdown_button = Button(text='Devices', size_hint=(None, None), size=(110, 50))
+        self.dropdown_button = HoverableButton(text='Devices', size_hint=(None, None), size=(110, 50), offset=(0, -50),
+                                               transition_color="grey")
         self.dropdown_button.bind(on_release=self.open_dropdown)
 
         self.add_widget(self.dropdown_button)

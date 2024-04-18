@@ -12,7 +12,9 @@ from kivy.uix.image import Image
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen
 
+
 import src.database.account as account
+from src.kv_screens.hoverablebutton import HoverableButton
 
 kivy.require('2.3.0')
 
@@ -200,9 +202,9 @@ class DarkenScreen(FloatLayout):
                                       size_hint=(None, None), size=(dp(180), dp(12)), font_size=dp(11)))
         are_you_sure.add_widget(BoxLayout(orientation="horizontal"))
         options = BoxLayout(orientation="horizontal", spacing=dp(10), size_hint=(None, None), size=(dp(180), dp(30)))
-        yes = Button(text="Delete")
+        yes = HoverableButton(text="Delete", offset=(0, -50), transition_color="grey")
         yes.bind(on_release=lambda instance: self.delete())
-        no = Button(text="Cancel", background_color=(0, 1, 0, 1))
+        no = HoverableButton(text="Cancel", background_color=(0, 1, 0, 1), offset=(0, -50))
         no.bind(on_release=lambda instance: self.cancel())
         options.add_widget(yes)
         options.add_widget(no)

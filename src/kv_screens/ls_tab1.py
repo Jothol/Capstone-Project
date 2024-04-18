@@ -1,6 +1,11 @@
+import random
+
 import kivy
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen, ScreenManager
+from kivy.uix.floatlayout import FloatLayout
+from kivy.core.window import Window
+from kivy.uix.image import Image
 
 from src.database import socket_client
 from src.kv_screens.chat import ChatScreen, show_error
@@ -17,10 +22,15 @@ class LS_Tab1(Screen):
     # self.manager.parent is boxlayout child from home
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.background_image = Image(source='../other/images/transparent_logo.png', fit_mode='scale-down')
+        self.float_image = FloatLayout(size=(Window.width, Window.height))
+        self.float_image.add_widget(self.background_image)
+
         sm = ScreenManager()
         sm.ids.username = None
         sm.ids.session_name = None
 
+        self.add_widget(self.float_image)
         self.add_widget(sm)
 
     def on_enter(self, *args):
@@ -43,10 +53,15 @@ class LS_Tab1(Screen):
         ip = "spotivibe.net"
         port = 5000
         self.remove_widget(self.ids.add_button)
+        self.remove_widget(self.float_image)
+        colors = ["dd2020", "00ff00", "ffff00", "00ffff", "8a2be2", "ff00ff", "ffa500"]
         if not self.chat_screen_exists:
-            if not socket_client.connect(ip, port, self.ids.username.get_username(), show_error, self.ids.session_name.get_name()):
+            color = random.choice(colors)
+            if not socket_client.connect(ip, port, self.ids.username.get_username(), show_error,
+                                         self.ids.session_name.get_name(), color):
                 return
-            self.chat_page = ChatScreen(self.ids.session_name.get_name(), self.ids.username.get_username())
+            self.chat_page = ChatScreen(self.ids.session_name.get_name(), self.ids.username.get_username(), color)
+            self.chat_page.leave_chat.bind(on_press=lambda instance: self.disconnect())
             self.screen = Screen(name="chat_page")
             self.screen.add_widget(self.chat_page)
             self.add_widget(self.screen)
@@ -56,6 +71,7 @@ class LS_Tab1(Screen):
     def disconnect(self):
         if self.chat_screen_exists:
             self.add_widget(self.ids.add_button)
-            self.screen.remove_widget(self.chat_page)
+            self.add_widget(self.float_image)
+            self.screen.clear_widgets()
             self.remove_widget(self.screen)
             self.chat_screen_exists = False
