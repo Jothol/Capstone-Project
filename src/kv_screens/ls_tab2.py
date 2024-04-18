@@ -57,11 +57,15 @@ class LS_Tab2(Screen):
         self.ids.dislike_pushed = False
         self.ids.song_length = None
         self.ids.session_name = self.manager.parent.parent.parent.ids.session_name
-        self.ids.check = Clock.schedule_interval(self.get_current_song, 10)
+        self.ids.check = Clock.schedule_interval(self.get_current_song, 5)
+        self.update_play_button()
 
     def get_current_song(self, dt):
         # print("Testing")
         current = sp.currently_playing()
+        self.update_play_button(current=current)
+        if self.ids.session_name.get_uri() == "" and current is not None:
+            self.ids.session_name.set_uri(current["item"]["uri"])
         try:
             if self.ids.session_name.get_uri() == "" and current is not None:
                 self.ids.session_name.set_uri(current["item"]["uri"])
@@ -157,22 +161,12 @@ class LS_Tab2(Screen):
         Clock.unschedule(self.ids.song_length)
         global di
         currently_playing = sp.currently_playing()
-        if di != "unselected":  # Device has been selected
-            player.play_button_functionality(sp_client=sp, listening_device=di, session=self.ids.session_name)
-            if currently_playing["is_playing"] is False:  # Song is playing
-                length_s = float(currently_playing["item"]["duration_ms"]) / 1000.0
-                progress_s = float(currently_playing["progress_ms"]) / 1000.0
-                print(f"{(length_s - progress_s - 2)} time left")
-                self.ids.song_length = Clock.schedule_once(self.skip, timeout=(length_s - progress_s - 2))
-                self.ids.check = Clock.schedule_interval(self.get_current_song, 10)
-                self.ids.play_icon.source = '../other/images/pause_icon.png'
-            else:  # Song is paused
-                if self.ids.check is not None:
-                    Clock.unschedule(self.ids.check)
-                self.ids.play_icon.source = '../other/images/play_icon.png'
+        if di != "unselected":
+            player.play_button_functionality(sp=sp, di=di, session=self.ids.session_name)
+            self.update_play_button()
         else:
             if currently_playing is not None:
-                self.ids.play_icon.source = '../other/images/pause_icon.png'
+                self.update_play_button()
                 di = sp.devices()['devices'][0]['id']
                 player.play_button_functionality(sp, di, self.ids.session_name)
 
@@ -195,6 +189,25 @@ class LS_Tab2(Screen):
 
     def update_slider_label(self, slider, value):
         self.ids.volume_box.children[0].text = f"Volume: {int(value)}%"
+
+    def update_play_button(self, current=None):
+        if current is None:
+            current = sp.currently_playing()
+            if current is None:
+                self.ids.play_icon.source = '../other/images/play_icon.png'
+        if current["is_playing"] is True:
+            length_s = float(current["item"]["duration_ms"]) / 1000.0
+            progress_s = float(current["progress_ms"]) / 1000.0
+            print(f"{(length_s - progress_s - 2)} time left")
+            self.ids.song_length = Clock.schedule_once(self.skip, timeout=(length_s - progress_s - 2))
+            self.ids.check = Clock.schedule_interval(self.get_current_song, 10)
+            self.ids.play_icon.source = '../other/images/pause_icon.png'
+            self.ids.play_icon.source = '../other/images/pause_icon.png'
+        else:
+            if self.ids.check is not None:
+                Clock.unschedule(self.ids.check)
+            self.ids.play_icon.source = '../other/images/play_icon.png'
+
 
     def like(self):
         if self.ids.dislike_pushed:
