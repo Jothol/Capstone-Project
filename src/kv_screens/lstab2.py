@@ -5,6 +5,8 @@ from kivy.animation import Animation
 from kivy.clock import Clock
 from kivy.metrics import dp
 from kivy.uix.label import Label
+from kivy.uix.image import Image
+from kivy.graphics import Color
 from kivy.uix.screenmanager import Screen, ScreenManager
 
 from src.kv_screens import player, volume_slider
@@ -19,6 +21,14 @@ check = None
 def volume(slider):
     player.volume_functionality(sp, slider.value)
 
+def set_opacity(image: Image, opacity):
+    # Find the Color instruction in canvas.after
+    for instruction in image.canvas.after.children:
+        if isinstance(instruction, Color):
+            # Modify the opacity value
+            instruction.rgba = (instruction.rgba[0], instruction.rgba[1], instruction.rgba[2], opacity)
+            break
+
 
 class LsTab2(Screen):
     global check
@@ -30,6 +40,30 @@ class LsTab2(Screen):
     likes_pressed = False
     dislikes_pressed = False
     already_added = False
+    error_window_open = False
+    can_press_like = True  # variable for when a user can like the song after its been loaded
+    can_press_dislike = True  # variable for when a user can like the song after its been loaded
+
+    def animate_error_window(self, message: str, color):
+        error_window = self.ids.error_window
+        message_label = self.ids.window_message
+        if message != '':
+            message_label.text = message
+            error_window.x = dp(-200)
+        if error_window.x <= dp(-7):
+            # self.ids.friend_input.text = ''
+            self.error_window_open = True
+            animation_window = Animation(pos=(error_window.x + dp(195), error_window.y), duration=0.1)
+            error_window.opacity = 1
+            message_label.color = color
+            animation_window.start(error_window)
+            Clock.schedule_once(lambda dt: self.animate_error_window('', (0, 0, 0, 0)), 5)
+        else:
+            self.error_window_open = False
+            animation_window = Animation(pos=(error_window.x - dp(195), error_window.y), duration=0.1)
+            animation_window.start(error_window)
+            animation_window.bind(on_complete=lambda *args: setattr(error_window, 'opacity', 0))
+            animation_window.bind(on_complete=lambda *args: setattr(message_label, 'text', ''))
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -150,6 +184,7 @@ class LsTab2(Screen):
         self.ids.like_pushed = False
         self.ids.dislike_pushed = False
         LsTab2.current_song = self.ids.session_name.get_current_song() + ": " + self.ids.session_name.get_artists()
+        print("CURRENT SONG", LsTab2.current_song)
         time.sleep(3)  # Sleeps to ensure that the current song is the new song
         milli_sec = float(sp.currently_playing()["item"]["duration_ms"])
         song_length = (milli_sec / 1000.0) - 2
@@ -185,6 +220,23 @@ class LsTab2(Screen):
             self.ids.play_icon.source = '../other/images/play_icon.png'
 
     def like(self):
+        if self.ids.session_name.get_uri() == "":
+            if LsTab2.can_press_like is False:
+                return
+            self.animate_error_window('Listen more before liking.', (1, 0, 0, 1))
+            LsTab2.can_press_like = False
+            return
+        if LsTab2.current_song not in self.ids.session_name.saved_song.get().get("songs_played"):
+            if LsTab2.can_press_like is False:
+                return
+            self.animate_error_window('Listen more before liking.', (1, 0, 0, 1))
+            LsTab2.can_press_like = False
+            return
+
+        LsTab2.can_press_like = True
+        set_opacity(self.ids.like_icon, 2)
+
+
         # User already liked the song
         if self.ids.like_pushed:
             self.ids.session_name.decrement_likes()
@@ -205,6 +257,10 @@ class LsTab2(Screen):
             elif LsTab2.likes == LsTab2.dislikes:
                 LsTab2.song_list = LsTab2.song_list[:index - 14] + LsTab2.song_list[index:len(LsTab2.song_list) - 8]
                 self.ids.session_name.saved_song.update({'songs_played': LsTab2.song_list})
+
+            set_opacity(self.ids.like_icon, 0)
+            Animation(size=(self.ids.like_icon.width * 0.8, self.ids.like_icon.height * 0.8),
+                      center=self.ids.like_icon.center, duration=0.1).start(self.ids.like_icon)
 
             return
 
@@ -229,6 +285,8 @@ class LsTab2(Screen):
         LsTab2.likes = self.ids.session_name.get_likes()
         LsTab2.dislikes = self.ids.session_name.get_dislikes()
 
+        set_opacity(self.ids.like_icon, 0.5)
+
         # Pressing like button caused more likes than dislikes
         index = LsTab2.song_list.find(LsTab2.current_song)
         # Was previously more dislikes than likes
@@ -249,6 +307,21 @@ class LsTab2(Screen):
 
 
     def dislike(self):
+        if self.ids.session_name.get_uri() == "":
+            if LsTab2.can_press_dislike is False:
+                return
+            self.animate_error_window('Listen more before disliking.', (1, 0, 0, 1))
+            LsTab2.can_press_dislike = False
+            return
+        if LsTab2.current_song not in self.ids.session_name.saved_song.get().get("songs_played"):
+            if LsTab2.can_press_dislike is False:
+                return
+            self.animate_error_window('Listen more before disliking', (1, 0, 0, 1))
+            LsTab2.can_press_dislike = False
+            return
+
+        LsTab2.can_press_dislike = True
+
         if self.ids.dislike_pushed:
             self.ids.session_name.decrement_dislikes()
             self.ids.dislike_pushed = False

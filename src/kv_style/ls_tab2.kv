@@ -132,6 +132,7 @@
                         center_y: self.parent.center_y
                         size: self.parent.height, self.parent.height
                 Button:
+                    id: like_button
                     size_hint: None, None
                     size: dp(20), dp(20)
                     pos_hint: {'center_y': 0.5}
@@ -145,3 +146,32 @@
                         center_x: self.parent.center_x
                         center_y: self.parent.center_y + self.parent.height / 10
                         size: self.parent.height, self.parent.height
+                        canvas.after:
+                            Color:
+                                rgba: 0, 1, 0, 1  # Red tint with 50% opacity
+                            Rectangle:
+                                pos: self.pos
+                                size: self.size
+                                source: self.source
+
+    BoxLayout:
+        id: error_window
+        size_hint: None, None
+        size: self.minimum_size[0], dp(40)
+        pos: -self.minimum_size[0], dp(70)
+        opacity: 0
+        padding: dp(10)
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            RoundedRectangle:
+                pos: self.pos
+                size: self.size
+                radius: [5, 5, 5, 5]
+        Label:
+            id: window_message
+            text: ''
+            color: (0, 0, 0, 1)
+            size_hint: None, None
+            size: self.texture_size[0], dp(20)
+            center: self.parent.center

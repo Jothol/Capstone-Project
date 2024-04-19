@@ -74,7 +74,7 @@ class TabBar(FloatLayout):
         screen_to_switch = ''
 
         set_opacity(self.ids.home_image, 0)
-        set_opacity(self.ids.search_image, 0)
+        # set_opacity(self.ids.search_image, 0)
         set_opacity(self.ids.settings_image, 0)
 
         if int(screen_name) == 1:
