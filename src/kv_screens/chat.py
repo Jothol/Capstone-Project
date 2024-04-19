@@ -42,7 +42,6 @@ class ScrollableLabel(ScrollView):
         self.layout.height = self.chat_history.texture_size[1] + 15
         self.chat_history.height = self.chat_history.texture_size[1]
         self.chat_history.text_size = (self.chat_history.width * 0.98, None)
-        self.layout.height = self.layout.minimum_height
 
 
     def update_chat_background(self, instance, value):

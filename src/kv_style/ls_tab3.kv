@@ -1,3 +1,5 @@
+#:import HoverableButton src.kv_screens.hoverablebutton
+
 <LS_Tab3>
     BoxLayout:
         orientation: 'vertical'
@@ -61,9 +63,10 @@
                         size: dp(150), dp(30)
                         multiline: False
                         hint_text: 'Username'
-                    Button:
+                    HoverableButton:
                         text: 'Send Friend Request'
                         size_hint: None, None
+                        offset: 0, -50
                         size: dp(150), dp(30)
                         background_color:[0,1,0,1]
                         on_press: root.send_friend_request(friend_input.text)
@@ -186,10 +189,11 @@
             size_hint: None, None
             size: self.texture_size[0], dp(20)
             center: self.parent.center
-    Button:
+    HoverableButton:
         size_hint: (None, None)
         size: dp(150), dp(30)
         text: 'Leave Session'
+        offset: 0, -50
         pos_hint: {'x': 0.01, 'y': 0.01}
         background_color:[0,1,0,1]
         on_press:

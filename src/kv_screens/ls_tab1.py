@@ -18,22 +18,29 @@ class LS_Tab1(Screen):
     index = 1
     chat_screen_exists = False
     close = False
+    background_image = None
+    float_image = None
 
     # self is tab1 screen
     # self.manager is ScreenManager for tab1 screen
     # self.manager.parent is boxlayout child from home
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.background_image = Image(source='../other/images/transparent_logo.png', fit_mode='scale-down')
+        # Create background image but do not add until welcome message is displayed
         self.float_image = FloatLayout(size=(Window.width, Window.height))
+        self.background_image = Image(source='../other/images/transparent_logo.png', fit_mode='scale-down',
+                                      opacity=0)
         self.float_image.add_widget(self.background_image)
+        self.add_widget(self.float_image)
+
 
         sm = ScreenManager()
         sm.ids.username = None
         sm.ids.session_name = None
 
-        self.add_widget(self.float_image)
         self.add_widget(sm)
+
+
 
     def on_enter(self, *args):
         # self has multiple files gathered in arrays, so get only one child
@@ -47,11 +54,10 @@ class LS_Tab1(Screen):
 
         Clock.schedule_interval(self.welcome, 3)
 
-        pass
-
     def welcome(self, instance):
         self.ids.welcome_label.text = ""
         LS_Tab1.close = True
+        self.background_image.opacity = 1
         Clock.unschedule(self.welcome)
 
     def open_dropdown(self, instance):
