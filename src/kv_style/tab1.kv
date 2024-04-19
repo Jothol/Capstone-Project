@@ -26,6 +26,7 @@
                 pos_hint: {'center_x': 0.7, 'center_y': 0.5}
                 text: 'Join Session'
                 background_color: 0, 1, 0, 1
+                on_press: root.join_session(True)
     FloatLayout:
         id: create_session_window
         pos_hint: {'center_x': -0.5}
@@ -121,6 +122,101 @@
                 color: 1, 0, 0, 1
             BoxLayout:
                 id: blank_space
+    FloatLayout:
+        id: join_session_window
+        pos_hint: {'center_x': -0.5}
+        canvas.before:
+            Color:
+                rgba: 0, 0, 0, 0.5
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint: (None, None)
+            size: (dp(250), dp(300))
+            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+            padding: dp(10)
+            spacing: dp(10)
+            canvas.before:
+                Color:
+                    rgba: 1, 1, 1, 1
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [dp(10), dp(10), dp(10), dp(10)]
+            FloatLayout:
+                size_hint: None, None
+                size: dp(250), dp(25)
+                Label:
+                    text: 'Join a Session'
+                    color: [0,0.4,0,1]
+                    font_size: dp(20)
+                    bold: True
+                    size_hint: None, None
+                    size: self.texture_size
+                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                Button:
+                    size_hint: None, None  # Disable the x-size hint
+                    size: dp(20), dp(20)  # Set the width in dp (adjust as needed)
+                    pos_hint: {'center_x': 0.92, 'center_y': 0.9}
+                    background_color: 0, 0, 0, 0
+                    on_press: root.join_session(False)
+                    Image:
+                        source: '../other/images/exit_icon.png'
+                        center: self.parent.center
+                        size: self.parent.height * 0.5, self.parent.height * 0.5
+            Label:
+                text: 'Room code:'
+                color: 0, 0, 0, 1
+                size_hint: None, None
+                size: self.texture_size
+            TextInput:
+                id: room_code_input_2
+                size_hint_y: None
+                height: dp(30)
+                multiline: False
+                hint_text: 'Code'
+                write_tab: False
+            Label:
+                text: 'Session Invites:'
+                color: 0, 0, 0, 1
+                size_hint: None, None
+                size: self.texture_size
+            ScrollView:
+                size_hint_y: None
+                height: dp(75)
+                scroll_wheel_distance: dp(20)
+                bar_width: dp(4)
+                bar_margin: dp(4)
+                do_scroll_x: False
+                do_scroll_y: True
+                canvas.before:
+                    Color:
+                        rgba: 0, 0, 0, 1  # Red color for the border
+                    Line:
+                        rectangle: self.x, self.y, self.width, self.height
+                        width: 1
+
+                GridLayout:
+                    id: scroll_contents_2
+                    cols: 1
+                    spacing: dp(1)
+                    size_hint_y: None
+                    height: self.minimum_height
+            Button:
+                size_hint: (None, None)
+                size: (dp(130), dp(30))
+                pos_hint: {'center_x': 0.5}
+                text: 'Join Session'
+                background_color:[0,1,0,1]
+                on_press: root.submit(root.ids.room_code_input_2.text, 'Join')
+            Label:
+                id: error_message
+                text: ''
+                color: 1, 0, 0, 1
+            BoxLayout:
+                id: blank_space
 
 <Option>:
     orientation: 'horizontal'
@@ -151,4 +247,30 @@
             source: '../other/images/accept_icon.png'
             center: self.parent.center
             size: self.parent.height * 0.6, self.parent.height * 0.6
+
+<Option2>:
+    orientation: 'horizontal'
+    size_hint_y: None
+    height: dp(25)
+    padding: dp(10)
+    Label:
+        id: option_label_2
+        text: ''
+        color: 0, 0, 0, 1
+        opacity: 0.4
+        size_hint: None, None
+        width: self.texture_size[0]
+        pos_hint: {'center_y': 0.5}
+    BoxLayout:
+        id: blank_space
+    Button:
+        size_hint: None, None
+        size: dp(50), dp(20)
+        font_size: dp(12)
+        text: 'Join'
+        pos_hint: {'center_y': 0.5}
+        background_color: 0, 1, 0, 1
+
+        on_press:
+            root.join_session()
 
