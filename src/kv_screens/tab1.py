@@ -16,6 +16,7 @@ from src.database import session
 
 from src.kv_screens.listening_session import ListeningSessionScreen
 from src.kv_screens import player
+from src.kv_screens.hoverablebutton import HoverableButton
 
 kivy.require('2.3.0')
 
@@ -35,14 +36,14 @@ class Tab1(Screen):
     # self.manager.parent is boxlayout child from home
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.invite_button = None
         sm = ScreenManager()
         sm.ids.username = None
         sm.ids.session_name = None
         self.add_widget(sm)
         self.device_dropdown = DropDown()
         self.create_device_dropdown()
-        self.dropdown_button = Button(text='Devices', size_hint=(None, None), size=(110, 50))
+        self.dropdown_button = HoverableButton(text='Devices', size_hint=(None, None), size=(110, 50), offset=(0, -50),
+                                               transition_color="grey")
         self.dropdown_button.bind(on_release=self.open_dropdown)
         self.dropdown_button.opacity = 0
 
@@ -53,38 +54,13 @@ class Tab1(Screen):
         # make sure you are getting the ScreenManager for session_home and listening_session
         # self.children[0] is currently the ScreenManager for them
         self.children[1].ids.username = self.manager.ids.username
-        print(self.children[1].ids)
-        self.manager.ids.session_name = self.children[1].ids.session_name
-        self.ids.welcome_label.text = 'Welcome home, {}!'.format(self.manager.ids.username.username)
-        self.invite_dropdown = DropDown()
+        self.manager.ids.session_name = None
+        self.ids.welcome_label.text = 'Welcome, {}!'.format(self.manager.ids.username.username)
         self.create_session_friends = []
-
-        Clock.schedule_interval(self.build_invite_dropdown, 1)
-
-    def on_leave(self, *args):
-        Clock.unschedule(self.build_invite_dropdown)
-        pass
 
     def open_dropdown(self, instance):
         self.create_device_dropdown()
         self.device_dropdown.open(instance)
-
-    def build_invite_dropdown(self, instance):
-        self.manager.ids.username.session_invites = self.manager.ids.username.account.get().get('session_invites')
-        self.invite_dropdown.clear_widgets()
-        if len(self.manager.ids.username.session_invites) != 0:
-            for invite in self.manager.ids.username.session_invites:
-                button = Button(text=invite, size_hint_y=None, height=44, background_color=[0, 1.2, 0, 1],
-                                on_press=self.button_submit)
-                self.invite_dropdown.add_widget(button)
-            self.invite_button = Button(text='Invites', size_hint=(None, None), size=(110, 50),
-                                        background_color=[0, 1, 0, 1], pos=(800, 300))
-            self.invite_button.bind(on_release=self.invite_dropdown.open)
-            self.add_widget(self.invite_button)
-        elif self.invite_button is not None and len(self.manager.ids.username.session_invites) == 0:
-            self.invite_dropdown.dismiss()
-            self.remove_widget(self.invite_button)
-            self.invite_button = None
 
     def button_submit(self, instance):
         self.submit(instance.text, "Join")
@@ -139,8 +115,6 @@ class Tab1(Screen):
                 self.manager.home_screen.manager.ids.session_name = Tab1.session_name
                 self.ids.error_message.text = ''
                 self.manager.home_screen.manager.current = "listening_session_page"
-                self.manager.home_screen.manager.ids.session_name = Tab1.session_name
-                Clock.unschedule(self.build_invite_dropdown)
         else:
             if button_input == "Create":
                 self.ids.error_message.text = "Session already created"
@@ -161,14 +135,12 @@ class Tab1(Screen):
                 # sess = session.get_session(session_name)
                 Tab1.session_name.add_user(Tab1.user)
                 self.manager.home_screen.manager.ids.session_name = Tab1.session_name
+                self.manager.home_screen.manager.ids.username = Tab1.user
                 self.ids.error_message.text = ''
                 self.manager.home_screen.manager.current = "listening_session_page"
                 self.manager.home_screen.manager.ids.session_name = Tab1.session_name
-                Clock.unschedule(self.build_invite_dropdown)
 
         ListeningSessionScreen.auto_friends_list = self.create_session_friends
-
-        pass
 
     def create_session(self, is_closed):
         if not is_closed:

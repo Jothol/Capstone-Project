@@ -32,7 +32,7 @@ class Tab2(Screen):
         self.ids.volume_box.add_widget(volume_percentage_label)
 
     def on_enter(self, *args):
-        pass
+        self.update_play_button()
 
     def restart(self):
         pass
@@ -42,23 +42,28 @@ class Tab2(Screen):
         currently_playing = sp.currently_playing()
         if di != "unselected":
             player.play_button_functionality(sp=sp, di=di)
-            if currently_playing is None:
-                print("Nothing is playing or queued to play. Do nothing for play button.")
-            elif currently_playing["is_playing"] is False:
-                self.ids.play_icon.source = '../other/images/pause_icon.png'
-            else:
-                self.ids.play_icon.source = '../other/images/play_icon.png'
+            self.update_play_button()
         else:
             if currently_playing is not None:
-                self.ids.play_icon.source = '../other/images/pause_icon.png'
                 di = sp.devices()['devices'][0]['id']
                 player.play_button_functionality(sp, di)
+                self.update_play_button()
 
     def skip(self):
         player.next_song(sp)
 
     def update_slider_label(self, slider, value):
         self.ids.volume_box.children[0].text = f"Volume: {int(value)}%"
+
+    def update_play_button(self, current=None):
+        if current is None:
+            current = sp.currently_playing()
+            if current is None:
+                self.ids.play_icon.source = '../other/images/play_icon.png'
+        if current["is_playing"] is True:
+            self.ids.play_icon.source = '../other/images/pause_icon.png'
+        else:
+            self.ids.play_icon.source = '../other/images/play_icon.png'
 
     def shuffle(self):
         pass

@@ -1,9 +1,22 @@
+#:import HoverableButton src.kv_screens.hoverablebutton
+
 <LS_Tab1>
-    Button:
+    add_button:add_button.__self__
+    HoverableButton:
         id: add_button
         size_hint: (None, None)
         size: (130, 30)
+        offset: 0, -50
         text: 'Connect to Chat'
+        background_color: (0, 1, 0, 1)
         pos_hint: {'x': 0.01, 'y': 0.08}
         on_press:
             root.connect()
+    Label:
+        id: welcome_label
+        text: ""
+        height: dp(300)
+        bold: True
+        font_size: 50
+        size: dp(600), dp(40)
+        pos_hint: {'center_y': .85}

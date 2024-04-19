@@ -38,19 +38,6 @@ class HomeScreen(Screen):
     chat_screen_exists = False
     accessed = False
 
-    def connect(self):
-        ip = "spotivibe.net"
-        port = 5000
-        if not self.chat_screen_exists:
-            if not socket_client.connect(ip, port, self.parent.ids.username, show_error):
-                return
-            self.chat_page = ChatScreen()
-            screen = Screen(name="chat_page")
-            screen.add_widget(self.chat_page)
-            self.parent.add_widget(screen)
-            self.chat_screen_exists = True
-        self.parent.current = 'chat_page'
-
     # self is home screen
     # self.parent is main.py
     def on_enter(self):
@@ -121,7 +108,6 @@ class TabBar(FloatLayout):
         elif self.screen_manager.current == 'tab1' and int(screen_name) != 1:
             Animation(size=(self.ids.home_button.width * 0.6, self.ids.home_button.height * 0.6),
                       center=self.ids.home_button.center, duration=0.1).start(self.ids.home_image)
-
 
         self.screen_manager.ids = self.screen_manager.parent.ids
 

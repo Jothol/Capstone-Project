@@ -31,7 +31,7 @@ def delete_account(username):
 
 
 def get_account(username):
-    if username is None:
+    if username is None or username is "":
         return None
     db = firestore.client()
     account = db.collection('users').document(username)
