@@ -39,6 +39,8 @@ def send(message):
         return
     message = message.encode('utf-8')
     message_header = f"{len(message):<{HEADER_LENGTH}}".encode('utf-8')
+    print("sending")
+    print(message_header + message)
     client_socket.send(message_header + message)
 
 
@@ -58,7 +60,7 @@ def listen(incoming_message_callback, error_callback, session_name=None):
             while True:
                 # Receive our "header" containing username length, it's size is defined and constant
                 username_header = client_socket.recv(HEADER_LENGTH)
-
+                print(f"Recieving length: {username_header}")
                 # If we received no data, server gracefully closed a connection, for example using socket.close() or socket.shutdown(socket.SHUT_RDWR)
                 if not len(username_header):
                     error_callback('Connection closed by the server')
@@ -68,9 +70,12 @@ def listen(incoming_message_callback, error_callback, session_name=None):
 
                 # Receive and decode username
                 username = client_socket.recv(username_length).decode('utf-8')
-
+                if len(username) < username_length:
+                    username = username + client_socket.recv(username_length - len(username)).decode('utf-8')
+                print(f"Recieved: {username}")
                 # Now do the same for message (as we received username, we received whole message, there's no need to check if it has any length)
                 message_header = client_socket.recv(HEADER_LENGTH)
+                print(message_header)
                 message_length = int(message_header.decode('utf-8').strip())
                 message = client_socket.recv(message_length).decode('utf-8')
 
