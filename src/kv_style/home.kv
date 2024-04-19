@@ -26,16 +26,16 @@
             rgba: 0, 0, 0, 1  # Dark grey color
         Line:
             width: 1
-            points: [self.width / 3, 0, self.width / 3, self.height]
-        Line:
-            width: 1
-            points: [2 * self.width / 3, 0, 2 * self.width / 3, self.height]
+            points: [self.width / 2, 0, self.width / 2, self.height]
+        # Line:
+        #     width: 1
+        #     points: [2 * self.width / 3, 0, 2 * self.width / 3, self.height]
 
     Button:
         id: home_button
         size_hint: None, None  # Disable the x-size hint
         size: dp(50), dp(50)  # Set the width in dp (adjust as needed)
-        pos_hint: {'center_x': 1/6, 'center_y': 0.5}
+        pos_hint: {'center_x': 1/4, 'center_y': 0.5}
         background_color: 0, 0, 0, 0
 
         on_press:
@@ -54,34 +54,34 @@
                     size: self.size
                     source: self.source
 
-    Button:
-        id: search_button
-        size_hint: None, None  # Disable the x-size hint
-        size: dp(50), dp(50)  # Set the width in dp (adjust as needed)
-        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-        background_color: 0, 0, 0, 0
-
-        on_press:
-            root.switch_screen('2')
-
-        Image:
-            id: search_image
-            source: '../other/images/search_icon.png'
-            center: self.parent.center
-            size: self.parent.height * 0.5, self.parent.height * 0.5
-            canvas.after:
-                Color:
-                    rgba: 0, 1, 0, 0  # Red tint with 50% opacity
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
-                    source: self.source
+    #Button:
+    #    id: search_button
+    #    size_hint: None, None  # Disable the x-size hint
+    #    size: dp(50), dp(50)  # Set the width in dp (adjust as needed)
+    #    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+    #    background_color: 0, 0, 0, 0
+#
+    #    on_press:
+    #        root.switch_screen('2')
+#
+    #    Image:
+    #        id: search_image
+    #        source: '../other/images/search_icon.png'
+    #        center: self.parent.center
+    #        size: self.parent.height * 0.5, self.parent.height * 0.5
+    #        canvas.after:
+    #            Color:
+    #                rgba: 0, 1, 0, 0  # Red tint with 50% opacity
+    #            Rectangle:
+    #                pos: self.pos
+    #                size: self.size
+    #                source: self.source
 
     Button:
         id: setting_button
         size_hint: None, None  # Disable the x-size hint
         size: dp(50), dp(50)  # Set the width in dp (adjust as needed)
-        pos_hint: {'center_x': 5/6, 'center_y': 0.5}
+        pos_hint: {'center_x': 3/4, 'center_y': 0.5}
         background_color: 0, 0, 0, 0
 
         on_press:

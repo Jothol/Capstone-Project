@@ -46,7 +46,7 @@ class HomeScreen(Screen):
             sm = ScreenManager()
             sm.ids = self.parent.ids
             sm.add_widget(Tab1(name='tab1'))
-            sm.add_widget(Tab2(name='tab2'))
+            #sm.add_widget(Tab2(name='tab2'))
             sm.add_widget(Tab3(name='tab3'))
             bl.ids = self.parent.ids
             bl.add_widget(sm)
@@ -74,17 +74,17 @@ class TabBar(FloatLayout):
         screen_to_switch = ''
 
         set_opacity(self.ids.home_image, 0)
-        set_opacity(self.ids.search_image, 0)
+        # set_opacity(self.ids.search_image, 0)
         set_opacity(self.ids.settings_image, 0)
 
         if int(screen_name) == 1:
             set_opacity(self.ids.home_image, 0.5)
             Animation(size=(self.ids.home_button.width * 0.8, self.ids.home_button.height * 0.8),
                       center=self.ids.home_button.center, duration=0.1).start(self.ids.home_image)
-        elif int(screen_name) == 2:
-            set_opacity(self.ids.search_image, 0.5)
-            Animation(size=(self.ids.search_button.width * 0.7, self.ids.search_button.height * 0.7),
-                      center=self.ids.search_button.center, duration=0.1).start(self.ids.search_image)
+        # elif int(screen_name) == 2:
+        #     set_opacity(self.ids.search_image, 0.5)
+        #     Animation(size=(self.ids.search_button.width * 0.7, self.ids.search_button.height * 0.7),
+        #               center=self.ids.search_button.center, duration=0.1).start(self.ids.search_image)
         else:
             bg_anim = Animation(padding=(dp(200), dp(200), dp(200), dp(200)), duration=0.35)
             bg_anim.start(self.parent.parent.ids.background_image_container)
@@ -102,9 +102,9 @@ class TabBar(FloatLayout):
             bg_anim.start(self.parent.parent.ids.background_image_container)
             Animation(size=(self.ids.setting_button.width * 0.5, self.ids.setting_button.height * 0.5),
                       center=self.ids.setting_button.center, duration=0.1).start(self.ids.settings_image)
-        elif self.screen_manager.current == 'tab2' and int(screen_name) != 2:
-            Animation(size=(self.ids.search_button.width * 0.5, self.ids.search_button.height * 0.5),
-                      center=self.ids.search_button.center, duration=0.1).start(self.ids.search_image)
+        #elif self.screen_manager.current == 'tab2' and int(screen_name) != 2:
+        #    Animation(size=(self.ids.search_button.width * 0.5, self.ids.search_button.height * 0.5),
+        #              center=self.ids.search_button.center, duration=0.1).start(self.ids.search_image)
         elif self.screen_manager.current == 'tab1' and int(screen_name) != 1:
             Animation(size=(self.ids.home_button.width * 0.6, self.ids.home_button.height * 0.6),
                       center=self.ids.home_button.center, duration=0.1).start(self.ids.home_image)
