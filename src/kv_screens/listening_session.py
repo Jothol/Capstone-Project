@@ -312,7 +312,10 @@ class HostBar(BoxLayout):
         self.screen_manager.ls_screen.add_widget(dark)
 
     def change_hover_button(self):
-        self.ids.status.transition_color = "lightgreen"
+        if self.ids.status.transition_color == "red":
+            self.ids.status.transition_color = "lightgreen"
+        else:
+            self.ids.status.transition_color = "red"
 
 
 class HostDropBar(BoxLayout):

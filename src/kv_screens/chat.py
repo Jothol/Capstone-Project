@@ -79,7 +79,7 @@ class ChatScreen(GridLayout):
         with self.canvas.before:
             self.background_color = (0, 0, 0, 1)
             self.background_fill_color = (0, 0, 0, 1)
-
+        '''
         # Create the float layout in order for ls_tab1 to place the color option button and leave chat option
         self.chat_options = FloatLayout(size=(Window.width, Window.height * 0.05), pos_hint={'top': 1}, size_hint=(None, None))
 
@@ -97,12 +97,13 @@ class ChatScreen(GridLayout):
                                           offset=(0, -50))
         self.chat_options.add_widget(self.color_options)
         self.chat_options.add_widget(self.leave_chat)
+        '''
 
         # Add the scrollable history label to the grid
         self.chat_window = RelativeLayout(size_hint=(None, None), size=(Window.width, Window.height * 0.8))
         self.history = ScrollableLabel(size_hint=(None, None), height=Window.height * 0.85, width=Window.width - 100,
                                        pos_hint={'left': 1})
-        self.chat_window.add_widget(self.chat_options)
+        # self.chat_window.add_widget(self.chat_options)
         self.chat_window.add_widget(self.history)
 
         self.add_widget(self.chat_window)
