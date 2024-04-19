@@ -173,10 +173,11 @@ class Tab1(Screen):
         self.manager.ids.username.session_invites = self.manager.ids.username.account.get().get('session_invites')
         print(self.manager.ids.username.session_invites)
         for invite in self.manager.ids.username.session_invites:
-            scroll = self.ids.scroll_contents_2
-            option = Option2()
-            option.set_text(invite)
-            scroll.add_widget(option)
+            if invite != "":
+                scroll = self.ids.scroll_contents_2
+                option = Option2()
+                option.set_text(invite)
+                scroll.add_widget(option)
         self.ids.join_session_window.pos_hint = {'center_x': 0.5}
         self.ids.create_session.disabled = True
         self.ids.join_session.disabled = True
