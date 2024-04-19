@@ -18,22 +18,21 @@ class LS_Tab1(Screen):
     index = 1
     chat_screen_exists = False
     close = False
+    background_image = None
+    float_image = None
 
     # self is tab1 screen
     # self.manager is ScreenManager for tab1 screen
     # self.manager.parent is boxlayout child from home
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.background_image = Image(source='../other/images/transparent_logo.png', fit_mode='scale-down')
-        self.float_image = FloatLayout(size=(Window.width, Window.height))
-        self.float_image.add_widget(self.background_image)
-
         sm = ScreenManager()
         sm.ids.username = None
         sm.ids.session_name = None
 
-        self.add_widget(self.float_image)
         self.add_widget(sm)
+
+
 
     def on_enter(self, *args):
         # self has multiple files gathered in arrays, so get only one child
@@ -65,7 +64,7 @@ class LS_Tab1(Screen):
         ip = "spotivibe.net"
         port = 5000
         self.remove_widget(self.ids.add_button)
-        self.remove_widget(self.float_image)
+        self.remove_widget(self.ids.float_image)
         colors = ["dd2020", "00ff00", "ffff00", "00ffff", "8a2be2", "ff00ff", "ffa500"]
         if not self.chat_screen_exists:
             color = random.choice(colors)
@@ -83,7 +82,7 @@ class LS_Tab1(Screen):
     def disconnect(self):
         if self.chat_screen_exists:
             self.add_widget(self.ids.add_button)
-            self.add_widget(self.float_image)
+            self.add_widget(self.ids.float_image)
             self.screen.clear_widgets()
             self.remove_widget(self.screen)
             self.chat_screen_exists = False

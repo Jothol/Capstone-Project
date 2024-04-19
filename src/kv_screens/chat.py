@@ -51,7 +51,6 @@ class ScrollableLabel(ScrollView):
         self.layout.height = self.chat_history.texture_size[1] + 15
         self.chat_history.height = self.chat_history.texture_size[1]
         self.chat_history.text_size = (self.chat_history.width * 0.98, None)
-        self.layout.height = self.layout.minimum_height
 
 
     def update_chat_background(self, instance, value):
@@ -107,7 +106,7 @@ class ChatScreen(GridLayout):
         self.chat_window.add_widget(self.history)
 
         self.add_widget(self.chat_window)
-        #self.add_widget(self.history)
+        # self.add_widget(self.history)
 
         # Add the send and text input to the grid
         self.new_message = TextInput(width=(Window.width - 100) * 0.8, size_hint_x=None, multiline=False,

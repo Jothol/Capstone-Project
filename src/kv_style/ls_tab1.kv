@@ -20,3 +20,11 @@
         font_size: 50
         size: dp(600), dp(40)
         pos_hint: {'center_y': .85}
+    FloatLayout:
+        id: float_image
+        # width: Window.width
+        # height: Window.height
+        Image:
+            id: background_image
+            source: '../other/images/transparent_logo.png'
+            fit_mode: 'scale-down'

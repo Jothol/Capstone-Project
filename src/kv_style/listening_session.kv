@@ -161,7 +161,7 @@
             pos: self.pos
             size: self.size
 
-    Button:
+    HoverableButton:
         id: invite_button
         text: 'Invite User'
         size_hint: None, None
@@ -170,7 +170,7 @@
         pos: (root.width / 2 - (5 * self.width / 2), self.y)
         on_press:
             root.open_bar('Invite User')
-    Button:
+    HoverableButton:
         id: remove_button
         text: 'Remove User'
         size_hint: None, None
@@ -179,7 +179,7 @@
         pos: (root.width / 2 - (3 * self.width / 2), self.y)
         on_press:
             root.open_bar('Remove User')
-    Button:
+    HoverableButton:
         id: new_host_button
         text: 'New Host'
         size_hint: None, None
@@ -188,7 +188,7 @@
         pos: (root.width / 2 - self.width / 2, self.y)
         on_press:
             root.open_bar('New Host')
-    Button:
+    HoverableButton:
         id: end_session_button
         text: 'End Session'
         size_hint: None, None
@@ -197,15 +197,17 @@
         pos: (root.width / 2 + self.width / 2, self.y)
         on_press:
             root.end_session()
-    Button:
+    HoverableButton:
         id: status
         text: 'Private'
         size_hint: None, None
         size: dp(130), dp(30)
+        transition_color: "red"
         background_color: [1, 0, 0.4, 1]
         pos: (root.width / 2 + (3 * self.width / 2), self.y)
         on_press:
             root.change_status()
+            root.change_hover_button()
 
 <HostDropBar>:
     BoxLayout:
@@ -235,7 +237,7 @@
             id: entry
             multiline: False
             hint_text: '(User Name)'
-        Button:
+        HoverableButton:
             id: button_input
             pos_hint: {'center_y': .5}
             text: 'Enter'

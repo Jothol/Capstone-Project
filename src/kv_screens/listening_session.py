@@ -309,6 +309,9 @@ class HostBar(BoxLayout):
         dark = DarkenScreen2(self.screen_manager.ls_screen)
         self.screen_manager.ls_screen.add_widget(dark)
 
+    def change_hover_button(self):
+        self.ids.status.transition_color = "lightgreen"
+
 
 class HostDropBar(BoxLayout):
     def __init__(self, ls_screen: ListeningSessionScreen, screen_manager: ScreenManager, **kwargs):
@@ -390,9 +393,9 @@ class DarkenScreen2(FloatLayout):
                                       size_hint=(None, None), size=(dp(180), dp(12)), font_size=dp(11)))
         are_you_sure.add_widget(BoxLayout(orientation="horizontal"))
         options = BoxLayout(orientation="horizontal", spacing=dp(10), size_hint=(None, None), size=(dp(180), dp(30)))
-        yes = Button(text="Delete")
+        yes = HoverableButton(text="Delete", transition_color="grey")
         yes.bind(on_release=lambda instance: self.delete_session())
-        no = Button(text="Cancel", background_color=(0, 1, 0, 1))
+        no = HoverableButton(text="Cancel", background_color=(0, 1, 0, 1))
         no.bind(on_release=lambda instance: self.cancel())
         options.add_widget(yes)
         options.add_widget(no)
