@@ -258,7 +258,9 @@ class Option2(BoxLayout):
         self.ids.option_label_2.font_size = self.ids.option_label_2.font_size + dp(1)
 
     def yes(self, code):
-        self.parent.parent.parent.parent.parent.submit(code, "Join")
+        tab1 = self.parent.parent.parent.parent.parent
+        tab1.submit(code, "Join")
+        self.parent.remove_widget(self)
 
     def no(self):
         self.remove_widget(self.children[0])
