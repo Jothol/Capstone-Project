@@ -9,12 +9,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.image import Image
 from kivy.uix.screenmanager import Screen, ScreenManager, SlideTransition
-
-from src.database import account, socket_client
-from src.database.account import Account
-from src.kv_screens.chat import ChatScreen
 from src.kv_screens.tab1 import Tab1
-from src.kv_screens.tab2 import Tab2
 from src.kv_screens.tab3 import Tab3
 
 kivy.require('2.3.0')
