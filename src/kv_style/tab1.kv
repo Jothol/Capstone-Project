@@ -13,18 +13,20 @@
             height: self.texture_size[1]
             color: [1, 1, 1, 1]
         FloatLayout:
-            Button:
+            HoverableButton:
                 id: create_session
                 size_hint: None, None
                 size: dp(200), dp(75)
+                offset: 0, -50
                 pos_hint: {'center_x': 0.3, 'center_y': 0.5}
                 text: 'Create Session'
                 background_color: 0, 1, 0, 1
                 on_press: root.create_session(True)
-            Button
+            HoverableButton
                 id: join_session
                 size_hint: None, None
                 size: dp(200), dp(75)
+                offset: 0, -50
                 pos_hint: {'center_x': 0.7, 'center_y': 0.5}
                 text: 'Join Session'
                 background_color: 0, 1, 0, 1
@@ -111,9 +113,10 @@
                     spacing: dp(1)
                     size_hint_y: None
                     height: self.minimum_height
-            Button:
+            HoverableButton:
                 size_hint: (None, None)
                 size: (dp(130), dp(30))
+                offset: 0, -50
                 pos_hint: {'center_x': 0.5}
                 text: 'Create Session'
                 background_color:[0,1,0,1]
@@ -180,10 +183,11 @@
                 multiline: False
                 hint_text: 'Code'
                 write_tab: False
-            Button:
+            HoverableButton:
                 size_hint: (None, None)
                 size: (dp(130), dp(30))
                 pos_hint: {'center_x': 0.5}
+                offset: 0, -50
                 text: 'Join Session'
                 background_color:[0,1,0,1]
                 on_press: root.submit(root.ids.room_code_input_2.text, 'Join')
