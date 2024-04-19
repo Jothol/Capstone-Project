@@ -188,6 +188,23 @@ class Tab1(Screen):
         self.ids.create_session.disabled = True
         self.ids.join_session.disabled = True
 
+    def join_session(self, is_closed):
+        if not is_closed:
+            self.ids.join_session_window.pos_hint = {'center_x': -0.5}
+            self.ids.create_session.disabled = False
+            self.ids.join_session.disabled = False
+            return
+        self.manager.ids.username.session_invites = self.manager.ids.username.account.get().get('session_invites')
+        print(self.manager.ids.username.session_invites)
+        for invite in self.manager.ids.username.session_invites:
+            scroll = self.ids.scroll_contents_2
+            option = Option2()
+            option.set_text(invite)
+            scroll.add_widget(option)
+        self.ids.join_session_window.pos_hint = {'center_x': 0.5}
+        self.ids.create_session.disabled = True
+        self.ids.join_session.disabled = True
+
 
 class Option(BoxLayout):
 
@@ -252,3 +269,83 @@ class RemoveButton(Button):
 
     def on_press(self, *args):
         self.parent.remove(self.parent.ids.option_label.text)
+
+
+class Option2(BoxLayout):
+    def __init__(self, **kwargs):
+        super(Option2, self).__init__(**kwargs)
+
+    def set_text(self, text):
+        self.ids.option_label_2.text = text
+
+    def join_session(self):
+        self.remove_widget(self.children[0])
+        self.add_widget(YesButton())
+        self.add_widget(NoButton())
+        self.ids.option_label_2.opacity = 1
+        self.ids.option_label_2.font_size = self.ids.option_label_2.font_size + dp(1)
+
+    def yes(self):
+        pass
+
+    def no(self):
+        self.remove_widget(self.children[0])
+        self.remove_widget(self.children[0])
+        self.add_widget(JoinButton())
+        self.ids.option_label_2.opacity = 0.4
+        self.ids.option_label_2.font_size = self.ids.option_label_2.font_size - dp(1)
+
+
+class YesButton(Button):
+    def __init__(self, **kwargs):
+        super(YesButton, self).__init__(**kwargs)
+        self.size_hint = (None, None)
+        self.size = (dp(25), dp(25))
+        self.pos_hint = {'center_y': 0.5}
+        self.background_color = (0, 0, 0, 0)
+        self.bind(on_release=self.on_press)
+
+        icon = Image(source='../other/images/join_icon.png', center=self.center,
+                     size=(0.55 * self.height, 0.55 * self.width))
+
+        self.bind(pos=lambda instance, value: setattr(icon, 'center', instance.center))
+        self.bind(size=lambda instance, value: setattr(icon, 'center', instance.center))
+        self.add_widget(icon)
+
+    def on_press(self, *args):
+        self.parent.yes()
+
+
+class NoButton(Button):
+    def __init__(self, **kwargs):
+        super(NoButton, self).__init__(**kwargs)
+        self.size_hint = (None, None)
+        self.size = (dp(25), dp(25))
+        self.pos_hint = {'center_y': 0.5}
+        self.background_color = (0, 0, 0, 0)
+        self.bind(on_release=self.on_press)
+
+        icon = Image(source='../other/images/decline_icon.png', center=self.center,
+                     size=(0.6 * self.height, 0.6 * self.width))
+
+        self.bind(pos=lambda instance, value: setattr(icon, 'center', instance.center))
+        self.bind(size=lambda instance, value: setattr(icon, 'center', instance.center))
+        self.add_widget(icon)
+
+    def on_press(self, *args):
+        self.parent.no()
+
+
+class JoinButton(Button):
+    def __init__(self, **kwargs):
+        super(JoinButton, self).__init__(**kwargs)
+        self.size_hint = (None, None)
+        self.size = (dp(50), dp(20))
+        self.font_size = dp(12)
+        self.text = 'Join'
+        self.pos_hint = {'center_y': 0.5}
+        self.background_color = (0, 1, 0, 1)
+        self.bind(on_release=self.on_press)
+
+    def on_press(self, *args):
+        self.parent.join_session()
