@@ -166,6 +166,8 @@ class Tab1(Screen):
                 self.manager.home_screen.manager.ids.session_name = Tab1.session_name
                 Clock.unschedule(self.build_invite_dropdown)
 
+        ListeningSessionScreen.auto_friends_list = self.create_session_friends
+
         pass
 
     def create_session(self, is_closed):

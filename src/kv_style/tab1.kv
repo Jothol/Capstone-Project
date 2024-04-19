@@ -114,7 +114,11 @@
                 pos_hint: {'center_x': 0.5}
                 text: 'Create Session'
                 background_color:[0,1,0,1]
-                on_press: root.submit()
+                on_press: root.submit(root.ids.room_code_input.text, 'Create')
+            Label:
+                id: error_message
+                text: ''
+                color: 1, 0, 0, 1
             BoxLayout:
                 id: blank_space
 

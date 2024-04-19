@@ -94,8 +94,8 @@ class ListeningSessionScreen(Screen):
             self.add_friends_on_enter()
 
     def add_friends_on_enter(self):
-        for friend in self.friends_list:
-            user_name = ListeningSessionScreen.add_button_layout.children[1].text = friend
+        for friend in self.auto_friends_list:
+            user_name = friend
             user = account.get_account(user_name)
             sess = ListeningSessionScreen.session_name
             if user is None:
