@@ -120,6 +120,9 @@ class Tab1(Screen):
                 self.ids.error_message.text = "Session already created"
                 self.ids.error_message.color = [1, 0, 0, 1]
             else:
+                for option in self.ids.scroll_contents_2.children:
+                    if option.ids.option_label_2.text == session_name:
+                        self.ids.scroll_contents_2.remove_widget(option)
                 if Tab1.session_name.session_status.get().get("status") == "private":
                     try:
                         Tab1.user.session_invites = Tab1.user.account.get().get('session_invites')
@@ -165,6 +168,7 @@ class Tab1(Screen):
             self.ids.join_session_window.pos_hint = {'center_x': -0.5}
             self.ids.create_session.disabled = False
             self.ids.join_session.disabled = False
+            self.ids.scroll_contents_2.clear_widgets()
             return
         self.manager.ids.username.session_invites = self.manager.ids.username.account.get().get('session_invites')
         print(self.manager.ids.username.session_invites)
