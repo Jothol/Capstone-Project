@@ -46,6 +46,7 @@ class ListeningSessionScreen(Screen):
     end_session_button_layout = None  # layout for ending session
     screen_manager = None  # helper created for removing hostbar on ls_tab3
     user_list = None
+    auto_friends_list = []
 
     def on_enter(self, *args):
         ListeningSessionScreen.session_name.name = (
@@ -88,6 +89,27 @@ class ListeningSessionScreen(Screen):
         # new variables for clock testing end session button and host replacement
         # Clock.schedule_interval(self.host_replacement, 1.3)
         Clock.schedule_interval(self.session_refresher, 1.3)
+
+        if self.auto_friends_list:
+            self.add_friends_on_enter()
+
+    def add_friends_on_enter(self):
+        for friend in self.friends_list:
+            user_name = ListeningSessionScreen.add_button_layout.children[1].text = friend
+            user = account.get_account(user_name)
+            sess = ListeningSessionScreen.session_name
+            if user is None:
+                print("User not found")
+            else:
+                try:
+                    index = user.friends.index(sess.host.username)
+                    user.session_invites.append(self.parent.ids.session_name.name.id)
+                    user.account.update({'session_invites': user.session_invites})
+                except ValueError:
+                    print("You are not friends with the user")
+                    return
+                print("user found!")
+                # ListeningSessionScreen.session_name.add_user(user)
 
     def on_pre_enter(self, *args):
         sess = self.manager.ids.session_name
