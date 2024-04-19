@@ -70,6 +70,8 @@ class ListeningSessionScreen(Screen):
 
     def on_pre_enter(self, *args):
         sess = self.manager.ids.session_name
+        if sess is None:
+            return
         ListeningSessionScreen.user = self.manager.ids.username
         ListeningSessionScreen.session_name = self.manager.ids.session_name
         ListeningSessionScreen.user_list = sess.name.get().to_dict()
