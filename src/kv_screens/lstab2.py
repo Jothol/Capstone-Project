@@ -43,6 +43,8 @@ class LsTab2(Screen):
     error_window_open = False
     can_press_like = True  # variable for when a user can like the song after its been loaded
     can_press_dislike = True  # variable for when a user can like the song after its been loaded
+    like_image = None  # original image size saveholder
+    dislike_image = None  # original image size saveholder
 
     def animate_error_window(self, message: str, color):
         error_window = self.ids.error_window
@@ -99,6 +101,8 @@ class LsTab2(Screen):
         self.update_play_button()
         LsTab2.song_list = self.ids.session_name.saved_song.get().get("songs_played")
         LsTab2.current_song = self.ids.session_name.get_current_song() + ": " + self.ids.session_name.get_artists()
+        LsTab2.like_image = self.ids.like_icon
+        LsTab2.dislike_image = self.ids.dislike_icon
 
     def get_current_song(self, dt):
         # print("Testing")
@@ -128,6 +132,12 @@ class LsTab2(Screen):
                     current["item"]["uri"]:
                 player.queue_song(sp, self.ids.session_name.get_uri())
                 sp.next_track()
+                if self.ids.like_pushed is True:
+                    Animation(size=(self.ids.like_icon.width * 0.667, self.ids.like_icon.height * 0.667),
+                              center=self.ids.like_icon.center, duration=0.1).start(self.ids.like_icon)
+                elif self.ids.dislike_pushed is True:
+                    Animation(size=(self.ids.dislike_icon.width * 0.667, self.ids.dislike_icon.height * 0.667),
+                              center=self.ids.dislike_icon.center, duration=0.1).start(self.ids.dislike_icon)
             elif self.ids.session_name.get_uri() == current["item"]["uri"]:
                 # purpose is to check the amount of likes and dislikes and if color text needs to be updated
                 LsTab2.likes = self.ids.session_name.get_likes()
@@ -181,6 +191,12 @@ class LsTab2(Screen):
             self.song_length.cancel()
         player.next_song(sp, session=self.ids.session_name)
         self.ids.session_name.reset_likes_and_dislikes()
+        if self.ids.like_pushed is True:
+            Animation(size=(self.ids.like_icon.width * 0.667, self.ids.like_icon.height * 0.667),
+                      center=self.ids.like_icon.center, duration=0.1).start(self.ids.like_icon)
+        elif self.ids.dislike_pushed is True:
+            Animation(size=(self.ids.dislike_icon.width * 0.667, self.ids.dislike_icon.height * 0.667),
+                      center=self.ids.dislike_icon.center, duration=0.1).start(self.ids.dislike_icon)
         self.ids.like_pushed = False
         self.ids.dislike_pushed = False
         LsTab2.current_song = self.ids.session_name.get_current_song() + ": " + self.ids.session_name.get_artists()
@@ -234,7 +250,6 @@ class LsTab2(Screen):
             return
 
         LsTab2.can_press_like = True
-        set_opacity(self.ids.like_icon, 2)
 
 
         # User already liked the song
@@ -258,9 +273,9 @@ class LsTab2(Screen):
                 LsTab2.song_list = LsTab2.song_list[:index - 14] + LsTab2.song_list[index:len(LsTab2.song_list) - 8]
                 self.ids.session_name.saved_song.update({'songs_played': LsTab2.song_list})
 
-            set_opacity(self.ids.like_icon, 0)
-            Animation(size=(self.ids.like_icon.width * 0.8, self.ids.like_icon.height * 0.8),
-                      center=self.ids.like_icon.center, duration=0.1).start(self.ids.like_icon)
+            # self.ids.like_icon = LsTab2.like_image
+            Animation(size=(self.ids.like_icon.width * 0.667, self.ids.like_icon.height * 0.667),
+                      center=self.ids.like_icon.center, duration=0.1).start(LsTab2.like_image)
 
             return
 
@@ -274,6 +289,8 @@ class LsTab2(Screen):
             self.ids.like_pushed = True
             LsTab2.likes_pressed = True
             LsTab2.dislikes_pressed = False
+            Animation(size=(self.ids.dislike_icon.width * 0.667, self.ids.dislike_icon.height * 0.667),
+                      center=self.ids.dislike_icon.center, duration=0.1).start(LsTab2.dislike_image)
         # Checks that the like button was not pushed
         elif not self.ids.like_pushed:
             self.ids.session_name.increment_likes()
@@ -285,7 +302,8 @@ class LsTab2(Screen):
         LsTab2.likes = self.ids.session_name.get_likes()
         LsTab2.dislikes = self.ids.session_name.get_dislikes()
 
-        set_opacity(self.ids.like_icon, 0.5)
+        Animation(size=(self.ids.like_icon.width * 1.5, self.ids.like_icon.height * 1.5),
+                  center=self.ids.like_icon.center, duration=0.1).start(self.ids.like_icon)
 
         # Pressing like button caused more likes than dislikes
         index = LsTab2.song_list.find(LsTab2.current_song)
@@ -342,6 +360,9 @@ class LsTab2(Screen):
                 LsTab2.song_list = LsTab2.song_list[:index - 14] + LsTab2.song_list[index:len(LsTab2.song_list) - 8]
                 self.ids.session_name.saved_song.update({'songs_played': LsTab2.song_list})
 
+            Animation(size=(self.ids.dislike_icon.width * 0.667, self.ids.dislike_icon.height * 0.667),
+                      center=self.ids.dislike_icon.center, duration=0.1).start(LsTab2.dislike_image)
+
             return
 
         # Rest are situations where the user did not press the like button
@@ -354,6 +375,8 @@ class LsTab2(Screen):
             self.ids.dislike_pushed = True
             LsTab2.dislikes_pressed = True
             LsTab2.likes_pressed = False
+            Animation(size=(self.ids.like_icon.width * 0.667, self.ids.like_icon.height * 0.667),
+                      center=self.ids.like_icon.center, duration=0.1).start(LsTab2.like_image)
         # Checks that the like button was not pushed
         elif not self.ids.dislike_pushed:
             self.ids.session_name.increment_dislikes()
@@ -364,6 +387,8 @@ class LsTab2(Screen):
 
         LsTab2.likes = self.ids.session_name.get_likes()
         LsTab2.dislikes = self.ids.session_name.get_dislikes()
+        Animation(size=(self.ids.dislike_icon.width * 1.5, self.ids.dislike_icon.height * 1.5),
+                  center=self.ids.dislike_icon.center, duration=0.1).start(self.ids.dislike_icon)
 
         # Pressing like button caused more likes than dislikes
         index = LsTab2.song_list.find(LsTab2.current_song)
