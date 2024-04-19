@@ -7,7 +7,7 @@ from kivy.uix.textinput import TextInput
 
 
 from src.database import socket_client
-from src.kv_screens.hoverablebutton import HoverableButton
+from src.database.hoverablebutton import HoverableButton
 
 
 def show_error(message):
@@ -71,7 +71,7 @@ class ChatScreen(GridLayout):
             self.background_color = (0, 0, 0, 1)
             self.background_fill_color = (0, 0, 0, 1)
 
-        self.history = ScrollableLabel(size_hint=(None, None), height=Window.height * 0.85, width=Window.width - 100,
+        self.history = ScrollableLabel(size_hint=(None, None), height=Window.height * 0.70, width=Window.width - 100,
                                        pos_hint={'left': 1})
 
         self.add_widget(self.history)

@@ -4,8 +4,6 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.image import Image
 from kivy.uix.label import Label
-from kivy.uix.textinput import TextInput
-from kivy.uix.button import Button
 from kivy.uix.screenmanager import Screen, ScreenManager, SlideTransition
 from kivy.graphics import Color, Rectangle, RoundedRectangle
 from kivy.clock import Clock
@@ -18,7 +16,7 @@ from src.kv_screens.ls_tab3 import LS_Tab3
 
 from src.database import account
 from src.database import session
-from src.kv_screens.hoverablebutton import HoverableButton
+from src.database.hoverablebutton import HoverableButton
 
 kivy.require('2.3.0')
 

@@ -1,22 +1,18 @@
 import kivy
-from kivy.graphics import Color, Line, BorderImage, RoundedRectangle, Rectangle
 from kivy.metrics import dp
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.image import Image
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.dropdown import DropDown
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.properties import ObjectProperty
-from kivy.clock import Clock
-from kivy.uix.scrollview import ScrollView
 
 from src.database import session
 
 from src.kv_screens.listening_session import ListeningSessionScreen
 from src.kv_screens import player
-from src.kv_screens.hoverablebutton import HoverableButton
+from src.database.hoverablebutton import HoverableButton
 
 kivy.require('2.3.0')
 

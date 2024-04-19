@@ -7,7 +7,8 @@ from kivy.metrics import dp
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen, ScreenManager
 
-from src.kv_screens import player, volume_slider
+from src.kv_screens import player
+from src.database import volume_slider
 
 kivy.require('2.3.0')
 
