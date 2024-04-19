@@ -285,8 +285,8 @@ class Option2(BoxLayout):
         self.ids.option_label_2.opacity = 1
         self.ids.option_label_2.font_size = self.ids.option_label_2.font_size + dp(1)
 
-    def yes(self):
-        pass
+    def yes(self, code):
+        self.parent.parent.parent.parent.parent.submit(code, "Join")
 
     def no(self):
         self.remove_widget(self.children[0])
@@ -313,7 +313,7 @@ class YesButton(Button):
         self.add_widget(icon)
 
     def on_press(self, *args):
-        self.parent.yes()
+        self.parent.yes(self.parent.ids.option_label_2.text)
 
 
 class NoButton(Button):

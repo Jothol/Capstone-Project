@@ -178,6 +178,13 @@
                 multiline: False
                 hint_text: 'Code'
                 write_tab: False
+            Button:
+                size_hint: (None, None)
+                size: (dp(130), dp(30))
+                pos_hint: {'center_x': 0.5}
+                text: 'Join Session'
+                background_color:[0,1,0,1]
+                on_press: root.submit(root.ids.room_code_input_2.text, 'Join')
             Label:
                 text: 'Session Invites:'
                 color: 0, 0, 0, 1
@@ -204,13 +211,6 @@
                     spacing: dp(1)
                     size_hint_y: None
                     height: self.minimum_height
-            Button:
-                size_hint: (None, None)
-                size: (dp(130), dp(30))
-                pos_hint: {'center_x': 0.5}
-                text: 'Join Session'
-                background_color:[0,1,0,1]
-                on_press: root.submit(root.ids.room_code_input_2.text, 'Join')
             Label:
                 id: error_message
                 text: ''
