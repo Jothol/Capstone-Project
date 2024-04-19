@@ -260,8 +260,8 @@ class Option2(BoxLayout):
 
     def yes(self, code):
         tab1 = self.parent.parent.parent.parent.parent
+        tab1.ids.scroll_contents_2.remove_widget(self)
         tab1.submit(code, "Join")
-        self.parent.remove_widget(self)
 
     def no(self):
         self.remove_widget(self.children[0])
