@@ -189,13 +189,13 @@
             size_hint: None, None
             size: self.texture_size[0], dp(20)
             center: self.parent.center
-    HoverableButton:
-        size_hint: (None, None)
-        size: dp(150), dp(30)
-        text: 'Leave Session'
-        offset: 0, -50
-        pos_hint: {'x': 0.01, 'y': 0.01}
-        background_color:[0,1,0,1]
-        on_press:
-            root.manager.transition.direction = 'up'
-            root.submit()
+    # HoverableButton:
+    #     size_hint: (None, None)
+    #     size: dp(150), dp(30)
+    #     text: 'Leave Session'
+    #     offset: 0, -50
+    #     pos_hint: {'x': 0.01, 'y': 0.01}
+    #     background_color:[0,1,0,1]
+    #     on_press:
+    #         root.manager.transition.direction = 'up'
+    #         root.submit()
