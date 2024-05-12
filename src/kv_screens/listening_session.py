@@ -90,6 +90,7 @@ class ListeningSessionScreen(Screen):
         Clock.unschedule(self.session_refresher)
 
     # Method process of User leaving session and back to home screen
+    #
     def submit(self):
         for child in self.children:
             if child.children is not None:
