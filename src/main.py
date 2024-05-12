@@ -79,7 +79,6 @@ if __name__ == '__main__':
     Builder.load_file("kv_style/home.kv")
     Builder.load_file("kv_style/listening_session.kv")
     Builder.load_file("kv_style/tab1.kv")
-    Builder.load_file("kv_style/tab2.kv")
     Builder.load_file("kv_style/tab3.kv")
     Builder.load_file("kv_style/ls_tab1.kv")
     Builder.load_file("kv_style/ls_tab2.kv")

@@ -14,7 +14,7 @@ from kivy.uix.screenmanager import Screen
 
 
 import src.database.account as account
-from src.kv_screens.hoverablebutton import HoverableButton
+from src.database.hoverablebutton import HoverableButton
 
 kivy.require('2.3.0')
 

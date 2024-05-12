@@ -1,5 +1,5 @@
 #:kivy 2.3.0
-#:import HoverableButton src.kv_screens.hoverablebutton
+#:import HoverableButton src.database.hoverablebutton
 
 <ListeningSessionScreen>:
     BoxLayout:
@@ -160,57 +160,54 @@
         Rectangle:
             pos: self.pos
             size: self.size
-    BoxLayout:
-        orientation: 'horizontal'
-        size_hint: None, None
-        size: self.minimum_size
-        pos_hint: {'center_x': 0.5}
 
-        Button:
-            id: invite_button
-            text: 'Invite User'
-            size_hint: None, None
-            size: dp(130), dp(30)
-            background_color: [0, 1, 0, 1]
-            pos: (root.width / 2 - (5 * self.width / 2), self.y)
-            on_press:
-                root.open_bar('Invite User')
-        Button:
-            id: remove_button
-            text: 'Remove User'
-            size_hint: None, None
-            size: dp(130), dp(30)
-            background_color: [0, 1, 0, 1]
-            pos: (root.width / 2 - (3 * self.width / 2), self.y)
-            on_press:
-                root.open_bar('Remove User')
-        Button:
-            id: new_host_button
-            text: 'New Host'
-            size_hint: None, None
-            size: dp(130), dp(30)
-            background_color: [0, 1, 0, 1]
-            pos: (root.width / 2 - self.width / 2, self.y)
-            on_press:
-                root.open_bar('New Host')
-        Button:
-            id: end_session_button
-            text: 'End Session'
-            size_hint: None, None
-            size: dp(130), dp(30)
-            background_color: [0, 1, 0, 1]
-            pos: (root.width / 2 + self.width / 2, self.y)
-            on_press:
-                root.end_session()
-        Button:
-            id: status
-            text: 'Private'
-            size_hint: None, None
-            size: dp(130), dp(30)
-            background_color: [1, 0, 0.4, 1]
-            pos: (root.width / 2 + (3 * self.width / 2), self.y)
-            on_press:
-                root.change_status()
+    HoverableButton:
+        id: invite_button
+        text: 'Invite User'
+        size_hint: None, None
+        size: dp(130), dp(30)
+        background_color: [0, 1, 0, 1]
+        pos: (root.width / 2 - (5 * self.width / 2), self.y)
+        on_press:
+            root.open_bar('Invite User')
+    HoverableButton:
+        id: remove_button
+        text: 'Remove User'
+        size_hint: None, None
+        size: dp(130), dp(30)
+        background_color: [0, 1, 0, 1]
+        pos: (root.width / 2 - (3 * self.width / 2), self.y)
+        on_press:
+            root.open_bar('Remove User')
+    HoverableButton:
+        id: new_host_button
+        text: 'New Host'
+        size_hint: None, None
+        size: dp(130), dp(30)
+        background_color: [0, 1, 0, 1]
+        pos: (root.width / 2 - self.width / 2, self.y)
+        on_press:
+            root.open_bar('New Host')
+    HoverableButton:
+        id: end_session_button
+        text: 'End Session'
+        size_hint: None, None
+        size: dp(130), dp(30)
+        background_color: [0, 1, 0, 1]
+        pos: (root.width / 2 + self.width / 2, self.y)
+        on_press:
+            root.end_session()
+    HoverableButton:
+        id: status
+        text: 'Private'
+        size_hint: None, None
+        size: dp(130), dp(30)
+        transition_color: "red"
+        background_color: [1, 0, 0.4, 1]
+        pos: (root.width / 2 + (3 * self.width / 2), self.y)
+        on_press:
+            root.change_status()
+            root.change_hover_button()
 
 <HostDropBar>:
     BoxLayout:
@@ -240,7 +237,7 @@
             id: entry
             multiline: False
             hint_text: '(User Name)'
-        Button:
+        HoverableButton:
             id: button_input
             pos_hint: {'center_y': .5}
             text: 'Enter'

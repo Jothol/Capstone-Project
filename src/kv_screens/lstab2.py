@@ -9,7 +9,8 @@ from kivy.uix.image import Image
 from kivy.graphics import Color
 from kivy.uix.screenmanager import Screen, ScreenManager
 
-from src.kv_screens import player, volume_slider
+from src.kv_screens import player
+from src.database import volume_slider
 
 kivy.require('2.3.0')
 

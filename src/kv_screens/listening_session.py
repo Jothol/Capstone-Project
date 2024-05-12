@@ -4,8 +4,6 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.image import Image
 from kivy.uix.label import Label
-from kivy.uix.textinput import TextInput
-from kivy.uix.button import Button
 from kivy.uix.screenmanager import Screen, ScreenManager, SlideTransition
 from kivy.graphics import Color, Rectangle, RoundedRectangle
 from kivy.clock import Clock
@@ -18,7 +16,7 @@ from src.kv_screens.ls_tab3 import LS_Tab3
 
 from src.database import account
 from src.database import session
-from src.kv_screens.hoverablebutton import HoverableButton
+from src.database.hoverablebutton import HoverableButton
 
 kivy.require('2.3.0')
 
@@ -46,6 +44,7 @@ class ListeningSessionScreen(Screen):
     the_host_bar = None  # The creation of HostBar
     error_window_open = False  # Used for pop-up messages for Host Permissions
     bl = None
+    auto_friends_list = []
 
     def on_enter(self, *args):
         ListeningSessionScreen.session_name.name = (
@@ -68,8 +67,31 @@ class ListeningSessionScreen(Screen):
 
         Clock.schedule_interval(self.session_refresher, 1.3)
 
+        if self.auto_friends_list:
+            self.add_friends_on_enter()
+
+    def add_friends_on_enter(self):
+        for friend in self.auto_friends_list:
+            user_name = friend
+            user = account.get_account(user_name)
+            sess = ListeningSessionScreen.session_name
+            if user is None:
+                print("User not found")
+            else:
+                try:
+                    index = user.friends.index(sess.host.username)
+                    user.session_invites.append(self.parent.ids.session_name.name.id)
+                    user.account.update({'session_invites': user.session_invites})
+                except ValueError:
+                    print("You are not friends with the user")
+                    return
+                print("user found!")
+                # ListeningSessionScreen.session_name.add_user(user)
+
     def on_pre_enter(self, *args):
         sess = self.manager.ids.session_name
+        if sess is None:
+            return
         ListeningSessionScreen.user = self.manager.ids.username
         ListeningSessionScreen.session_name = self.manager.ids.session_name
         ListeningSessionScreen.user_list = sess.name.get().to_dict()
@@ -310,6 +332,12 @@ class HostBar(BoxLayout):
         dark = DarkenScreen2(self.screen_manager.ls_screen)
         self.screen_manager.ls_screen.add_widget(dark)
 
+    def change_hover_button(self):
+        if self.ids.status.transition_color == "red":
+            self.ids.status.transition_color = "lightgreen"
+        else:
+            self.ids.status.transition_color = "red"
+
 
 class HostDropBar(BoxLayout):
     def __init__(self, ls_screen: ListeningSessionScreen, screen_manager: ScreenManager, **kwargs):
@@ -391,9 +419,9 @@ class DarkenScreen2(FloatLayout):
                                       size_hint=(None, None), size=(dp(180), dp(12)), font_size=dp(11)))
         are_you_sure.add_widget(BoxLayout(orientation="horizontal"))
         options = BoxLayout(orientation="horizontal", spacing=dp(10), size_hint=(None, None), size=(dp(180), dp(30)))
-        yes = Button(text="Delete")
+        yes = HoverableButton(text="Delete", transition_color="grey")
         yes.bind(on_release=lambda instance: self.delete_session())
-        no = Button(text="Cancel", background_color=(0, 1, 0, 1))
+        no = HoverableButton(text="Cancel", background_color=(0, 1, 0, 1))
         no.bind(on_release=lambda instance: self.cancel())
         options.add_widget(yes)
         options.add_widget(no)
