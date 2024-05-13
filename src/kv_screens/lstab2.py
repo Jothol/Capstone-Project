@@ -89,7 +89,7 @@ class LsTab2(Screen):
                     if LsTab2.song_list == "":
                         LsTab2.song_list = song_entry
                     else:
-                        LsTab2.song_list += "     " + song_entry
+                        LsTab2.song_list += "   " + song_entry
                     self.ids.session_name.saved_song.update({'songs_played': LsTab2.song_list})
             elif self.ids.session_name.get_uri() != "" and self.ids.session_name.get_uri() != \
                     current["item"]["uri"]:
@@ -201,7 +201,7 @@ class LsTab2(Screen):
                 return
             # Unpressing the like caused 1 more dislikes than likes
             elif LsTab2.likes < LsTab2.dislikes:
-                LsTab2.song_list = LsTab2.song_list[:index] + "[color=ff0000]" + LsTab2.current_song + "[/color]"
+                LsTab2.song_list = LsTab2.song_list[:index+1] + "[color=ff0000]" + LsTab2.current_song + "[/color]"
                 self.ids.session_name.saved_song.update({'songs_played': LsTab2.song_list})
             elif LsTab2.likes == LsTab2.dislikes:
                 LsTab2.song_list = LsTab2.song_list[:index - 14] + LsTab2.song_list[index:len(LsTab2.song_list) - 8]

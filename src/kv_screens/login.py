@@ -9,7 +9,10 @@ from src.database import account
 class LoginScreen(Screen):
 
     def submit(self, username, password):
-        if not account.try_login(username, password):
+        if username is "" or password is "":
+            self.ids.error_message.text = "Please input username and password."
+            self.ids.error_message.color = [1, 0, 0, 1]
+        elif not account.try_login(username, password):
             self.ids.error_message.text = "Username or password incorrect."
             self.ids.error_message.color = [1, 0, 0, 1]
         else:
